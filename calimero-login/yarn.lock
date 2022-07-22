@@ -2919,10 +2919,10 @@
   "resolved" "https://registry.npmjs.org/bytes/-/bytes-3.1.2.tgz"
   "version" "3.1.2"
 
-"calimero-auth-sdk@^0.6.5":
-  "integrity" "sha512-EFwk0ySHblYOIKd2HEW17bIpa7PJpNCGj/cgiUqGWrf04ywQb2ZB8AgcozC7uBsiJwHmyUPWU/AbpnSz7cbmgg=="
-  "resolved" "https://registry.npmjs.org/calimero-auth-sdk/-/calimero-auth-sdk-0.6.5.tgz"
-  "version" "0.6.5"
+"calimero-auth-sdk@^0.7.1":
+  "integrity" "sha512-RKmpcgbdbR2APcW6nkO19BpdvIN3XL1BavKNtP0PIJLhwDoMt6rEkcud6PAPixFoY1/nagGQkBMPsM6XclkySw=="
+  "resolved" "https://registry.npmjs.org/calimero-auth-sdk/-/calimero-auth-sdk-0.7.1.tgz"
+  "version" "0.7.1"
   dependencies:
     "axios" "^0.27.2"
     "near-api-js" "^0.45.1"
