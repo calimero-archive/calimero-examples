@@ -11,6 +11,6 @@ function ViewContract () {
     console.log( "view" );
 }
 
-function installContract(){
-    console.log("install");
+function installContract () {
+    console.log( "install" );
 }

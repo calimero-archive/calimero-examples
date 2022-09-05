@@ -1,7 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 /* This example requires Tailwind CSS v2.0+ */
-import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { Disclosure } from '@headlessui/react';
 import RegistryRecordsTable from './components/government/RegistryRecordsTable';
 import PlatformMenu from './components/PlatformMenu';
 
@@ -13,57 +12,57 @@ import UserRecordsTable from './components/user/UserRecordsTable';
 
 function App () {
   return (
-        <body class="h-full">
+    <body class="h-full">
       <div className="min-h-full">
         <Disclosure as="nav" className="border-b border-gray-200 bg-white">
-          {({ open }) => (
+          { ( { open } ) => (
             <>
-            <PlatformMenu></PlatformMenu>
+              <PlatformMenu></PlatformMenu>
             </>
-          )}
+          ) }
         </Disclosure>
         <div className="py-10">
           <main>
             <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
               <Router>
                 <Routes>
-                  <Route path="/" element={< Home />}/>
-                  <Route path="/user" element={< User />}/>
-                  <Route path="/marketplace" element={< Marketplace />}/>
+                  <Route path="/" element={ < Home /> } />
+                  <Route path="/user" element={ < User /> } />
+                  <Route path="/marketplace" element={ < Marketplace /> } />
                 </Routes>
-            </Router>
+              </Router>
             </div>
           </main>
-            </div>
         </div>
-        </body>
+      </div>
+    </body>
   );
 }
 
-function Home() {
+function Home () {
   return (
-      <div>
+    <div>
       <div className="px-4 py-8 sm:px-0">
         <RegistryRecordsTable></RegistryRecordsTable>
       </div>
-      </div>
-)
+    </div>
+  );
 }
 
-function User() {
+function User () {
   return (
-    <div> 
+    <div>
       <UserRecordsTable></UserRecordsTable>
     </div>
   );
-} 
+}
 
-function Marketplace() {
+function Marketplace () {
   return (
-    <div> 
+    <div>
       marketplace
     </div>
   );
-} 
+}
 
 export default App;

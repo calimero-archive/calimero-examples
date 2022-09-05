@@ -1,16 +1,18 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import { Fragment, useRef, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
-export default function BridgeRecordPopUp(props) {
-  const cancelButtonRef = useRef(null)
+export default function EditRecordPopUp ( props ) {
+  const [ open, setOpen ] = useState( false );
+
+  const cancelButtonRef = useRef( null );
 
   return (
-    <Transition.Root show={props.show} as={Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={ () => { props.setShow(false); }}>
+    <Transition.Root show={ props.show } as={ Fragment }>
+      <Dialog as="div" className="relative z-10" initialFocus={ cancelButtonRef } onClose={ () => { props.setShow( false ); } }>
         <Transition.Child
-          as={Fragment}
+          as={ Fragment }
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -24,7 +26,7 @@ export default function BridgeRecordPopUp(props) {
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
-              as={Fragment}
+              as={ Fragment }
               enter="ease-out duration-300"
               enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -39,28 +41,39 @@ export default function BridgeRecordPopUp(props) {
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                      Bridge NFT
+                      Change Owner
                     </Dialog.Title>
-                    <div className="mt-2">
+                    <div className="mt-2 mb-4">
                       <p className="text-sm text-gray-500">
-                        Are you sure you want to bridge you NFT to NEAR?
+                        Please submit the full name of the new owner. In case you do not hold the ownership certificate the change will be automatically rejected.
                       </p>
+                    </div>
+                    <div className="relative rounded-md border border-gray-300 px-3 py-2">
+                      <label htmlFor="name" className="block text-xs font-medium text-gray-900">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 sm:text-sm"
+                      />
                     </div>
                   </div>
                 </div>
                 <div className="mt-5 sm:mt-4 sm:ml-10 sm:flex sm:pl-4">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
-                    onClick={ () => { props.setShow(false); }}
+                    className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700  sm:w-auto sm:text-sm"
+                    onClick={ () => { props.setShow( false ); } }
                   >
-                    Bridge
+                    Change
                   </button>
                   <button
                     type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={ () => { props.setShow(false); }}
-                    ref={cancelButtonRef}
+                    className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={ () => { props.setShow( false ); } }
+                    ref={ cancelButtonRef }
                   >
                     Cancel
                   </button>
@@ -71,5 +84,5 @@ export default function BridgeRecordPopUp(props) {
         </div>
       </Dialog>
     </Transition.Root>
-  )
+  );
 }
