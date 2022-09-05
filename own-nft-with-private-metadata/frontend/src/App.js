@@ -9,13 +9,12 @@ import {
   BrowserRouter as Router,
   Route, Routes,
 } from "react-router-dom";
+import UserRecordsTable from './components/UserRecordsTable';
 
 function App () {
   return (
         <body class="h-full">
       <div className="min-h-full">
-          <header>
-          </header>
         <Disclosure as="nav" className="border-b border-gray-200 bg-white">
           {({ open }) => (
             <>
@@ -26,13 +25,13 @@ function App () {
         <div className="py-10">
           <main>
             <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-    <Router>
-      <Routes>
-        <Route path="/" element={< Home />}/>
-        <Route path="/user" element={< User />}/>
-        <Route path="/marketplace" element={< Marketplace />}/>
-      </Routes>
-  </Router>
+              <Router>
+                <Routes>
+                  <Route path="/" element={< Home />}/>
+                  <Route path="/user" element={< User />}/>
+                  <Route path="/marketplace" element={< Marketplace />}/>
+                </Routes>
+            </Router>
             </div>
           </main>
             </div>
@@ -54,7 +53,7 @@ function Home() {
 function User() {
   return (
     <div> 
-      user
+      <UserRecordsTable></UserRecordsTable>
     </div>
   );
 } 

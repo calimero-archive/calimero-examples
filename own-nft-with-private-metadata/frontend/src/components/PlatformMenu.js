@@ -1,7 +1,7 @@
 const navigation = [
   { name: 'Government', href: '/', current: true },
-  { name: 'User', href: 'user', current: false },
-  { name: 'Marketplace', href: 'marketplace', current: false },
+  { name: 'User', href: '/user', current: false },
+  { name: 'Marketplace', href: '/marketplace', current: false },
 ]
 
 function classNames(...classes) {
@@ -9,6 +9,10 @@ function classNames(...classes) {
 }
 
 export default function PlatformMenu() {
+    for (let index in navigation) {
+        navigation[index].current = navigation[index].href === window.location.pathname;
+    }
+
     return (
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
