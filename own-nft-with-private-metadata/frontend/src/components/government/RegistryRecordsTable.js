@@ -46,7 +46,7 @@ export default function RegistryRecordsTable() {
                         Record Id
                       </th>
                       <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Owner Full Name
+                        Owner
                       </th>
                       <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                         Address
