@@ -99,11 +99,14 @@ impl OwnershipContract {
         let current_owner = self.get_owner();
         //ziher se ne radi ovak
         let is_sender_owner_of_token = current_owner == sender_id;
-        env::log_str(&format!("NFT Change owner is_sender_owner_of_token:{}", is_sender_owner_of_token));
+        env::log_str(&format!(
+            "NFT Change owner is_sender_owner_of_token:{}",
+            is_sender_owner_of_token
+        ));
         assert!(is_sender_owner_of_token, "Only owner can update NFT",);
 
         self.tokens
-            .nft_transfer(new_owner_id, token_id.clone(), None, None);
+            .internal_transfer(&sender_id, &new_owner_id, &token_id, None, None);
     }
 }
 
