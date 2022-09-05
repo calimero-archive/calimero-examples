@@ -2,14 +2,14 @@ import logo from './logo.svg';
 import './App.css';
 /* This example requires Tailwind CSS v2.0+ */
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import RegistryRecordsTable from './components/RegistryRecordsTable';
+import RegistryRecordsTable from './components/government/RegistryRecordsTable';
 import PlatformMenu from './components/PlatformMenu';
 
 import {
   BrowserRouter as Router,
   Route, Routes,
 } from "react-router-dom";
-import UserRecordsTable from './components/UserRecordsTable';
+import UserRecordsTable from './components/user/UserRecordsTable';
 
 function App () {
   return (
