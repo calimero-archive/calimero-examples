@@ -5,17 +5,20 @@ extern crate near_sdk;
 use std::thread::current;
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::collections::LookupMap;
 use near_sdk::{env, near_bindgen, require, AccountId, PanicOnDefault};
 
-#[derive(BorshDeserialize, BorshSerialize, PartialEq, Eq, Copy, Clone)]
+#[derive(BorshDeserialize, BorshSerialize, PartialEq, Eq, Copy, Clone, Serialize, Deserialize)]
+#[serde(crate = "near_sdk::serde")]
 pub enum BoardField {
     X,
     O,
     U
 }
 
-#[derive(BorshDeserialize, BorshSerialize, PartialEq, Eq)]
+#[derive(BorshDeserialize, BorshSerialize, PartialEq, Eq, Serialize, Deserialize, Clone, Copy)]
+#[serde(crate = "near_sdk::serde")]
 pub enum GameStatus {
     InProgress,
     PlayerAWon,
@@ -23,8 +26,8 @@ pub enum GameStatus {
     Tie
 }
 
-#[near_bindgen]
-#[derive(PanicOnDefault, BorshDeserialize, BorshSerialize)]
+#[derive(PanicOnDefault, BorshDeserialize, BorshSerialize, Serialize, Deserialize, Clone)]
+#[serde(crate = "near_sdk::serde")]
 pub struct Game {
     board: Vec<Vec<BoardField>>,
     player_a: AccountId, // player A is always O
@@ -34,7 +37,7 @@ pub struct Game {
 }
 
 #[near_bindgen]
-#[derive(PanicOnDefault, BorshDeserialize, BorshSerialize)]
+#[derive(PanicOnDefault, BorshDeserialize, BorshSerialize, Clone)]
 pub struct TicTacToe {
     games: Vec<Game>,
 }
@@ -50,6 +53,11 @@ impl TicTacToe {
 
     pub fn num_of_games(&self) -> usize {
         return self.games.len();
+    }
+
+    pub fn get_game(&self, game_id: usize) -> Game {
+        require!(game_id < self.games.len());
+        self.games[game_id].clone()
     }
 
     pub fn start_game(&mut self, player_a: AccountId, player_b: AccountId) -> usize {
@@ -84,7 +92,7 @@ impl TicTacToe {
 
         env::log_str(&format!("{} MADE A MOVE: {} {}", env::predecessor_account_id(), row, col));
 
-        require!(selected_game.board[row][col] != BoardField::U, "Tried overwriting a field on the board!");
+        require!(selected_game.board[row][col] == BoardField::U, "Tried overwriting a field on the board!");
 
         selected_game.board[row][col] = if selected_game.player_a_turn {
             BoardField::O
@@ -92,6 +100,7 @@ impl TicTacToe {
             BoardField::X
         };
 
+        selected_game.player_a_turn = !selected_game.player_a_turn;
         self.check_if_ended(game_id);
     }
 
