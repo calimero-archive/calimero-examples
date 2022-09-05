@@ -2,9 +2,9 @@
 const people = [
     { title: 'House ', address: 'Front-end Developer', type: 'property', owner: 'banana' },
     // More people...
-  ]
+];
   
-  export default function RegistryRecordsTable() {
+export default function RegistryRecordsTable() {
     return (
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
