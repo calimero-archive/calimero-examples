@@ -931,6 +931,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "registrar-contract"
+version = "1.1.0"
+dependencies = [
+ "near-contract-standards",
+ "near-sdk",
+]
+
+[[package]]
 name = "ripemd"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
