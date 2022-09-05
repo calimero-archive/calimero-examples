@@ -26,14 +26,14 @@ export default function RegistryRecordsTable() {
             <button
               onClick={ () => { setRegisterRecordPopUpOpen(true); }}
               type="button"
-              className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+              className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 sm:w-auto"
             >
                 Register Record
             </button>
           </div>
         </div>
         <div className="mt-8 flex flex-col">
-          <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="-my-2 -mx-4 sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle">
               <div className="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5">
                 <table className="min-w-full divide-y divide-gray-300">
@@ -58,7 +58,6 @@ export default function RegistryRecordsTable() {
                         Size
                       </th>
                       <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Edit
                       </th>
                       <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
                         <span className="sr-only">Details</span>
