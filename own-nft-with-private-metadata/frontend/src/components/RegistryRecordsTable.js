@@ -1,6 +1,6 @@
 /* This example requires Tailwind CSS v2.0+ */
 const people = [
-    { title: 'House ', address: 'Front-end Developer', type: 'property', owner: 'banana' },
+    { title: '338429834289432', owner: "Peter Pan", address: 'Apartment #1, 123 Wonderland St, 12345, WN', type: 'Apartment', size: "100.18 m2" },
     // More people...
 ];
   
@@ -34,19 +34,19 @@ export default function RegistryRecordsTable() {
                         scope="col"
                         className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"
                       >
-                        Name
+                        Record Id
                       </th>
                       <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Title
+                        Owner Full Name
                       </th>
                       <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Email
+                        Address
                       </th>
                       <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Role
+                        Type
                       </th>
                       <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Role
+                        Size
                       </th>
                       <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
                         <span className="sr-only">Details</span>
@@ -59,13 +59,13 @@ export default function RegistryRecordsTable() {
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
                           {person.title}
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.title}</td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.owner}</td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.address}</td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.type}</td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.type}</td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.size}</td>
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8">
                           <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                            Details<span className="sr-only">, {person.name}</span>
+                            Ownership Certificate (NFT)
                           </a>
                         </td>
                       </tr>
