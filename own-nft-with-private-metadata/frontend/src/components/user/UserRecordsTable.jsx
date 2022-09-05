@@ -16,9 +16,9 @@ export default function UserRecordsTable () {
 
   return (
     <div>
-      <EditRecordPopUp show={ isEditRecordPopUpOpen } setShow={ setEditRecordPopUpOpen }></EditRecordPopUp>
-      <OwnershipCertificatePopUp show={ isOwnershipCertificateOpen } setShow={ setOwnershipCertificateOpen }></OwnershipCertificatePopUp>
-      <BridgeRecordPopUp show={ isBridgeRecordPopUpOpen } setShow={ setBridgeRecordPopUpOpen }></BridgeRecordPopUp>
+      <EditRecordPopUp show={ isEditRecordPopUpOpen } setShow={ setEditRecordPopUpOpen }/>
+      <OwnershipCertificatePopUp show={ isOwnershipCertificateOpen } setShow={ setOwnershipCertificateOpen }/>
+      <BridgeRecordPopUp show={ isBridgeRecordPopUpOpen } setShow={ setBridgeRecordPopUpOpen }/>
 
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
