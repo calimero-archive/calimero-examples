@@ -50,7 +50,7 @@ pub struct OwnerMetadata {
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Registrar {
     records: LookupMap<TokenId, OwnerMetadata>,
-    pub nft_account: AccountId
+    pub nft_account: AccountId,
 }
 
 #[near_bindgen]
@@ -63,7 +63,7 @@ impl Registrar {
 
         Self {
             records: LookupMap::new(b"m"), //TODO what is good init?
-            nft_account:nft_account_id
+            nft_account: nft_account_id,
         }
     }
 
@@ -71,49 +71,49 @@ impl Registrar {
     #[payable]
     pub fn create_record(
         &mut self,
-        token_id: TokenId,
-        owner_metadata: OwnerMetadata,
-        token_metadata: TokenMetadata,
+        ref token_id: TokenId,
+        ref owner_metadata: OwnerMetadata,
+        ref token_metadata: TokenMetadata,
     ) -> Promise {
         env::log_str("Registrar create record 222");
         env::log_str(&format!("Registrar token id:{}", token_id));
-        // env::log_str(&format!("Registrar owner_metadata:{}", owner_metadata));
 
         let exists = self.records.contains_key(&token_id);
         env::log_str(&format!("Registrar token exists :{}", exists));
-        // assert!(exists, "Token already exists!");
+        assert!(!exists, "Token already exists!");
 
         let promise = ownership::ext(self.nft_account.clone())
             .with_static_gas(Gas(5 * TGAS))
             .with_attached_deposit(MIN_DEPOSIT_FOR_CREATE_RECORD)
-            .nft_mint(token_id, owner_metadata.owner_id, token_metadata);
+            .nft_mint(token_id.to_string(), owner_metadata.owner_id.clone(), token_metadata.to_owned());
 
         return promise.then(
             Self::ext(env::current_account_id())
                 .with_static_gas(Gas(5 * TGAS))
-                .create_record_callback(),
+                .create_record_callback(token_id.to_string(), owner_metadata.clone()),
         );
     }
 
     #[private]
     pub fn create_record_callback(
-        &self,
+        &mut self,
+        token_id: TokenId,
+        owner_metadata: OwnerMetadata,
         #[callback_result] call_result: Result<Token, PromiseError>,
     ) -> String {
         env::log_str("Registrar create_record_callback");
-        // env::log_str(&format!(
-        //     "Registrar create_record_callback result:{}",
-        //     &call_result.unwrap_err().into()
-        // ));
+
+        let record = self.records.contains_key(&token_id);
+        assert!(!record,"Record already exists");
 
         // Check if the promise succeeded by calling the method outlined in external.rs
         if call_result.is_err() {
             log_str("There was an error contacting Ownership Contract");
-            // let error = call_result.unwrap_err(); //for debugging purposes
-            // env::log(&error.ref);s
             return "".to_string();
         }
         env::log_str("Registrar create_record_callback success");
+        self.records.insert(&token_id, &owner_metadata);
+
 
         let token: Token = call_result.unwrap();
         token.owner_id.to_string()
@@ -123,27 +123,29 @@ impl Registrar {
     #[payable]
     pub fn change_owner(
         &mut self,
-        token_id: TokenId,
-        owner_metadata: OwnerMetadata,
-        token_metadata: TokenMetadata,
+        ref token_id: TokenId,
+        ref owner_metadata: OwnerMetadata,
+        ref token_metadata: TokenMetadata,
     ) -> Promise {
         env::log_str("Registrar change owner");
-        env::log_str(&format!("Registrar change owner token_id:{}", token_id));
+        env::log_str(&format!("Registrar change owner token_id:{}",token_id.to_string()));
 
         ownership::ext(self.nft_account.clone())
             .with_static_gas(Gas(5 * TGAS))
             .with_attached_deposit(MIN_DEPOSIT_FOR_CHANGE_OWNER)
-            .change_owner(token_id, owner_metadata.owner_id)
+            .change_owner(token_id.to_string(), owner_metadata.owner_id.clone())
             .then(
                 Self::ext(env::current_account_id())
                     .with_static_gas(Gas(5 * TGAS))
-                    .change_owner_callback(),
+                    .change_owner_callback(token_id.to_string(), owner_metadata.clone()),
             )
     }
 
     #[private]
     pub fn change_owner_callback(
         &mut self,
+        token_id: TokenId,
+        owner_metadata: OwnerMetadata,
         #[callback_result] call_result: Result<(), PromiseError>,
     ) -> bool {
         env::log_str("Registrar change_owner_callback");
@@ -153,6 +155,9 @@ impl Registrar {
             env::log_str("set_owner failed...");
             return true;
         } else {
+            self.records.remove(&token_id);
+            self.records.insert(&token_id, &owner_metadata);
+
             env::log_str("set_owner was successful!");
             return false;
         }
