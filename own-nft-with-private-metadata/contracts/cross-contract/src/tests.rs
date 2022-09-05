@@ -2,9 +2,9 @@ use near_sdk::test_utils::{accounts, VMContextBuilder};
 use near_sdk::testing_env;
 use std::collections::HashMap;
 
-near_contract_standards::impl_non_fungible_token_core!(Contract, tokens);
-near_contract_standards::impl_non_fungible_token_approval!(Contract, tokens);
-near_contract_standards::impl_non_fungible_token_enumeration!(Contract, tokens);
+near_contract_standards::impl_non_fungible_token_core!(RegistrarContract, tokens);
+near_contract_standards::impl_non_fungible_token_approval!(RegistrarContract, tokens);
+near_contract_standards::impl_non_fungible_token_enumeration!(RegistrarContract, tokens);
 
 use super::*;
 
@@ -23,29 +23,19 @@ fn sample_token_metadata() -> TokenMetadata {
     TokenMetadata {
         title: Some("Malehiko Great House".into()),
         description: Some("Biggest flat at round corner.".into()),
-        media: None,
-        media_hash: None,
-        copies: Some(1u64),
-        issued_at: None,
-        expires_at: None,
-        starts_at: None,
-        updated_at: None,
-        extra: None,
-        reference: None,
-        reference_hash: None,
     }
 }
 
 #[test]
 fn test_hello() {
-   Contract::hello();
+    RegistrarContract::hello();
 }
 
 #[test]
 fn test_new() {
     let mut context = get_context(accounts(1));
     testing_env!(context.build());
-    let contract = Contract::new_default_meta(accounts(1).into());
+    let contract = RegistrarContract::new_default_meta(accounts(1).into());
     testing_env!(context.is_view(true).build());
     assert_eq!(contract.nft_token("1".to_string()), None);
 }
