@@ -16,6 +16,7 @@ pub struct OwnershipContract {
     metadata: LazyOption<NFTContractMetadata>,
 }
 
+#[near_bindgen]
 #[derive(BorshSerialize, BorshStorageKey)]
 enum StorageKey {
     NonFungibleToken,
@@ -27,10 +28,27 @@ enum StorageKey {
 
 #[near_bindgen]
 impl OwnershipContract {
+    #[init]
+    pub fn new_default_meta(owner_id: AccountId) -> Self {
+        Self::new(
+            owner_id,
+            NFTContractMetadata {
+                spec: NFT_METADATA_SPEC.to_string(),
+                name: "Ownership non-fungible token".to_string(),
+                symbol: "ONFT".to_string(),
+                icon: None,
+                base_uri: None,
+                reference: None,
+                reference_hash: None,
+            },
+        )
+    }
 
     ///Initialize contract
     #[init]
     pub fn new(owner_id: AccountId, metadata: NFTContractMetadata) -> Self {
+        env::log_str("NFT init");
+
         assert!(!env::state_exists(), "Already initialized");
         metadata.assert_valid();
         Self {
@@ -53,37 +71,39 @@ impl OwnershipContract {
         owner_id: AccountId,
         token_metadata: TokenMetadata,
     ) -> Token {
+        env::log_str("NFT Mint");
+        env::log_str(&format!("NFT Mint nft token id:{}", token_id));
+        env::log_str(&format!("NFT Mint nft owner id:{}", owner_id));
+
         return self
             .tokens
             .internal_mint(token_id, owner_id, Some(token_metadata));
     }
 
     /// return current owner
-    pub fn get_owner(&mut self) -> AccountId {
-        return env::current_account_id();
+    pub fn get_owner(&self) -> AccountId {
+        env::log_str(&format!("NFT Current owner:{}", env::current_account_id()));
+        return self.tokens.owner_id.clone();
     }
 
     /// Update token
     #[payable]
-    pub fn change_owner(
-        &mut self,
-        token_id: TokenId,
-        new_owner_id: AccountId,
-    ) -> bool {
+    pub fn change_owner(&mut self, token_id: TokenId, new_owner_id: AccountId) {
+        env::log_str("NFT Change owner");
+        env::log_str(&format!("NFT Change owner token id:{}", token_id));
+        env::log_str(&format!("NFT Change owner new_owner_id:{}", new_owner_id));
+
         let sender_id = env::signer_account_id();
+        env::log_str(&format!("NFT Change owner sender_id:{}", sender_id));
+
         let current_owner = self.get_owner();
         //ziher se ne radi ovak
-        let is_sender_owner_of_token = current_owner != sender_id;
+        let is_sender_owner_of_token = current_owner == sender_id;
+        env::log_str(&format!("NFT Change owner is_sender_owner_of_token:{}", is_sender_owner_of_token));
         assert!(is_sender_owner_of_token, "Only owner can update NFT",);
 
-        self.tokens.nft_transfer(
-            new_owner_id,
-            token_id.clone(),
-            None,
-            None,
-        );
-
-        return true; // TODO provjerit jel uspjesno il ne
+        self.tokens
+            .nft_transfer(new_owner_id, token_id.clone(), None, None);
     }
 }
 
