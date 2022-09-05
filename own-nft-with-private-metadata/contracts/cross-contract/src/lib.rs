@@ -1,8 +1,3 @@
-use near_contract_standards::non_fungible_token::metadata::{
-    NFTContractMetadata, NonFungibleTokenMetadataProvider, TokenMetadata, NFT_METADATA_SPEC,
-};
-use near_contract_standards::non_fungible_token::NonFungibleToken;
-use near_contract_standards::non_fungible_token::{Token, TokenId};
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::LazyOption;
 use near_sdk::{
@@ -12,71 +7,123 @@ use near_sdk::{
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct RegistrarContract {
-    tokens: NonFungibleToken,
-    metadata: LazyOption<NFTContractMetadata>,
+    metadata: LazyOption<TokenMetadata>
 }
 
 #[derive(BorshSerialize, BorshStorageKey)]
 enum StorageKey {
-    NonFungibleToken,
+    TokenId,
     Metadata,
     TokenMetadata,
     Enumeration,
     Approval,
 }
 
-#[near_bindgen]
-impl RegistrarContract {
-    pub fn hello() {
-        println!("Hello, from contract!");
-    }
+pub struct OwnerMetadata {
+    pub owner_id: AccountId,
+    pub owner_full_name: String,
+    pub address: String,
+    pub item_type: String,
+    pub item_size: String,
+}
 
-    /// Initializes the contract owned by `owner_id` with
-    /// default metadata (for test purposes only).
-    #[init]
-    pub fn new_default_meta(owner_id: AccountId) -> Self {
-        Self::new(
-            owner_id,
-            NFTContractMetadata {
-                spec: NFT_METADATA_SPEC.to_string(),
-                name: "Example NEAR non-fungible token".to_string(),
-                symbol: "EXAMPLE".to_string(),
-                icon: None,
-                base_uri: None,
-                reference: None,
-                reference_hash: None,
-            },
-        )
-    }
+#[near_bindgen]
+#[derive(BorshDeserialize, BorshSerialize)]
+pub struct Registrar {
+    records: LookupMap<TokenId, OwnerMetadata>
+}
+
+#[near_bindgen]
+impl Registrar {
 
     ///Initialize contract
     #[init]
-    pub fn new(owner_id: AccountId, metadata: NFTContractMetadata) -> Self {
+    pub fn new() -> Self {
         assert!(!env::state_exists(), "Already initialized");
         metadata.assert_valid();
         Self {
-            tokens: NonFungibleToken::new(
-                StorageKey::NonFungibleToken,
-                owner_id,
-                Some(StorageKey::TokenMetadata),
-                Some(StorageKey::Enumeration),
-                Some(StorageKey::Approval),
-            ),
-            metadata: LazyOption::new(StorageKey::Metadata, Some(&metadata)),
+            records: LookupMap::new(),
         }
     }
 
     /// Mint a new token with ID='token_id' belonging to 'receiver_id'
     #[payable]
-    pub fn nft_mint(
+    pub fn create_record(
         &mut self,
         token_id: TokenId,
-        receiver_id: AccountId,
-        token_metadata: TokenMetadata,
+        OwnerMetadata: OwnerMetadata
     ) -> Token {
-        self.tokens
-            .internal_mint(token_id, receiver_id, Some(token_metadata))
+        return self.tokens
+            .nft_mint(token_id, Some(token_metadata))
     }
+
+    pub fn create_record_callback(&self, #[callback_result] call_result: Result<String, PromiseError>) -> Token {
+        // Check if the promise succeeded by calling the method outlined in external.rs
+        if call_result.is_err() {
+            log!("There was an error contacting Ownership Contract");
+            return call_result.is_err().to_string(); //for debugging purposes
+        }
+        let token: Token = call_result.unwrap();
+        token
+    }
+
+    /// Change owner
+    #[payable]
+    pub fn change_owner(
+        &mut self,
+        token_id: TokenId,
+        owner_metadata: OwnerMetadata,
+    ) -> Token {
+        //fetch token_id owner
+        let token_owner = self.token.get_owner
+
+        //if token owner is === current_owner_id then update record
+        assert!(owner_metadata.owner_id != token_owner, "Only token owner can update metadata.");
+
+        //update metadata
+        self.tokens
+            .nft_mint(token_id, receiver_id, Some(token_metadata))
+    }
+
+    #[private]
+    pub fn change_owner_callback(&mut self, #[callback_result] call_result: Result<(), PromiseError>) -> bool {
+      // Return whether or not the promise succeeded using the method outlined in external.rs
+      if call_result.is_err() {
+        env::log_str("set_owner was successful!");
+        return true;
+      } else {
+        env::log_str("set_owner failed...");
+        return false;
+      }
+    }
+
+    // // Public - query external owner
+    // pub fn query_owner(&self) -> Promise {
+    //     // Create a promise to call getOwner
+    //     let promise = hello_near::ext(self.hello_account.clone())
+    //     .with_static_gas(Gas(5*TGAS))
+    //     .get_greeting();
+
+    //     return promise.then( // Create a promise to callback query_greeting_callback
+    //     Self::ext(env::current_account_id())
+    //     .with_static_gas(Gas(5*TGAS))
+    //     .query_greeting_callback()
+    //     )
+    // }
+
+    // #[private] // Public - but only callable by env::current_account_id()
+    // pub fn query_owner_callback(&self, #[callback_result] call_result: Result<String, PromiseError>) -> String {
+    //     // Check if the promise succeeded by calling the method outlined in external.rs
+    //     if call_result.is_err() {
+    //         log!("There was an error contacting Ownership Contract");
+    //         return "".to_string();
+    //     }
+
+    //     // Return the greeting
+    //     let owner: String = call_result.unwrap();
+    //     owner
+    // }
+
 }
 
 #[near_bindgen]
