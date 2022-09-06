@@ -1,6 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import React from 'react'
 
 export default function RegisterRecordPopUp ( props ) {
   const cancelButtonRef = useRef( null );
