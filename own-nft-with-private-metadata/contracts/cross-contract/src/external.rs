@@ -21,7 +21,7 @@ trait Ownership {
     fn get_owner(&mut self,token_id: TokenId) -> AccountId;
 
     #[payable]
-    fn change_owner(&mut self, token_id: TokenId, new_owner_id: AccountId) -> Metadata;
+    fn change_owner(&mut self, token_id: TokenId, new_owner_id: AccountId) -> String;
     #[payable]
     fn nft_mint(
         &mut self,

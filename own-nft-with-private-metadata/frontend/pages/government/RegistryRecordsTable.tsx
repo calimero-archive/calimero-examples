@@ -1,18 +1,31 @@
 import RegisterRecordPopUp from "./RegisterRecordPopUp";
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import OwnershipCertificatePopUp from "../../components/OwnershipCertificatePopUp";
+import {createRecord} from "../../components/ContractInteraction";
 const people = [
-  {title: '3384298',
-  owner: "Peter Pan",
-  address: 'Apartment #1, 123 Wonderland St, 12345, WN',
-  type: 'Apartment',
-  size: "100.18 m2"},
+  {
+    title: '3384298',
+    owner: "Peter Pan",
+    address: 'Apartment #1, 123 Wonderland St, 12345, WN',
+    type: 'Apartment',
+    size: "100.18 m2"
+  },
   // More people...
 ];
 
 export default function RegistryRecordsTable() {
   const [isOwnershipCertificateOpen, setOwnershipCertificateOpen] = useState(false);
   const [isRegisterRecordPopUpOpen, setRegisterRecordPopUpOpen] = useState(false);
+
+  async function createRecordCall() {
+    const cr = createRecord();
+    console.log(cr);
+
+  }
+
+  useEffect(() => {
+    createRecordCall();
+  }, []);
 
   return (
     <div>

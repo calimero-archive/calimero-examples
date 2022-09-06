@@ -7,8 +7,7 @@ use near_sdk::collections::{LazyOption, LookupMap};
 use near_sdk::env::{log, log_str};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
-    env, near_bindgen, AccountId, BorshStorageKey, Gas, PanicOnDefault, Promise, PromiseError,
-    PromiseOrValue,
+    env, near_bindgen, AccountId, BorshStorageKey, Gas, PanicOnDefault, Promise, PromiseError
 };
 
 pub mod external;
@@ -109,7 +108,7 @@ impl Registrar {
         ref metadata: Metadata,
         ref token_metadata: TokenMetadata,
     ) -> Promise {
-        env::log_str("Registrar create record 222");
+        env::log_str("Registrar create record");
         env::log_str(&format!("Registrar token id:{}", token_id));
 
         let exists = self.records.contains_key(&token_id);
@@ -128,7 +127,7 @@ impl Registrar {
         return promise.then(
             Self::ext(env::current_account_id())
                 .with_static_gas(Gas(5 * TGAS))
-                .change_owner_callback(token_id.to_string(), metadata.clone()),
+                .create_record_callback(token_id.to_string(), metadata.clone()),
         );
     }
 
@@ -150,6 +149,8 @@ impl Registrar {
         }
         env::log_str("Registrar create_record_callback success");
         self.records.insert(&token_id, &metadata);
+
+        env::log_str("Created new record.");
 
         let token: Token = call_result.unwrap();
         token.owner_id.to_string()
