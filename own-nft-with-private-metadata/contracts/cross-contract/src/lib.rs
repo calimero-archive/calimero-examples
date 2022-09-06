@@ -1,10 +1,8 @@
-use std::ptr::null;
-
 use near_contract_standards::non_fungible_token::metadata::TokenMetadata;
 use near_contract_standards::non_fungible_token::{Token, TokenId};
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::{LazyOption, LookupMap};
-use near_sdk::env::{log, log_str};
+use near_sdk::env::{log_str};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
     env, near_bindgen, AccountId, BorshStorageKey, Gas, PanicOnDefault, Promise, PromiseError

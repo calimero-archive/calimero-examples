@@ -32,8 +32,8 @@ pub struct PropertyMetadata {
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct OwnershipContract {
     tokens: NonFungibleToken,
-    contractMetadata: LazyOption<NFTContractMetadata>,
-    properyMetadata: PropertyMetadata,
+    contract_metadata: LazyOption<NFTContractMetadata>,
+    propery_metadata: PropertyMetadata,
 }
 
 #[near_bindgen]
@@ -83,8 +83,8 @@ impl OwnershipContract {
                 Some(StorageKey::Enumeration),
                 Some(StorageKey::Approval),
             ),
-            contractMetadata: LazyOption::new(StorageKey::Metadata, Some(&metadata)),
-            properyMetadata: property_metadata,
+            contract_metadata: LazyOption::new(StorageKey::Metadata, Some(&metadata)),
+            propery_metadata: property_metadata,
         }
     }
 
@@ -115,7 +115,7 @@ impl OwnershipContract {
 #[near_bindgen]
 impl NonFungibleTokenMetadataProvider for OwnershipContract {
     fn nft_metadata(&self) -> NFTContractMetadata {
-        self.contractMetadata.get().unwrap()
+        self.contract_metadata.get().unwrap()
     }
 }
 

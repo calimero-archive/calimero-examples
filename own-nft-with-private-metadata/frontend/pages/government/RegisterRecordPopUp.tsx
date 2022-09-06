@@ -1,8 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import {Fragment, useRef, useState} from 'react';
-import {Dialog, Transition} from '@headlessui/react';
 import React from 'react';
-
+import {Transition, Dialog} from '../../node_modules/@headlessui/react/dist/index';
 
 interface RegisterRecordPopUpProps {
   show: boolean;
@@ -190,6 +189,7 @@ export default function RegisterRecordPopUp({show, setShow, onRegisterClick, set
                       if (validateRecord(record)) {
                         onRegisterClick(record);
                       } else {
+                        console.log("missing data");
                         setErrorNotification(true)
                       }
                     }}
