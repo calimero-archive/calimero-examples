@@ -23,10 +23,10 @@ function getNavigationMap(pathname: string) {
   }
   const navigation = [
     {
-      name: "Blog",
-      href: "https://blog.calimero.network/",
+      name: "Dashboard",
+      href: "/dashboard",
       current: false,
-      outer: true,
+      outer: false,
       drop: false,
       subitems: undefined,
     },

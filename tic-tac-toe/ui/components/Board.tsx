@@ -1,79 +1,112 @@
 import { useEffect, useState } from "react";
 import Square from "./Square";
+import { post } from "../utils/request";
 
-export default function Board() {
+interface IProps {
+  gameId: string;
+  setGameId: (gameId: string) => void;
+}
+
+export default function Board({ gameId, setGameId }: IProps) {
   const [squares, setSquares] = useState<string[]>(Array(9).fill(null));
   const [winner, setWinner] = useState<string>("");
-  const [ended, setEnded] = useState<boolean>(false);
-  const [currentPlayer, setCurrentPlayer] = useState<string>("");
-  function setSquareValue(index: number) {
-    const newData = squares.map((val, i) => {
-      if (i === index) {
-        return currentPlayer;
+  const [ended, setEnded] = useState<string>("");
+  const [currentPlayer, setCurrentPlayer] = useState<string>(
+    "igi.hackathon.calimero.testnet"
+  );
+  // const [gameId, setGameId] = useState<string>("");
+  const [color, setColor] = useState<string>("bg-white");
+
+  const setBoard = async () => {
+    const data = {
+      player: currentPlayer,
+      gameId: gameId,
+    };
+    const res = await post("/api/methods/getGame", data);
+    if (res.success) {
+      console.log(res);
+      let defaultArray = [];
+      setSquares(defaultArray);
+      let newBoard = res.board.board[0].concat(
+        res.board.board[1],
+        res.board.board[2]
+      );
+      setSquares(newBoard);
+
+      if (res.board.player_a_turn) {
+        setColor("hover:bg-red-300");
+        let currentPlayer = res.board.player_a;
+        setCurrentPlayer(currentPlayer);
+      } else {
+        let currentPlayer = res.board.player_b;
+        setColor("hover:bg-green-300");
+        setCurrentPlayer(currentPlayer);
       }
-      return val;
-    });
-    setSquares(newData);
-    setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
-  }
-  function calculateWinner(squares: string[]) {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
-        return squares[a];
+      setEnded(res.board.status);
+      if (res.board.status !== "InProgress") {
+        switch (res.board.status) {
+          case "PlayerAWon":
+            setWinner(res.board.player_a);
+            break;
+          case "PlayerBWon":
+            setWinner(res.board.player_b);
+            break;
+          default:
+            setWinner("tie");
+            break;
+        }
       }
     }
-    return "";
-  }
+  };
+
   useEffect(() => {
-    setCurrentPlayer(Math.round(Math.random() * 1) === 1 ? "X" : "O");
-    setEnded(false);
-    setWinner("");
-  }, []);
-  useEffect(() => {
-    const w = calculateWinner(squares);
-    if (w) {
-      setWinner(w);
-      setEnded(true);
+    if (localStorage.getItem("gameId") || gameId) {
+      if (gameId) {
+        setBoard();
+      }
     }
-    if (!w && !squares.filter((square) => !square).length) {
-      setWinner("tie");
+  }, [gameId]);
+
+  const makeMove = async (index) => {
+    if (currentPlayer && gameId) {
+      const data = {
+        player: currentPlayer,
+        field: index,
+        gameId: gameId,
+      };
+      const res = await post("/api/methods/makeMove", data);
+      console.log(res);
+      if (res.success) {
+        setBoard();
+      }
     }
-  }, [squares]);
-  const resetGame = () => {
-    setSquares(Array(9).fill(null));
-    setWinner("");
-    setCurrentPlayer(Math.round(Math.random() * 1) === 1 ? "X" : "O");
-    setEnded(false);
   };
   return (
     <>
       <div className="flex justify-center text-lg font-bold ">
         Calimero X NEAR <br />
       </div>
+      {winner === "tie" && (
+        <div className="mt-2 text-yellow-700">Nobody won , tie !</div>
+      )}
       {winner && (
-        <div className="mt-2 text-xl font-bold text-green-400">
-          Winner is <span>{winner}</span>
+        <div className="mt-2">
+          Winner is: <span className="text-green-400">{winner}</span>
         </div>
       )}
       <>
         {!winner && (
-          <div className="mt-4">
-            Player <span>{currentPlayer}</span> is playing
-          </div>
+          <>
+            {gameId && (
+              <div className="mt-4">
+                GAME ID: <span>{gameId}</span>
+              </div>
+            )}
+            <div className="mt-4">
+              Player <span className="text-green-700">{currentPlayer}</span> is
+              playing
+            </div>
+          </>
         )}
         <div className="bg-black px-4 mt-6 py-4 grid grid-cols-3 gap-x-4 gap-y-4">
           {Array(9)
@@ -84,24 +117,12 @@ export default function Board() {
                   key={i}
                   ended={ended}
                   currentPlayer={currentPlayer}
-                  onClick={() => setSquareValue(i)}
+                  color={color}
+                  onClick={() => makeMove(i)}
                   value={squares[i]}
                 />
               );
             })}
-        </div>
-        <div>
-          <button
-            className={`${
-              ended
-                ? "bg-white hover:bg-gray-50 text-black"
-                : "bg-gray-800 text-white hover:bg-gray-800"
-            } shadow-md mt-8 rounded-lg px-8 py-4 hover:bg-gray-50 w-full`}
-            disabled={!ended}
-            onClick={() => resetGame()}
-          >
-            Play Again!
-          </button>
         </div>
       </>
     </>
