@@ -9,7 +9,7 @@ import { GithubIcon } from "../const/svg/GithubIcon";
 import { TwitterIcon } from "../const/svg/TwitterIcon";
 import { LinkedinIcon } from "../const/svg/LinkedinIcon";
 import Dropdown from "./dropdown/Dropdown";
-import calimeroSdk from "../node_modules/calimero-auth-sdk";
+import calimeroSdk from "../utils/calimeroSdk";
 import { useEffect } from "react";
 
 function classNames({ classes = [] }: { classes?: any[] } = {}) {
@@ -83,6 +83,12 @@ function getNavigationMap(pathname: string) {
 export default function MenuNavigation() {
   const { pathname } = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (calimeroSdk.isSignedIn()) {
+      console.log("loged in");
+    }
+  }, []);
 
   return (
     <>
@@ -185,16 +191,17 @@ export default function MenuNavigation() {
                       }
                     })}
                   </nav>
-                  <div className="flex justify-center mt-8">
-                    <button
-                      type="button"
-                      className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
-                    >
-                      <a href="https://alpha.app.calimero.network">
+                  {
+                    <div className="flex justify-center mt-8">
+                      <button
+                        type="button"
+                        className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
+                        onClick={calimeroSdk.signIn}
+                      >
                         Login with NEAR
-                      </a>
-                    </button>
-                  </div>
+                      </button>
+                    </div>
+                  }
                 </div>
               </Dialog.Panel>
 
@@ -253,6 +260,7 @@ export default function MenuNavigation() {
             <button
               type="button"
               className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
+              onClick={calimeroSdk.signIn}
             >
               Login with NEAR
             </button>
