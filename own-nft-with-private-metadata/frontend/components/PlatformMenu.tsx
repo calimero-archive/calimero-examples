@@ -1,9 +1,7 @@
 import React, {useEffect} from "react";
 import { useRouter } from "next/router";
 const navigation = [
-    {name: 'Government', href: '/government', current: true},
-    {name: 'User', href: '/user', current: false},
-    {name: 'Marketplace', href: '/marketplace', current: false},
+    {name: 'Home', href: '/', current: true},
 ];
 
 function classNames(...classes) {
