@@ -23,10 +23,9 @@ yarn-error.log*
 # next.js
 **/.next/*
 **/out/
-**/.next
 
-.next/
-.env
+.next/*
+.env.*
 
 # debug
 npm-debug.log*
