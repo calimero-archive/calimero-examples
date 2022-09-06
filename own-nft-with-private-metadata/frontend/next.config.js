@@ -6,7 +6,10 @@ module.exports = {
     BASE_ENDPOINT: process.env.BASE_ENDPOINT,
     REGISTRAR_ACCOUNT_ID: process.env.REGISTRAR_ACCOUNT_ID,
     REGISTRAR_CONTRACT_ACCOUNT_ID: process.env.REGISTRAR_CONTRACT_ACCOUNT_ID,
-    SHARD_ID: process.env.SHARD_ID
+    SHARD_ID: process.env.SHARD_ID,
+    MASTER_ACCOUNT_ID: process.env.MASTER_ACCOUNT_ID,
+    NFT_ACCOUNT_ID: process.env.NFT_ACCOUNT_ID,
+    NFT_CONTRACT_ACCOUNT_ID: process.env.NFT_CONTRACT_ACCOUNT_ID
   },
   webpack: ( config ) => {
     config.resolve.fallback = { fs: false };

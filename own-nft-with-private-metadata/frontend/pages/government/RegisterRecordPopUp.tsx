@@ -2,40 +2,18 @@
 import {Fragment, useRef, useState} from 'react';
 import React from 'react';
 import {Transition, Dialog} from '../../node_modules/@headlessui/react/dist/index';
+import {RegistrarCreateRecord} from '../../components/RegistrarContractInteraction';
 
 interface RegisterRecordPopUpProps {
   show: boolean;
   setShow: (show: boolean) => void;
-  onRegisterClick: (record: PropertyRecord) => void;
+  onRegisterClick: (record: RegistrarCreateRecord) => void;
   setErrorNotification: (show: boolean) => void;
-}
-
-export interface PropertyRecord {
-  token_id: string,
-  metadata: {
-    owner_metadata: {
-      owner_id: string,
-      owner_full_name: string,
-      address: string,
-      item_type: string,
-      item_size: string;
-    },
-    property_metadata: {
-      address: string,
-      item_type: string,
-      item_size: string;
-    };
-  },
-  token_metadata: {
-    title: string,
-    description: string,
-    copies: string;
-  };
 }
 
 export default function RegisterRecordPopUp({show, setShow, onRegisterClick, setErrorNotification}: RegisterRecordPopUpProps) {
   const cancelButtonRef = useRef(null);
-  const [record, setRecord] = useState<PropertyRecord>();
+  const [record, setRecord] = useState<RegistrarCreateRecord>();
 
   function validateRecord(record) {
     if (record.token_id && record.metadata && record.metadata.owner_id &&

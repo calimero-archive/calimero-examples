@@ -18,7 +18,7 @@ export default function Government() {
 
     return (
         <div>
-            {loggedIn ?
+            {!loggedIn ?
                 <RegistryRecordsTable />
                 :
                 <div className="px-4 py-8 sm:px-0" >

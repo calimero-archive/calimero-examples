@@ -1,8 +1,9 @@
-import RegisterRecordPopUp, {PropertyRecord} from "./RegisterRecordPopUp";
+import RegisterRecordPopUp from "./RegisterRecordPopUp";
 import React, {useEffect, useState} from 'react';
 import OwnershipCertificatePopUp from "../../components/OwnershipCertificatePopUp";
-import {createRecord} from "../../components/ContractInteraction";
 import Notification from "../../components/Notification";
+import {nftInitContract, NftInitDefault, NftMint, nftMint} from "../../near/NFTContractInteraction";
+import {RegistrarCreateRecord, RegistrarChangeOwner, registrarCreateRecord, registratInitContract, registrarChangeOwner} from "../../near/RegistrarContractInteraction";
 
 const people = [
   {
@@ -15,19 +16,106 @@ const people = [
   // More people...
 ];
 
+const mockCreateRecord: RegistrarCreateRecord = {
+  token_id: "matej8",
+  metadata: {
+    owner_metadata: {
+      owner_id: "matej.hackathon.calimero.testnet",
+      owner_full_name: "matej vuki",
+      address: "adresa usera",
+      item_type: "Stan",
+      item_size: "100"
+    },
+    property_metadata: {
+      address: "adresa propertya",
+      item_type: "Kuca",
+      item_size: "100"
+    }
+  }, token_metadata: {
+    title: "Bazen uz plazu",
+    description: "Plavo more",
+    copies: 1
+  }
+};
+
+const mockChangeOwner: RegistrarChangeOwner = {
+  token_id: "matej8",
+  metadata: {
+    owner_metadata: {
+      owner_id: "matej.hackathon.calimero.testnet",
+      owner_full_name: "matej vuki",
+      address: "adresa usera",
+      item_type: "Stan",
+      item_size: "100"
+    },
+    property_metadata: {
+      address: "adresa propertya",
+      item_type: "Kuca",
+      item_size: "100"
+    }
+  },
+  token_metadata: {
+    title: "Bazen uz plazu",
+    description: "Plavo more",
+    copies: 1
+  }
+};
+
+const mockNftInit: NftInitDefault = {
+  owner_id: "matej2.hackathon.calimero.testnet",
+  property_metadata: {
+    address: "adresa propertya",
+    item_type: "Kuca",
+    item_size: "100"
+  }
+};
+
+const mockNftMint: NftMint = {
+  token_id: "matej11",
+  owner_id: "matej2.hackathon.calimero.testnet",
+  token_metadata: {
+    title: "Bazen uz plazu",
+    description: "Plavo more",
+    copies: 1
+  }
+};
+
 export default function RegistryRecordsTable() {
   const [isOwnershipCertificateOpen, setOwnershipCertificateOpen] = useState(false);
   const [isRegisterRecordPopUpOpen, setRegisterRecordPopUpOpen] = useState(false);
   const [errorNotification, setErrorNotification] = useState(false);
 
 
-  async function createRecordCall(record: PropertyRecord) {
-    const cr = createRecord();
-    console.log(cr);
+  async function registrarCreateRecordCall(record: RegistrarCreateRecord) {
+    const receipt = registrarCreateRecord(record);
+    console.log(receipt);
+  }
+
+  async function initRegistrarContractCall() {
+    const receipt = registratInitContract();
+    console.log(receipt);
+  }
+
+  async function registrarChangeOwnerCall(record: RegistrarChangeOwner) {
+    const receipt = registrarChangeOwner(record);
+    console.log(receipt);
+  }
+
+  async function initNftContractCall(record: NftInitDefault) {
+    const receipt = nftInitContract(record);
+    console.log(receipt);
+  }
+
+  async function nftMintCall(record: NftMint) {
+    const receipt = nftMint(record);
+    console.log(receipt);
   }
 
   useEffect(() => {
-    createRecordCall(null);
+    // registrarChangeOwnerCall(mockChangeOwner);
+    // initRegistrarContractCall()
+    // initNftContractCall(mockNftInit)
+    // nftMintCall(mockNftMint);
   }, []);
 
   return (
@@ -36,7 +124,7 @@ export default function RegistryRecordsTable() {
         <RegisterRecordPopUp
           show={isRegisterRecordPopUpOpen}
           setShow={setRegisterRecordPopUpOpen}
-          onRegisterClick={createRecordCall}
+          onRegisterClick={registrarCreateRecordCall}
           setErrorNotification={setErrorNotification} />
 
         <OwnershipCertificatePopUp
