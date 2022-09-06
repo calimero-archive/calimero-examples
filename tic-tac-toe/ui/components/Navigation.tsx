@@ -83,13 +83,23 @@ function getNavigationMap(pathname: string) {
 export default function MenuNavigation() {
   const { pathname } = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [buttonText, setButtonText] = useState<string>("");
 
   useEffect(() => {
     if (calimeroSdk.isSignedIn()) {
-      console.log("loged in");
+      setButtonText("Logout");
+    } else {
+      setButtonText("Login with NEAR");
     }
   }, []);
-
+  const signIn = async () => {
+    if (calimeroSdk.isSignedIn()) {
+      await calimeroSdk.signOut();
+    } else {
+      const res = calimeroSdk.signIn();
+      console.log("tu sam");
+    }
+  };
   return (
     <>
       <div>
@@ -196,9 +206,9 @@ export default function MenuNavigation() {
                       <button
                         type="button"
                         className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
-                        onClick={calimeroSdk.signIn}
+                        onClick={() => signIn()}
                       >
-                        Login with NEAR
+                        {buttonText}
                       </button>
                     </div>
                   }
@@ -260,9 +270,9 @@ export default function MenuNavigation() {
             <button
               type="button"
               className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
-              onClick={calimeroSdk.signIn}
+              onClick={() => signIn()}
             >
-              Login with NEAR
+              {buttonText}
             </button>
           </div>
         </div>
