@@ -18,7 +18,7 @@ export default function Government() {
 
     return (
         <div>
-            {!loggedIn ?
+            {!loggedIn ? //TODO revert this logic to include wallet - this is just dev hack
                 <RegistryRecordsTable />
                 :
                 <div className="px-4 py-8 sm:px-0" >
