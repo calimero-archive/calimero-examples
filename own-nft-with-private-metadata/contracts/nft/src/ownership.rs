@@ -5,15 +5,35 @@ use near_contract_standards::non_fungible_token::NonFungibleToken;
 use near_contract_standards::non_fungible_token::{Token, TokenId};
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::LazyOption;
+use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
     env, near_bindgen, AccountId, BorshStorageKey, PanicOnDefault, Promise, PromiseOrValue,
 };
 
 #[near_bindgen]
+#[derive(
+    BorshDeserialize,
+    BorshSerialize,
+    PanicOnDefault,
+    Serialize,
+    Deserialize,
+    Clone,
+    Debug,
+    PartialEq,
+)]
+#[serde(crate = "near_sdk::serde")]
+pub struct PropertyMetadata {
+    pub address: String,
+    pub item_type: String,
+    pub item_size: String,
+}
+
+#[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct OwnershipContract {
     tokens: NonFungibleToken,
-    metadata: LazyOption<NFTContractMetadata>,
+    contractMetadata: LazyOption<NFTContractMetadata>,
+    properyMetadata: PropertyMetadata,
 }
 
 #[near_bindgen]
@@ -29,7 +49,7 @@ enum StorageKey {
 #[near_bindgen]
 impl OwnershipContract {
     #[init]
-    pub fn new_default_meta(owner_id: AccountId) -> Self {
+    pub fn new_default_meta(owner_id: AccountId, property_metadata: PropertyMetadata) -> Self {
         Self::new(
             owner_id,
             NFTContractMetadata {
@@ -41,14 +61,18 @@ impl OwnershipContract {
                 reference: None,
                 reference_hash: None,
             },
+            property_metadata,
         )
     }
 
     ///Initialize contract
     #[init]
-    pub fn new(owner_id: AccountId, metadata: NFTContractMetadata) -> Self {
+    pub fn new(
+        owner_id: AccountId,
+        metadata: NFTContractMetadata,
+        property_metadata: PropertyMetadata,
+    ) -> Self {
         env::log_str("NFT init");
-
         assert!(!env::state_exists(), "Already initialized");
         metadata.assert_valid();
         Self {
@@ -59,7 +83,8 @@ impl OwnershipContract {
                 Some(StorageKey::Enumeration),
                 Some(StorageKey::Approval),
             ),
-            metadata: LazyOption::new(StorageKey::Metadata, Some(&metadata)),
+            contractMetadata: LazyOption::new(StorageKey::Metadata, Some(&metadata)),
+            properyMetadata: property_metadata,
         }
     }
 
@@ -85,35 +110,12 @@ impl OwnershipContract {
         env::log_str(&format!("NFT Current owner:{}", env::current_account_id()));
         return self.tokens.owner_id.clone();
     }
-
-    /// Update token
-    #[payable]
-    pub fn change_owner(&mut self, token_id: TokenId, new_owner_id: AccountId) {
-        env::log_str("NFT Change owner");
-        env::log_str(&format!("NFT Change owner token id:{}", token_id));
-        env::log_str(&format!("NFT Change owner new_owner_id:{}", new_owner_id));
-
-        let sender_id = env::signer_account_id();
-        env::log_str(&format!("NFT Change owner sender_id:{}", sender_id));
-
-        let current_owner = self.get_owner();
-        //ziher se ne radi ovak
-        let is_sender_owner_of_token = current_owner == sender_id;
-        env::log_str(&format!(
-            "NFT Change owner is_sender_owner_of_token:{}",
-            is_sender_owner_of_token
-        ));
-        assert!(is_sender_owner_of_token, "Only owner can update NFT",);
-
-        self.tokens
-            .internal_transfer(&sender_id, &new_owner_id, &token_id, None, None);
-    }
 }
 
 #[near_bindgen]
 impl NonFungibleTokenMetadataProvider for OwnershipContract {
     fn nft_metadata(&self) -> NFTContractMetadata {
-        self.metadata.get().unwrap()
+        self.contractMetadata.get().unwrap()
     }
 }
 
