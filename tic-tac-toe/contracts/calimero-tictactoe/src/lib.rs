@@ -2,11 +2,8 @@
 
 extern crate near_sdk;
 
-use std::thread::current;
-
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
-use near_sdk::collections::LookupMap;
 use near_sdk::{env, near_bindgen, require, AccountId, PanicOnDefault};
 
 #[derive(BorshDeserialize, BorshSerialize, PartialEq, Eq, Copy, Clone, Serialize, Deserialize)]
@@ -128,8 +125,6 @@ impl TicTacToe {
             }
         }
         
-        
-        
         if selected_game.board[0][0] == selected_game.board[1][1] &&
             selected_game.board[1][1] == selected_game.board[2][2] &&
             selected_game.board[0][0] != BoardField::U {
@@ -139,7 +134,6 @@ impl TicTacToe {
             selected_game.board[0][2] != BoardField::U {
                 selected_game.status = TicTacToe::announce_victory(selected_game.board[0][2], selected_game);
         }
-
 
         let mut tie = true;
         for i in 0..3 {
@@ -152,7 +146,6 @@ impl TicTacToe {
 
         if selected_game.status == GameStatus::InProgress && tie {
             env::log_str(&format!("ITS A TIE"));
-            // selected_game.status = GameStatus::Tie; 
             selected_game.status = GameStatus::Tie;
         }
 
@@ -171,8 +164,6 @@ impl TicTacToe {
 
             return GameStatus::PlayerBWon;
         }
-
-        GameStatus::InProgress
     }
     
 }
