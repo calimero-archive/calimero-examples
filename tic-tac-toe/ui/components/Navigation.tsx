@@ -201,20 +201,29 @@ export default function MenuNavigation() {
                       }
                     })}
                   </nav>
-                  {
-                    <div className="flex justify-center mt-8">
+
+                  <div className="flex justify-center mt-8">
+                    {buttonText === "Logout" ? (
                       <button
                         type="button"
                         className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
-                        onClick={() => signIn()}
+                        onClick={calimeroSdk.signOut}
                       >
                         {buttonText}
                       </button>
-                    </div>
-                  }
+                    ) : (
+                      <Link href="/login">
+                        <button
+                          type="button"
+                          className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
+                        >
+                          {buttonText}
+                        </button>
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </Dialog.Panel>
-
               <div className="w-0 flex-shrink-0"></div>
             </div>
           </Dialog>
@@ -267,13 +276,24 @@ export default function MenuNavigation() {
           {/* MENU END */}
 
           <div className="md:w-1/3 flex justify-end lg:justify-center">
-            <button
-              type="button"
-              className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
-              onClick={() => signIn()}
-            >
-              {buttonText}
-            </button>
+            {buttonText === "Logout" ? (
+              <button
+                type="button"
+                className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
+                onClick={calimeroSdk.signOut}
+              >
+                {buttonText}
+              </button>
+            ) : (
+              <Link href="/login">
+                <button
+                  type="button"
+                  className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
+                >
+                  {buttonText}
+                </button>
+              </Link>
+            )}
           </div>
         </div>
 
