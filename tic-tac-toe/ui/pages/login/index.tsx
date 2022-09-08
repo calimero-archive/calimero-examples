@@ -21,7 +21,7 @@ export default function Login() {
     // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
     const data = JSON.parse(localStorage.getItem("caliToken"));
     let args = {
-      url: "https://api.development.calimero.network/api/v1/shards/h11-calimero-testnet/neard-rpc/",
+      url: "https://api.development.calimero.network/api/v1/shards/h15-calimero-testnet/neard-rpc/",
       headers: {
         "x-api-key": authtoken,
       },
@@ -38,7 +38,7 @@ export default function Login() {
       const response = await calimeroConnection.provider.query({
         request_type: "view_account",
         finality: "final",
-        account_id: "chefsale.testnet",
+        account_id: data.walletData.accountId,
       });
       if (response) {
         setAccountSynced(true);
