@@ -1,111 +1,90 @@
+ // @ts-nocheck
+
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import Board from "../components/Board";
 import MenuNavigation from "../components/Navigation";
 import calimeroSdk from "../utils/calimeroSdk";
-import nearAPI from "near-api-js";
-import * as bs58 from "bs58";
-import * as big from "bn.js";
-import { PublicKey } from "near-api-js/lib/utils";
-import { post } from "../utils/request";
+import * as nearAPI from "near-api-js";
+import bs58 from "bs58";
 
-// export const networkId = "hackathon-calimero-testnet";
-// export async function sendTransaction() {
-//   const header = localStorage.getItem("calimeroToken")
-//     ? localStorage.getItem("calimeroToken")
-//     : "";
-//   const calimeroProvider = (
-//     await nearAPI.connect({
-//       nodeUrl: `https://api.development.calimero.network/api/v1/shards/${networkId}/neard-rpc`,
-//       networkId: networkId,
-//       deps: {
-//         keyStore: new nearAPI.keyStores.InMemoryKeyStore(),
-//       },
-//       headers: {
-//         // @ts-expect-error: parsing null
-//         "x-api-key": localStorage.getItem("calimeroToken"),
-//       },
-//     })
-//   ).connection.provider;
+import { Contract, InMemorySigner } from "near-api-js";
+import {
+  MAX_GAS,
+} from "../utils/contractUtils";
+import { CalimeroSdk } from "calimero-auth-sdk";
 
-//   let localToken =
-//     localStorage.getItem("caliToken") !== null
-//       ? localStorage.getItem("caliToken")
-//       : "x";
-//   // @ts-expect-error: parsing null
-//   const token = JSON.parse(localToken);
-//   console.log(localStorage.getItem("calimeroToken"));
-//   console.log(token);
-//   let sender = token.tokenData.accountId;
-//   let receiver = "tictactoe.hackathon.calimero.testnet"; // TODO make configurable
-//   // gets sender's public key
-//   const publicKeyAsStr = bs58.encode(token.walletData.publicKey.data.data);
+export async function startGameMethod() {
+   // get from localStorage.getItem("calimeroToken"); and pass here in the body
+  const authToken = localStorage.getItem("calimeroToken");
+   // get from localStorage.getItem("caliToken"); and pass here in the body
+  const sender = JSON.parse(localStorage.getItem("caliToken") || "").tokenData.accountId;
+  const publicKeyAsStr = bs58.encode(JSON.parse(localStorage.getItem("caliToken") || "").walletData.publicKey.data.data);
 
-//   console.log(publicKeyAsStr);
-//   console.log("TEST");
+  const contractAddress = "tictactoe.h15-calimero-testnet.calimero.testnet";
+  const networkId = "h11-calimero-testnet";
+  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
+ 
+  
+  const calimeroConnection = await nearAPI.connect({
+    networkId: networkId,
+    keyStore: keyStore,
+    signer: new InMemorySigner(keyStore),
+    nodeUrl: "https://api.development.calimero.network/api/v1/shards/h15-calimero-testnet/neard-rpc/",
+    walletUrl: "http://localhost:1234/",
+    headers: {
+      "x-api-key": authToken || "",
+    }
+  });
+  const calimeroProvider = calimeroConnection.connection.provider;
 
-//   // gets sender's public key information from NEAR blockchain
-//   // @ts-expect-error:
-//   const accessKey = await calimeroProvider.query([
-//     `access_key/${sender}/${publicKeyAsStr}`,
-//     "",
-//   ]);
+  const accessKey = await calimeroProvider.query([`access_key/${sender}/${publicKeyAsStr}`, '']);
+  console.log(accessKey);
 
-//   // constructs actions that will be passed to the createTransaction method below
-//   const actions = [
-//     nearAPI.transactions.functionCall(
-//       "num_of_games",
-//       {},
-//       new big.BN("300000000000000"),
-//       new big.BN("0")
-//     ),
-//   ];
+  const recentBlockHash = nearAPI.utils.serialize.base_decode(accessKey.block_hash);
+  console.log(recentBlockHash);
 
-//   // converts a recent block hash into an array of bytes
-//   // this hash was retrieved earlier when creating the accessKey (Line 26)
-//   // this is required to prove the tx was recently constructed (within 24hrs)
-//   const recentBlockHash = nearAPI.utils.serialize.base_decode(
-//     accessKey.block_hash
-//   );
+  const nonce = ++accessKey.nonce + 1;
+  console.log(nonce);
 
-//   console.log("RCH: " + recentBlockHash);
-//   // each transaction requires a unique number or nonce
-//   // this is created by taking the current nonce and incrementing it
-//   // @ts-expect-error:
-//   const nonce = ++accessKey.nonce + 1;
+  /*
+  const actions = [nearAPI.transactions.functionCall(
+    'get_poll',
+    {},
+    new big.BN('300000000000000'),
+    new big.BN('0')
+  )];
+  */
 
-//   console.log("NONCE " + nonce);
 
-//   // create transaction
-//   const transaction = nearAPI.transactions.createTransaction(
-//     sender,
-//     PublicKey.fromString(publicKeyAsStr),
-//     receiver,
-//     nonce,
-//     actions,
-//     recentBlockHash
-//   );
-//   console.log(transaction);
 
-//   let serializedTx;
-//   try {
-//     serializedTx = nearAPI.utils.serialize.serialize(
-//       nearAPI.transactions.SCHEMA,
-//       transaction
-//     );
-//     console.log(serializedTx);
-//   } catch (e) {
-//     console.log("ERROR");
-//   }
-//   try {
-//     // This always redirects, but sometimes fails
-//     calimeroSdk.signTransaction(Buffer.from(serializedTx).toString("base64"));
-//   } catch (e) {
-//     console.log("EXCEPTION");
-//     console.log(e);
-//   }
-// }
+    /*
+  keyStore
+  nearAPI.transactions.createTransaction(
+    sender,
+    pubKey,
+    contractAddress,
+
+
+  )
+
+  calimeroSdk.signTransaction()
+
+  let keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
+  let functionCallResult = await walletConnection.account().functionCall({
+    contractId: contractAddress,
+    methodName: 'start_game',
+    args: { player_a: "chefsale.testnet",  player_b: "chefsale.testnet"},
+    gas: MAX_GAS, // optional param, by the way
+    attachedDeposit: 0,
+    walletMeta: "sadsa=ksoadskopdksapdsa",
+    walletCallbackUrl: 'http://localhost:3000' // optional param, by the way
+  });
+  console.log(functionCallResult);
+  */
+}
+
 const Home: NextPage = () => {
   const [showSync, setShowSync] = useState<boolean>(false);
   const [signTxn, setSignTxn] = useState<boolean>(false);
@@ -140,12 +119,16 @@ const Home: NextPage = () => {
       playerA: "igi.hackathon.calimero.testnet",
       playerB: "miki.hackathon.calimero.testnet",
     };
-    const res = await post("/api/methods/startGame", data);
+    const contract = await startGameMethod();
+    console.log(contract);
+
+    /*
     if (res.success) {
       console.log(res.game_id);
       localStorage.setItem("gameId", res.game_id);
       setGameId(res.game_id);
     }
+    */
   };
 
   return (

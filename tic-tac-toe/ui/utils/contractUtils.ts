@@ -39,7 +39,7 @@ interface connectedData {
 }
 
 export async function connectToShard(player: string): Promise<connectedData> {
-  const { private_key } = getAccountCredentials(player);
+  const private_key  = "bla";
   const keyStore = new keyStores.InMemoryKeyStore();
 
   const keyPair = KeyPair.fromString(private_key);
