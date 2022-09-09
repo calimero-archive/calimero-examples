@@ -8,7 +8,7 @@ import { WalletData, CalimeroToken } from "calimero-auth-sdk";
 import calimeroSdk from "../../calimeroSdk";
 import { PublicKey } from "near-api-js/lib/utils";
 
-const networkId = 'hackathon-calimero-testnet' // TODO make configurable
+const networkId = 'q3-calimero-testnet' // TODO make configurable
 
 const nearAPI = require('near-api-js');
 const sha256 = require('js-sha256');
@@ -70,7 +70,7 @@ class PrivateComponent extends Component {
     console.log(localStorage.getItem('calimeroToken'))
     console.log(token)
     let sender = token.tokenData.accountId;
-    let receiver = 'voting.hackathon.calimero.testnet'; // TODO make configurable
+    let receiver = 'tictactoe.q3.calimero.testnet'; // TODO make configurable
     // gets sender's public key
     const publicKeyAsStr = bs58.encode(token.walletData.publicKey.data.data)
 
@@ -84,7 +84,7 @@ class PrivateComponent extends Component {
 
     // constructs actions that will be passed to the createTransaction method below
     const actions = [nearAPI.transactions.functionCall(
-      'get_poll',
+      'num_of_games',
       {},
       new big.BN('300000000000000'),
       new big.BN('0')
@@ -98,7 +98,7 @@ class PrivateComponent extends Component {
     console.log("RCH: " + recentBlockHash)
     // each transaction requires a unique number or nonce
     // this is created by taking the current nonce and incrementing it
-    const nonce = ++accessKey.nonce + 1;
+    const nonce = ++accessKey.nonce + 9919;
 
     console.log("NONCE " + nonce)
 
@@ -127,7 +127,7 @@ class PrivateComponent extends Component {
     }
     try {
       // This always redirects, but sometimes fails
-      calimeroSdk.signTransaction(Buffer.from(serializedTx).toString('base64'))
+      calimeroSdk.signTransaction(Buffer.from(serializedTx).toString('base64'), "http://localhost:3001/")
     } catch (e) {
       console.log("EXCEPTION")
       console.log(e)
@@ -153,6 +153,8 @@ const PrivateComponentWithRouter = () => {
     if (searchParams.has('transactionHashes')) {
       txHash = searchParams.get('transactionHashes')
       searchParams.delete('transactionHashes')
+
+      alert("Hash is " + txHash)
 
       // Extract reponse from txHash
 

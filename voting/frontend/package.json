@@ -8,7 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "bn": "^1.0.5",
     "buffer": "^6.0.3",
-    "calimero-auth-sdk": "file:./../../../calimero-auth-sdk",
+    "calimero-auth-sdk": "^0.7.5",
     "dotenv": "^8.2.0",
     "js-sha256": "^0.9.0",
     "near-api-js": "^0.44.2",
