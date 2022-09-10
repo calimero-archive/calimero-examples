@@ -39,7 +39,7 @@ export async function startGameMethod() {
     signer: new InMemorySigner(keyStore),
     nodeUrl:
       "https://api.development.calimero.network/api/v1/shards/h15-calimero-testnet/neard-rpc/",
-    walletUrl: "http://localhost:1234/",
+    walletUrl: "https://testnet.mynearwallet.com/",
     headers: {
       "x-api-key": authToken || "",
     },
