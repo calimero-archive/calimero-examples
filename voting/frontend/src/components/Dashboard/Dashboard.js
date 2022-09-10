@@ -1,9 +1,7 @@
-import React, { useEffect, useState, Component } from "react";
+import React, { useEffect, Component } from "react";
 import { useSearchParams } from 'react-router-dom'
-import PropTypes from "prop-types";
 import * as big from 'bn.js';
 import * as bs58 from 'bs58';
-import { WalletData, CalimeroToken } from "calimero-auth-sdk";
 
 import calimeroSdk from "../../calimeroSdk";
 import { PublicKey } from "near-api-js/lib/utils";
@@ -127,7 +125,7 @@ class PrivateComponent extends Component {
     }
     try {
       // This always redirects, but sometimes fails
-      calimeroSdk.signTransaction(Buffer.from(serializedTx).toString('base64'), "http://localhost:3001/")
+      calimeroSdk.signTransaction(encodeURIComponent(Buffer.from(serializedTx).toString('base64')), "http://localhost:3001/")
     } catch (e) {
       console.log("EXCEPTION")
       console.log(e)
