@@ -4,5 +4,5 @@ Use for general purpose
 
 # Private contract
 
-Use for storage data
+Use for storage critical data on time of competitions.
 
