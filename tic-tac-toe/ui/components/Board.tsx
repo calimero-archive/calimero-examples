@@ -1,130 +1,113 @@
 import { useEffect, useState } from "react";
 import Square from "./Square";
-import { post } from "../utils/request";
+import { GameProps } from "./dashboard/OpenGameList";
+import { makeMoveMethod } from "../utils/callMethods";
 
 interface IProps {
-  gameId: string;
-  setGameId: (gameId: string) => void;
+  gameData: GameProps;
+  gameId: number;
+  getGame: () => void;
 }
 
-export default function Board({ gameId, setGameId }: IProps) {
+export default function Board({ gameData, gameId, getGame }: IProps) {
   const [squares, setSquares] = useState<string[]>(Array(9).fill(null));
-  const [winner, setWinner] = useState<string>("");
   const [ended, setEnded] = useState<string>("");
-  const [currentPlayer, setCurrentPlayer] = useState<string>(
-    "igi.hackathon.calimero.testnet"
-  );
-  // const [gameId, setGameId] = useState<string>("");
   const [color, setColor] = useState<string>("bg-white");
-
-  const setBoard = async () => {
-    const data = {
-      player: currentPlayer,
-      gameId: gameId,
-    };
-    const res = await post("/api/methods/getGame", data);
-    if (res.success) {
-      console.log(res);
-      let defaultArray = [];
-      setSquares(defaultArray);
-      let newBoard = res.board.board[0].concat(
-        res.board.board[1],
-        res.board.board[2]
-      );
-      setSquares(newBoard);
-
-      if (res.board.player_a_turn) {
-        setColor("hover:bg-red-300");
-        let currentPlayer = res.board.player_a;
-        setCurrentPlayer(currentPlayer);
-      } else {
-        let currentPlayer = res.board.player_b;
-        setColor("hover:bg-green-300");
-        setCurrentPlayer(currentPlayer);
-      }
-      setEnded(res.board.status);
-      if (res.board.status !== "InProgress") {
-        switch (res.board.status) {
-          case "PlayerAWon":
-            setWinner(res.board.player_a);
-            break;
-          case "PlayerBWon":
-            setWinner(res.board.player_b);
-            break;
-          default:
-            setWinner("tie");
-            break;
-        }
-      }
-    }
-  };
+  const [disableBoard, setDisableBoard] = useState<boolean>(false);
+  const [loggedInPlayer, setLoggedInPlayer] = useState<string>("");
 
   useEffect(() => {
-    if (localStorage.getItem("gameId") || gameId) {
-      if (gameId) {
-        setBoard();
-      }
+    let signedPlayer = localStorage.getItem("account_id");
+    if (signedPlayer) {
+      setLoggedInPlayer(signedPlayer);
     }
-  }, [gameId]);
+    if (signedPlayer && signedPlayer !== gameData.playerTurn) {
+      setDisableBoard(true);
+    } else {
+      setDisableBoard(false);
+    }
+    setBoard();
+  }, []);
 
-  const makeMove = async (index) => {
-    if (currentPlayer && gameId) {
-      const data = {
-        player: currentPlayer,
-        field: index,
+  const setBoard = async () => {
+    setSquares(gameData.boardStatus);
+    if (gameData.playerA === gameData.playerTurn) {
+      setColor("hover:bg-red-300");
+    } else {
+      setColor("hover:bg-green-300");
+    }
+    setEnded(gameData.status);
+  };
+  const makeMove = async (index: number) => {
+    if (gameData.playerTurn === loggedInPlayer) {
+      const methodProps = {
+        boardIndex: index,
         gameId: gameId,
       };
-      const res = await post("/api/methods/makeMove", data);
-      console.log(res);
-      if (res.success) {
-        setBoard();
-      }
+      await makeMoveMethod(methodProps);
+      getGame();
     }
   };
   return (
     <>
-      <div className="flex justify-center text-lg font-bold ">
-        Calimero X NEAR <br />
-      </div>
-      {winner === "tie" && (
-        <div className="mt-2 text-yellow-700">Nobody won , tie !</div>
-      )}
-      {winner && (
-        <div className="mt-2">
-          Winner is: <span className="text-green-400">{winner}</span>
+      <div className="px-10 py-10 flex justify-between gap-x-4">
+        <div className="bg-black w-1/2 text-white rounded-md px-10 py-10">
+          <p>
+            Your account:
+            <span className="text-violet-500 py-10">{loggedInPlayer}</span>
+          </p>
+          <p>
+            Players: <span className="text-red-400">{gameData.playerA}</span> &{" "}
+            <span className="text-green-400">{gameData.playerB}</span>
+          </p>
+          <p>
+            Player Turn:
+            <span
+              className={`${
+                gameData.playerTurn === gameData.playerA
+                  ? "text-red-400"
+                  : "text-green-400"
+              }`}
+            >
+              {gameData.playerTurn}
+            </span>
+          </p>
+          <p>Game ID: {gameId}</p>
+          {gameData.status === "PlayerAWon" && (
+            <p className="pt-10 text-xl text-green-400">
+              Winner: {gameData.playerA}
+            </p>
+          )}
+          {gameData.status === "PlayerBWon" && (
+            <p className="pt-10 text-xl text-green-400">
+              Winner: {gameData.playerB}
+            </p>
+          )}
+          {gameData.status === "Tie" && (
+            <p className="pt-10 text-xl text-yellow-400">
+              Game ended and its a tie!
+            </p>
+          )}
         </div>
-      )}
-      <>
-        {!winner && (
-          <>
-            {gameId && (
-              <div className="mt-4">
-                GAME ID: <span>{gameId}</span>
-              </div>
-            )}
-            <div className="mt-4">
-              Player <span className="text-green-700">{currentPlayer}</span> is
-              playing
-            </div>
-          </>
-        )}
-        <div className="bg-black px-4 mt-6 py-4 grid grid-cols-3 gap-x-4 gap-y-4">
+        <div className="bg-black grid grid-cols-3 gap-x-1 gap-y-1">
           {Array(9)
             .fill(null)
             .map((_, i) => {
               return (
-                <Square
-                  key={i}
-                  ended={ended}
-                  currentPlayer={currentPlayer}
-                  color={color}
-                  onClick={() => makeMove(i)}
-                  value={squares[i]}
-                />
+                <div className="col-span-1 bg-blue-500" key={i}>
+                  <Square
+                    key={i}
+                    ended={ended}
+                    disabled={disableBoard}
+                    color={color}
+                    onClick={() => makeMove(i)}
+                    value={squares[i]}
+                  />
+                </div>
               );
             })}
         </div>
-      </>
+      </div>
     </>
   );
 }

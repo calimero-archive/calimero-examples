@@ -1,10 +1,11 @@
-import { connect, KeyPair, keyStores, Account } from "near-api-js";
+import * as nearAPI from "near-api-js";
 import { KeyStore } from "near-api-js/lib/key_stores";
 
-export const shardId = "hackathon-calimero-testnet";
-export const contractAddress = "tictactoe.hackathon.calimero.testnet";
+export const shardId = "k-calimero-testnet";
+export const contractAddress = "tictactoe.k.calimero.testnet";
 
 export const getCalimeroRpcNodeUrl = (shardIdNamespace: string) => `
+/${shardId}/neard-rpc/
   `;
 
 export const MAX_GAS = 300000000000000;
@@ -34,18 +35,14 @@ export const getConfig = (keyStore: KeyStore, shardId: string) => {
 export const getAccountCredentials = (player: string) => {};
 
 interface connectedData {
-  account: Account;
+  account: nearAPI.Account;
   keyStore: KeyStore;
 }
 
 export async function connectToShard(player: string): Promise<connectedData> {
-  const private_key  = "bla";
-  const keyStore = new keyStores.InMemoryKeyStore();
+  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
 
-  const keyPair = KeyPair.fromString(private_key);
-  await keyStore.setKey(shardId, player, keyPair);
-
-  const near = await connect(getConfig(keyStore, shardId));
+  const near = await nearAPI.connect(getConfig(keyStore, shardId));
 
   const account = await near.account(player);
   return { account, keyStore };
