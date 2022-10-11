@@ -1,11 +1,11 @@
 export default function Square({
+  disabled,
   value,
   onClick,
-  currentPlayer,
   color,
   ended,
 }: {
-  currentPlayer: string;
+  disabled: boolean;
   value: string;
   onClick: () => void;
   color: string;
@@ -27,7 +27,7 @@ export default function Square({
         <button
           className={`${
             ended !== "InProgress" ? "bg-gray-600" : "bg-white"
-          } flex items-center justify-center w-full h-24
+          } flex items-center justify-center w-32 h-32
           ${color}`}
           onClick={onClick}
           disabled={ended === "InProgress" ? false : true}
@@ -40,7 +40,7 @@ export default function Square({
       <button
         className={`${getColor(
           value
-        )} flex items-center justify-center w-full h-24 transition-colors duration-100 font-black text-6xl`}
+        )} flex items-center justify-center w-32 h-32 transition-colors duration-100 font-black text-6xl`}
         disabled={true}
       >
         {value}

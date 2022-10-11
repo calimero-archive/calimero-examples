@@ -23,14 +23,6 @@ function getNavigationMap(pathname: string) {
   }
   const navigation = [
     {
-      name: "Dashboard",
-      href: "/dashboard",
-      current: false,
-      outer: false,
-      drop: false,
-      subitems: undefined,
-    },
-    {
       name: "Community",
       href: "/community",
       current: false,
@@ -84,22 +76,19 @@ export default function MenuNavigation() {
   const { pathname } = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [buttonText, setButtonText] = useState<string>("");
+  const [walletAccount, setWalletAccount] = useState<string>("");
 
   useEffect(() => {
     if (calimeroSdk.isSignedIn()) {
+      let accountID = localStorage.getItem("account_id");
+      if (accountID) {
+        setWalletAccount(accountID);
+      }
       setButtonText("Logout");
     } else {
       setButtonText("Login with NEAR");
     }
   }, []);
-  const signIn = async () => {
-    if (calimeroSdk.isSignedIn()) {
-      await calimeroSdk.signOut();
-    } else {
-      const res = calimeroSdk.signIn();
-      console.log("tu sam");
-    }
-  };
   return (
     <>
       <div>
@@ -275,12 +264,20 @@ export default function MenuNavigation() {
           </div>
           {/* MENU END */}
 
-          <div className="md:w-1/3 flex justify-end lg:justify-center">
+          <div className="md:w-1/3 flex justify-end lg:justify-center items-center">
+            {walletAccount && (
+              <div className="text-[#888888] text-tiny font-extralight font-inter py-2 hover:text-white transition duration-700 px-4">
+                {walletAccount}
+              </div>
+            )}
             {buttonText === "Logout" ? (
               <button
                 type="button"
                 className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
-                onClick={calimeroSdk.signOut}
+                onClick={() => {
+                  localStorage.clear();
+                  calimeroSdk.signOut();
+                }}
               >
                 {buttonText}
               </button>
