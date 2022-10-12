@@ -195,9 +195,7 @@ export default function Login() {
                 </button>
               </div>
               <div className="flex justify-between items-center gap-x-10 mt-4">
-                <p className="font-inter">
-                  Add function key for starting games and making moves
-                </p>
+                <p className="font-inter">Add function key for voting</p>
                 <button
                   type="button"
                   className={`bg-black text-white px-4 py-2 w-[120px] h-[34px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000`}
