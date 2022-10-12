@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import MenuNavigation from "../../components/Navigation";
 import calimeroSdk from "../../utils/calimeroSdk";
 import * as nearAPI from "near-api-js";
-import { addFunctionKey } from "../../utils/callMethods";
 
 export default function Login() {
   const [status, setStatus] = useState<string>("");
@@ -192,18 +191,6 @@ export default function Login() {
                   disabled={txnSigned}
                 >
                   Sign Message
-                </button>
-              </div>
-              <div className="flex justify-between items-center gap-x-10 mt-4">
-                <p className="font-inter">
-                  Add function key for starting games and making moves
-                </p>
-                <button
-                  type="button"
-                  className={`bg-black text-white px-4 py-2 w-[120px] h-[34px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000`}
-                  onClick={() => addFunctionKey()}
-                >
-                  Add Key
                 </button>
               </div>
             </div>

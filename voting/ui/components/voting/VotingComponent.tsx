@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import * as nearAPI from "near-api-js";
-import { useRouter } from "next/router";
 import { createNewVote } from "../../utils/callMethods";
 const { Contract } = nearAPI;
 

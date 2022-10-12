@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import LoginComponent from "../components/dashboard/LoginComponent";
 import MenuNavigation from "../components/Navigation";
-import VotingComponent from "../components/voting/VotingComponent";
+import LogedInComponent from "../components/LogedInComponent";
 import calimeroSdk from "../utils/calimeroSdk";
 
 export default function Dashboard() {
@@ -27,13 +27,13 @@ export default function Dashboard() {
       <main className="h-screen w-full ">
         <div className=" pt-24 px-32 flex justify-between items-center">
           <div className="text-5xl font-bold ">
-            <p>Voting Smart Contract</p>
+            <p>Calimero login example</p>
           </div>
         </div>
         <div className="mt-1">
           {!logged ? (
             <div>
-              <VotingComponent />
+              <LogedInComponent />
             </div>
           ) : (
             <div>
