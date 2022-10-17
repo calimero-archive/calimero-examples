@@ -31,7 +31,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="mt-1">
-          {!logged ? (
+          {logged ? (
             <div>
               <VotingComponent />
             </div>

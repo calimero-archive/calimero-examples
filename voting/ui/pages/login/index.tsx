@@ -48,7 +48,7 @@ export default function Login() {
     // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
     const data = JSON.parse(localStorage.getItem("caliToken"));
     let args = {
-      url: "development calimero url ",
+      url: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/k-calimero-testnet/neard-rpc/`,
       headers: {
         "x-api-key": authtoken,
       },
@@ -76,6 +76,7 @@ export default function Login() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (calimeroSdk.isSignedIn()) {
       setStatus("Logged in successfully!");

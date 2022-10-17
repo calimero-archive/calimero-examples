@@ -13,12 +13,16 @@ export default function Login() {
   const [currentTxn, setCurrentTxn] = useState<boolean>(false);
 
   const signMessage = async () => {
+    //Sign wallet message to confirm login with wallet
     await calimeroSdk.signMessage();
     localStorage.setItem("MessageSign", "True");
     setCurrentTxn(true);
   };
 
   const syncNewAccount = async () => {
+    //Sync wallet account with Calimero Shard
+    //Creates account in Calimero Private Shard
+    //Wallet Account: bob.testnet -> sync function -> account bob.testnet created in Calimero Shard and private keys saved locally
     calimeroSdk.syncAccount();
     await getCalimeroAccount();
     window.location.reload();
@@ -43,17 +47,23 @@ export default function Login() {
   }, []);
 
   const getCalimeroAccount = async () => {
+    //Creates new Calimero connection with config and checks if the account already exists in the shard
+    //If the account exists sync button is disabeled
     const authtoken = localStorage.getItem("calimeroToken");
     // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
     const data = JSON.parse(localStorage.getItem("caliToken"));
+    //Connection config
     let args = {
       url: "development calimero url ",
       headers: {
         "x-api-key": authtoken,
       },
     };
+    //New keystore
     const keyStore = new nearAPI.keyStores.InMemoryKeyStore();
+    //Creates new InMemorySigner with keystore
     const signer = new nearAPI.InMemorySigner(keyStore);
+    //Creates new Calimero Connection
     const calimeroConnection = nearAPI.Connection.fromConfig({
       networkId: "k-calimero-testnet",
       provider: { type: "JsonRpcProvider", args },
@@ -61,6 +71,7 @@ export default function Login() {
     });
     localStorage.setItem("account_id", data.walletData.accountId);
     try {
+      //Queries Calimero Connection provider to get information about account
       const response = await calimeroConnection.provider.query({
         request_type: "view_account",
         finality: "final",
@@ -75,7 +86,9 @@ export default function Login() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    //Check if the user is signed in with calimeroSdk function
     if (calimeroSdk.isSignedIn()) {
       setStatus("Logged in successfully!");
       setloggedIn(true);
@@ -147,6 +160,7 @@ export default function Login() {
                     loggedIn ? "bg-gray-400" : "bg-black"
                   } text-white h-[32px] w-[120px] text-center rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000`}
                   onClick={() => {
+                    //Call signIn() function from calimeroSdk and call wallet to approve
                     calimeroSdk.signIn();
                   }}
                   disabled={loggedIn}
@@ -161,6 +175,7 @@ export default function Login() {
                   className={`${
                     loggedIn ? "bg-gray-400" : "bg-black"
                   } text-white h-[32px] w-[120px] text-center rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000`}
+                  //Call authenticate() function from calimeroSdk to authenticate login
                   onClick={calimeroSdk.authenticate}
                   disabled={loggedIn}
                 >

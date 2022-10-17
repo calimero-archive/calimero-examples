@@ -1,11 +1,9 @@
 export default function Square({
-  disabled,
   value,
   onClick,
   color,
   ended,
 }: {
-  disabled: boolean;
   value: string;
   onClick: () => void;
   color: string;

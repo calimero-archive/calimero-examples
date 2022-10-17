@@ -6,13 +6,20 @@ const { Contract } = nearAPI;
 
 export const config = {
   networkId: "k-calimero-testnet",
-  nodeUrl: "calimero urlO",
+  nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/k-calimero-testnet/neard-rpc/`,
   headers: {
-    "x-api-key": "calimero api key",
+    "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY,
   },
 };
 
 export async function getNumberOfGames() {
+  /*
+    Creating instance of contract and calling simple view methods 
+    Requirements : connection to Calimero private shard using config 
+                   account object 
+  */
+
+  // @ts-expect-error:
   const near = await nearAPI.connect(config);
   // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
   const account = await near.account(localStorage.getItem("account_id"));
@@ -25,6 +32,7 @@ export async function getNumberOfGames() {
 }
 
 export async function getGames(gameId: number) {
+  // @ts-expect-error:
   const near = await nearAPI.connect(config);
   // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
   const account = await near.account(localStorage.getItem("account_id"));
