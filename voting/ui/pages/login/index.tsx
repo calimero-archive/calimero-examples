@@ -48,7 +48,7 @@ export default function Login() {
     // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
     const data = JSON.parse(localStorage.getItem("caliToken"));
     let args = {
-      url: "development calimero url ",
+      url: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/k-calimero-testnet/neard-rpc/`,
       headers: {
         "x-api-key": authtoken,
       },
@@ -76,6 +76,7 @@ export default function Login() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (calimeroSdk.isSignedIn()) {
       setStatus("Logged in successfully!");
@@ -107,8 +108,8 @@ export default function Login() {
                   Shard.
                   <br />
                   <br />
-                  Instructions : After you approved wallet by clicking "Login
-                  button" please click Authenticate button to finish the
+                  Instructions : After you approved wallet by clicking Login
+                  button please click Authenticate button to finish the
                   proccess.
                 </p>
               </div>
@@ -195,9 +196,7 @@ export default function Login() {
                 </button>
               </div>
               <div className="flex justify-between items-center gap-x-10 mt-4">
-                <p className="font-inter">
-                  Add function key for starting games and making moves
-                </p>
+                <p className="font-inter">Add function key for voting</p>
                 <button
                   type="button"
                   className={`bg-black text-white px-4 py-2 w-[120px] h-[34px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000`}

@@ -13,18 +13,12 @@ export default function Board({ gameData, gameId, getGame }: IProps) {
   const [squares, setSquares] = useState<string[]>(Array(9).fill(null));
   const [ended, setEnded] = useState<string>("");
   const [color, setColor] = useState<string>("bg-white");
-  const [disableBoard, setDisableBoard] = useState<boolean>(false);
   const [loggedInPlayer, setLoggedInPlayer] = useState<string>("");
 
   useEffect(() => {
     let signedPlayer = localStorage.getItem("account_id");
     if (signedPlayer) {
       setLoggedInPlayer(signedPlayer);
-    }
-    if (signedPlayer && signedPlayer !== gameData.playerTurn) {
-      setDisableBoard(true);
-    } else {
-      setDisableBoard(false);
     }
     setBoard();
   }, []);
@@ -98,7 +92,6 @@ export default function Board({ gameData, gameId, getGame }: IProps) {
                   <Square
                     key={i}
                     ended={ended}
-                    disabled={disableBoard}
                     color={color}
                     onClick={() => makeMove(i)}
                     value={squares[i]}
