@@ -35,10 +35,10 @@ cd calimero-tictactoe
 
 ## Start game on NEAR testnet
 ```
-near call dev-1666179851071-76750420071066 register_player --accountId igi.testnet
-near call dev-1666179851071-76750420071066 register_player --accountId lala.testnet
+near call tictactoe.igi.testnet register_player --accountId igi.testnet
+near call tictactoe.igi.testnet register_player --accountId lala.testnet
 ```
-The moment the second register_player is made, a cross shard call is about to be triggered which will start a game on Calimero shard
+The moment the second register_player is called, a cross shard call is about to be triggered which will start a game on Calimero shard
 
 ## Game is now being played on Calimero
 Make moves e.g.:
