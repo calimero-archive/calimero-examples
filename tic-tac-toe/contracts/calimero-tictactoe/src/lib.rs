@@ -4,7 +4,8 @@ extern crate near_sdk;
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
-use near_sdk::{env, near_bindgen, require, AccountId, PanicOnDefault};
+use near_sdk::{env, near_bindgen, require, AccountId, PanicOnDefault, Gas, Balance};
+use near_sdk::serde_json::{json, self};
 
 #[derive(BorshDeserialize, BorshSerialize, PartialEq, Eq, Copy, Clone, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
@@ -38,6 +39,14 @@ pub struct Game {
 pub struct TicTacToe {
     games: Vec<Game>,
 }
+
+const CROSS_SHARD_CALL_CONTRACT_ID: &str = "xscc.90.calimero.testnet";
+const DESTINATION_CONTRACT_ID: &str = "tictactoe.igi.testnet"; // tictactoe on testnet
+const DESTINATION_CONTRACT_METHOD: &str = "game_ended";
+const DESTINATION_GAS: Gas = Gas(20_000_000_000_000);
+const DESTINATION_DEPOSIT: Balance = 0;
+const NO_DEPOSIT: Balance = 0;
+const CROSS_CALL_GAS: Gas = Gas(20_000_000_000_000);
 
 #[near_bindgen]
 impl TicTacToe {
@@ -149,6 +158,23 @@ impl TicTacToe {
             selected_game.status = GameStatus::Tie;
         }
 
+        if selected_game.status != GameStatus::InProgress {
+            env::promise_return(env::promise_create(
+                AccountId::new_unchecked(CROSS_SHARD_CALL_CONTRACT_ID.to_string()
+            ),
+                "cross_call",
+                &serde_json::to_vec(&(
+                    DESTINATION_CONTRACT_ID, 
+                    DESTINATION_CONTRACT_METHOD, 
+                    json!({"game_id":game_id,"game":selected_game}).to_string(), 
+                    DESTINATION_GAS, 
+                    DESTINATION_DEPOSIT, 
+                    "callback_game_ended")).unwrap(),
+                NO_DEPOSIT,
+                CROSS_CALL_GAS,
+            ));
+        }
+
         selected_game.status == GameStatus::InProgress 
     }
 
@@ -164,6 +190,10 @@ impl TicTacToe {
 
             return GameStatus::PlayerBWon;
         }
+    }
+
+    pub fn callback_game_ended() {
+        env::log_str(&format!("got a callback that game_ended was called on testnet {}", env::predecessor_account_id()));
     }
     
 }
