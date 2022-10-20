@@ -3,7 +3,7 @@
 extern crate near_sdk;
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::collections::LookupMap;
+use near_sdk::collections::{LookupMap, UnorderedSet};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{env, near_bindgen, require, AccountId, PanicOnDefault, Gas, Balance};
 use near_sdk::serde_json::{json, self};
@@ -38,7 +38,8 @@ pub struct Game {
 #[near_bindgen]
 #[derive(PanicOnDefault, BorshDeserialize, BorshSerialize)]
 pub struct TicTacToe {
-    games: LookupMap<usize, Game>,
+    finished_games: LookupMap<usize, Game>,
+    all_games: UnorderedSet<usize>,
     player_awaiting_for_opponent: Option<AccountId>,
 }
 
@@ -55,14 +56,22 @@ impl TicTacToe {
     #[init]
     pub fn new() -> Self {
         Self {
-            games: LookupMap::new(b"m"),
+            finished_games: LookupMap::new(b"f"),
+            all_games: UnorderedSet::new(b"a"),
             player_awaiting_for_opponent: None,
         }
     }
 
-    pub fn get_game(&self, game_id: usize) -> Game {
-        require!(self.games.contains_key(&game_id));
-        self.games.get(&game_id).unwrap().clone()
+    pub fn num_of_all_games(&self) -> u64 {
+        self.all_games.len()
+    }
+
+    pub fn get_finished_game(&self, game_id: usize) -> Option<Game> {
+        if !self.finished_games.contains_key(&game_id) {
+            None
+        } else {
+            Some(self.finished_games.get(&game_id).unwrap().clone())
+        }
     }
 
     pub fn register_player(&mut self) {
@@ -76,7 +85,7 @@ impl TicTacToe {
                 "cross_call",
                 &serde_json::to_vec(&(
                     DESTINATION_CONTRACT_ID, 
-                    "start_game", 
+                    DESTINATION_CONTRACT_METHOD, 
                     json!({"player_a":first_player,"player_b":env::predecessor_account_id()}).to_string(), 
                     DESTINATION_GAS, 
                     DESTINATION_DEPOSIT, 
@@ -89,18 +98,22 @@ impl TicTacToe {
         }
     }
 
-    pub fn game_started(&self, response: Option<Vec<u8>>) {
+    pub fn game_started(&mut self, response: Option<Vec<u8>>) {
+        require!(env::predecessor_account_id().to_string() == CROSS_SHARD_CALL_CONTRACT_ID);
         if response.is_none() {
             // Call failed
+            env::log_str(&format!("Got empty response!"));
         } else {
-            let as_json: usize = near_sdk::serde_json::from_slice::<usize>(&response.unwrap()).unwrap();
-            env::log_str(&format!("GOT THE CALLBACK WITH EXEC RESULT {}", as_json));
+            let game_id: usize = near_sdk::serde_json::from_slice::<usize>(&response.unwrap()).unwrap();
+            env::log_str(&format!("GOT THE CALLBACK WITH EXEC RESULT {}", game_id));
+            self.all_games.insert(&game_id);
         }
     }
 
     pub fn game_ended(&mut self, game_id: usize, game: Game) {
-        env::log_str(&format!("game ended called by {}", env::predecessor_account_id()));
-        self.games.insert(&game_id, &game); 
+        require!(env::predecessor_account_id().to_string() == CROSS_SHARD_CALL_CONTRACT_ID);
+        env::log_str(&format!("game ended, called by the connector {}", env::predecessor_account_id()));
+        self.finished_games.insert(&game_id, &game); 
     }
     
 }
