@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 import { startNewGameMethod } from "../../utils/callMethods";
 const { Contract } = nearAPI;
 
+const ACCOUNT_ID = "accountId";
+const contractAddress = "tictactoe.k.calimero.testnet";
+
 export const config = {
   networkId: "k-calimero-testnet",
   nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/k-calimero-testnet/neard-rpc/`,
@@ -22,8 +25,8 @@ export async function getNumberOfGames() {
   // @ts-expect-error:
   const near = await nearAPI.connect(config);
   // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-  const account = await near.account(localStorage.getItem("account_id"));
-  const contract = new Contract(account, "tictactoe.k.calimero.testnet", {
+  const account = await near.account(localStorage.getItem(ACCOUNT_ID));
+  const contract = new Contract(account, contractAddress, {
     viewMethods: ["num_of_games"],
     changeMethods: [],
   });
@@ -35,8 +38,8 @@ export async function getGames(gameId: number) {
   // @ts-expect-error:
   const near = await nearAPI.connect(config);
   // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-  const account = await near.account(localStorage.getItem("account_id"));
-  const contract = new Contract(account, "tictactoe.k.calimero.testnet", {
+  const account = await near.account(localStorage.getItem(ACCOUNT_ID));
+  const contract = new Contract(account, contractAddress, {
     viewMethods: ["get_game"],
     changeMethods: [],
   });
@@ -80,7 +83,7 @@ export default function OpenGamesList() {
     }
   };
   useEffect(() => {
-    if (!numberOfGames || (!gamesData && localStorage.getItem("account_id"))) {
+    if (!numberOfGames || (!gamesData && localStorage.getItem(ACCOUNT_ID))) {
       setGames();
     }
   }, [numberOfGames, gamesData]);

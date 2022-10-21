@@ -166,7 +166,7 @@ export default function MenuNavigation() {
                                 <div
                                   className={classNames({
                                     classes: [
-                                      "group flex cursor-pointer py-2 justify-center items-center text-[#888888] text-tiny font-extralight font-inter  hover:text-white transition duration-700",
+                                      "group flex cursor-pointer py-2 justify-center items-center text-[#888888] text-tiny font-extralight   hover:text-white transition duration-700",
                                     ],
                                   })}
                                 >
@@ -176,7 +176,7 @@ export default function MenuNavigation() {
                             ) : (
                               <Link href={item.href}>
                                 <p
-                                  className={`group flex cursor-pointer justify-center items-center text-[#888888] text-tiny font-extralight font-inter hover:text-white transition duration-700 ${
+                                  className={`group flex cursor-pointer justify-center items-center text-[#888888] text-tiny font-extralight  hover:text-white transition duration-700 ${
                                     item.current &&
                                     "border-b border-b-gray-50 py-2"
                                   }`}
@@ -195,7 +195,7 @@ export default function MenuNavigation() {
                     {buttonText === "Logout" ? (
                       <button
                         type="button"
-                        className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
+                        className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium  hover:bg-[#5555FF] hover:text-white transition duration-1000"
                         onClick={calimeroSdk.signOut}
                       >
                         {buttonText}
@@ -204,7 +204,7 @@ export default function MenuNavigation() {
                       <Link href="/login">
                         <button
                           type="button"
-                          className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
+                          className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium  hover:bg-[#5555FF] hover:text-white transition duration-1000"
                         >
                           {buttonText}
                         </button>
@@ -227,7 +227,7 @@ export default function MenuNavigation() {
             </Link>
           </div>
           {/* MENU */}
-          <div className="flex px-2 text-base font-medium font-inter cursor-pointer gap-4 lg:gap-12 md:w-1/3 justify-between">
+          <div className="flex px-2 text-base font-medium  cursor-pointer gap-4 lg:gap-12 md:w-1/3 justify-between">
             {getNavigationMap(pathname).map((item, i) => {
               if (item.drop) {
                 return (
@@ -241,7 +241,7 @@ export default function MenuNavigation() {
                     {item.outer ? (
                       <a
                         href={item.href}
-                        className={`group flex cursor-pointer items-center text-[#888888] text-tiny font-extralight font-inter py-2 hover:text-white transition duration-700 
+                        className={`group flex cursor-pointer items-center text-[#888888] text-tiny font-extralight  py-2 hover:text-white transition duration-700 
                         `}
                       >
                         {item.name}
@@ -249,7 +249,7 @@ export default function MenuNavigation() {
                     ) : (
                       <Link href={item.href}>
                         <p
-                          className={`pt-2 group flex cursor-pointer items-center text-[#888888] text-tiny font-extralight font-inter hover:text-white transition duration-700 ${
+                          className={`pt-2 group flex cursor-pointer items-center text-[#888888] text-tiny font-extralight  hover:text-white transition duration-700 ${
                             item.current && "border-b py-2 border-b-gray-50"
                           }`}
                         >
@@ -266,14 +266,14 @@ export default function MenuNavigation() {
 
           <div className="md:w-1/3 flex justify-end lg:justify-center items-center">
             {walletAccount && (
-              <div className="text-[#888888] text-tiny font-extralight font-inter py-2 hover:text-white transition duration-700 px-4">
+              <div className="text-[#888888] text-tiny font-extralight  py-2 hover:text-white transition duration-700 px-4">
                 {walletAccount}
               </div>
             )}
             {buttonText === "Logout" ? (
               <button
                 type="button"
-                className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
+                className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium  hover:bg-[#5555FF] hover:text-white transition duration-1000"
                 onClick={() => {
                   localStorage.clear();
                   calimeroSdk.signOut();
@@ -285,7 +285,7 @@ export default function MenuNavigation() {
               <Link href="/login">
                 <button
                   type="button"
-                  className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium font-inter hover:bg-[#5555FF] hover:text-white transition duration-1000"
+                  className="bg-white text-black px-4 py-2 flex items-center h-[32px] rounded-md text-tiny font-medium  hover:bg-[#5555FF] hover:text-white transition duration-1000"
                 >
                   {buttonText}
                 </button>
