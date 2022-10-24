@@ -43,8 +43,8 @@ pub struct TicTacToe {
     player_awaiting_for_opponent: Option<AccountId>,
 }
 
-const CROSS_SHARD_CALL_CONTRACT_ID: &str = "xscc.90.apptest-development.testnet";
-const DESTINATION_CONTRACT_ID: &str = "tictactoe.90.calimero.testnet"; 
+const CROSS_SHARD_CALL_CONTRACT_ID: &str = "xscc.88.apptest-development.testnet";
+const DESTINATION_CONTRACT_ID: &str = "tictactoe.88.calimero.testnet"; 
 const DESTINATION_CONTRACT_METHOD: &str = "start_game";
 const DESTINATION_GAS: Gas = Gas(20_000_000_000_000);
 const DESTINATION_DEPOSIT: Balance = 0;
