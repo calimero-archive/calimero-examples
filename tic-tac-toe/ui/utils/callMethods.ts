@@ -5,24 +5,22 @@ import * as big from "bn.js";
 import { InMemorySigner } from "near-api-js";
 import { KeyPair } from "near-api-js/lib/utils";
 
+const ACCOUNT_ID = "accountId";
+const PUBLIC_KEY = "publicKey";
+const contractAddress = "tictactoe.90.calimero.testnet";
+const networkId = "90-calimero-testnet";
+
 interface IProps {
   boardIndex: number;
   gameId: number;
 }
 export async function makeMoveMethod({ boardIndex, gameId }: IProps) {
-  /**
-   * 1. Fetching needed data to create new Calimero connection (explained in addFunctionKey() function below.)
-   */
-  const authToken = localStorage.getItem("calimeroToken");
-  // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-  const dataJson = JSON.parse(localStorage.getItem("caliToken"));
-  const sender = dataJson.tokenData.accountId;
-  const publicKeyAsStr = bs58.encode(
-    // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-    JSON.parse(localStorage.getItem("caliToken")).walletData.publicKey.data.data
-  );
-  const contractAddress = "tictactoe.k.calimero.testnet";
-  const networkId = "k-calimero-testnet";
+  let sender;
+  try {
+    sender = localStorage.getItem(ACCOUNT_ID);
+  } catch (error) {
+    console.log("Error while fetching local storage.");
+  }
 
   //1.1 Fetching keyStore saved in browserlocalstorage
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
@@ -44,7 +42,8 @@ export async function makeMoveMethod({ boardIndex, gameId }: IProps) {
     nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/k-calimero-testnet/neard-rpc/`,
     walletUrl: "https://localhost:1234/",
     headers: {
-      "x-api-key": authToken || "",
+      // @ts-expect-error: Type 'undefined' is not assignable to type 'string | number'
+      "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY,
     },
   });
   let account = new nearAPI.Account(calimeroConnection.connection, sender);
@@ -68,24 +67,17 @@ interface NewProps {
 }
 
 export async function startNewGameMethod({ playerB }: NewProps) {
-  /**
-   * Functionalities explained in makeMoveMethod
-   */
-  const authToken = localStorage.getItem("calimeroToken");
-  // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-  const dataJson = JSON.parse(localStorage.getItem("caliToken"));
-  const sender = dataJson.tokenData.accountId;
-  const publicKeyAsStr = bs58.encode(
-    // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-    JSON.parse(localStorage.getItem("caliToken")).walletData.publicKey.data.data
-  );
-  const contractAddress = "tictactoe.k.calimero.testnet";
-  const networkId = "k-calimero-testnet";
-
+  let sender;
+  try {
+    sender = localStorage.getItem(ACCOUNT_ID);
+  } catch (error) {
+    console.log("Error while fetching local storage.");
+  }
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
     localStorage,
     "competition:"
   );
+
   let keyPair = await keyStore.getKey(networkId, sender);
   const signer = await nearAPI.InMemorySigner.fromKeyPair(
     networkId,
@@ -97,10 +89,11 @@ export async function startNewGameMethod({ playerB }: NewProps) {
     networkId: networkId,
     keyStore: keyStore,
     signer: signer,
-    nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/k-calimero-testnet/neard-rpc/`,
-    walletUrl: "https://localhost:1234/",
+    nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/90-calimero-testnet/neard-rpc/`,
+    walletUrl: "https://testnet.mynearwallet.com/",
     headers: {
-      "x-api-key": authToken || "",
+      // @ts-expect-error: Type 'undefined' is not assignable to type 'string | number'
+      "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY,
     },
   });
   let account = new nearAPI.Account(calimeroConnection.connection, sender);
@@ -119,27 +112,19 @@ export async function startNewGameMethod({ playerB }: NewProps) {
 }
 
 export async function addFunctionKey() {
-  /*
-    1. GET ALL NEEDED DATA ( TOKENS, KEYS, BROWSER LOCAL STORAGE) TO CREATE CONNECTION TO CALIMERO PRIVATE SHARD
-  */
-
-  //Get authToken from localstorage -> used to authenticate user for connecting to Calimero Private Shard
-  const authToken = localStorage.getItem("calimeroToken");
-
-  //Get wallet + user data from caliToken which is created and saved to localstorage after wallet login.
-  // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-  const dataJson = JSON.parse(localStorage.getItem("caliToken"));
-
-  //Currently signed in user is "senfer"
-  const sender = dataJson.tokenData.accountId;
-
-  //Fetching public key as string from wallet data
-  const publicKeyAsStr = bs58.encode(
-    // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-    JSON.parse(localStorage.getItem("caliToken")).walletData.publicKey.data.data
-  );
-  const contractAddress = "tictactoe.k.calimero.testnet";
-  const networkId = "k-calimero-testnet";
+  //Currently signed in user is "sender"
+  let sender;
+  let publicKeyAsStr;
+  try {
+    sender = localStorage.getItem(ACCOUNT_ID);
+    //Fetching public key as string from wallet data
+    publicKeyAsStr = bs58.encode(
+      // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
+      JSON.parse(localStorage.getItem(PUBLIC_KEY))
+    );
+  } catch (error) {
+    console.log("Error while fetching local storage.");
+  }
 
   //Fetch KeyStore from browser local storage
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
@@ -151,11 +136,12 @@ export async function addFunctionKey() {
     //create new InMemorySigner using keystore
     signer: new InMemorySigner(keyStore),
     //Calimero RPC endpoint
-    nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/k-calimero-testnet/neard-rpc/`,
-    walletUrl: "https://localhost:1234/",
+    nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/90-calimero-testnet/neard-rpc/`,
+    walletUrl: "https://testnet.mynearwallet.com/",
     headers: {
       //Auth token used to authenticate connection to calimero
-      "x-api-key": authToken || "",
+      // @ts-expect-error: Type 'undefined' is not assignable to type 'string | number'
+      "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY,
     },
   });
 
