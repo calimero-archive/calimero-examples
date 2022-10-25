@@ -64,16 +64,6 @@ export default function Login() {
                 </button>
               </div>
               <div className="flex justify-between items-center gap-x-10 mt-4">
-                <p>Sign message</p>
-                <button
-                  type="button"
-                  className="bg-black text-white px-4 w-[120px] h-[34px] rounded-md hover:bg-[#5555FF] hover:text-white transition duration-1000"
-                  onClick={() => signMessage()}
-                >
-                  Sign msg
-                </button>
-              </div>
-              <div className="flex justify-between items-center gap-x-10 mt-4">
                 <p>Add function key for starting games and making moves</p>
                 <button
                   type="button"

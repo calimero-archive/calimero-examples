@@ -266,9 +266,11 @@ export default function MenuNavigation() {
 
           <div className="md:w-1/3 flex justify-end lg:justify-center items-center">
             {walletAccount && (
-              <div className="text-[#888888] text-tiny cursor-pointer font-extralight  py-2 hover:text-white transition duration-700 px-4">
-                {walletAccount}
-              </div>
+              <Link href="/login">
+                <div className="text-[#888888] text-tiny cursor-pointer font-extralight  py-2 hover:text-white transition duration-700 px-4">
+                  {walletAccount}
+                </div>
+              </Link>
             )}
             {buttonText === "Logout" ? (
               <button
