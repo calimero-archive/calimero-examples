@@ -7,9 +7,10 @@ import { KeyPair } from "near-api-js/lib/utils";
 
 const ACCOUNT_ID = "accountId";
 const PUBLIC_KEY = "publicKey";
-
+const MAX_GAS = "300000000000000";
 let networkId: string;
 let contractAddress: string;
+
 if (
   process.env.NEXT_PUBLIC_CALIMERO_SHARD_ID &&
   process.env.NEXT_PUBLIC_CALIMERO_CONTRACT_ADDRESS
@@ -63,7 +64,7 @@ export async function makeMoveMethod({ boardIndex, gameId }: MakeMoveProps) {
         game_id: gameId,
         selected_field: boardIndex,
       },
-      new big.BN("300000000000000"),
+      MAX_GAS,
       new big.BN("0")
     );
   } catch (error) {}
@@ -112,7 +113,7 @@ export async function startNewGameMethod({ playerB }: StartNewGameProps) {
         player_a: sender.toString(),
         player_b: playerB,
       },
-      new big.BN("300000000000000"),
+      MAX_GAS,
       new big.BN("0")
     );
   } catch (error) {
