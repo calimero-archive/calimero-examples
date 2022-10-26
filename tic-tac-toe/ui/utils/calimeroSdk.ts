@@ -6,29 +6,16 @@ const calimeroUrl = process.env.NEXT_PUBLIC_CALIMERO_ENDPOINT_URL;
 const calimeroWebSdkService =
   process.env.NEXT_PUBLIC_CALIMERO_WEB_SDK_SERVICE_URL;
 
-interface CalimeroConfig {
-  shardId: string;
-  walletUrl: string;
-  calimeroWebSdkService: string;
-  calimeroUrl: string;
-}
 function getConfig() {
-  let config: CalimeroConfig;
   if (shardId && walletUrl && calimeroUrl && calimeroWebSdkService) {
-    config = {
+    return {
       shardId: shardId,
       walletUrl: walletUrl,
       calimeroUrl: calimeroUrl,
       calimeroWebSdkService: calimeroWebSdkService,
     };
-    return config;
   } else {
-    return {
-      shardId: "",
-      walletUrl: "",
-      calimeroUrl: "",
-      calimeroWebSdkService: "",
-    };
+    throw new Error("Please fill your configuration!");
   }
 }
 

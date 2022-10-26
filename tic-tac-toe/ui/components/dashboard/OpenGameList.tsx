@@ -96,17 +96,7 @@ export default function OpenGamesList() {
         return "From NEAR: Player " + playerB + " won";
 
       default:
-        return " From NEAR: Its a tie";
-    }
-  };
-  const getGameStatusProgress = async (status, playerA, playerB) => {
-    switch (status) {
-      case "PlayerAWon":
-        return "Player " + playerA + " won";
-      case "PlayerBWon":
-        return "Player " + playerB + " won";
-      default:
-        return "Its a tie";
+        return "From NEAR: Its a tie";
     }
   };
   const startNewGame = async (e: React.SyntheticEvent) => {

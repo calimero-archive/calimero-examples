@@ -57,7 +57,11 @@ module.exports = {
     fontFamily: {
       inter: '"Inter"',
     },
-    extend: {},
+    extend: {
+      colors: {
+        "nav-user": "#888888",
+      },
+    },
   },
   plugins: [],
 };

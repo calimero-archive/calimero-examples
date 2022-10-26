@@ -200,7 +200,7 @@ export async function addFunctionKey() {
   try {
     calimeroSdk.signTransaction(
       encodeURIComponent(Buffer.from(serializedTx).toString("base64")),
-      window.location.href.toString()
+      window.location.href
     );
   } catch (e) {
     console.log(e);
