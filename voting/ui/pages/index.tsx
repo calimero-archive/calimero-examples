@@ -9,12 +9,7 @@ export default function Dashboard() {
   const [logged, setLogged] = useState<boolean>(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const loggedIn = calimeroSdk.isSignedIn();
-    if (loggedIn) {
-      setLogged(true);
-    } else {
-      setLogged(false);
-    }
+    calimeroSdk.isSignedIn() ? setLogged(true) : setLogged(false);
   });
   return (
     <div>

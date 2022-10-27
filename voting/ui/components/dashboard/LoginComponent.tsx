@@ -13,7 +13,7 @@ export default function LoginComponent() {
           </Link>
         </div>
         <div className="text-white mt-4 ml-6">
-          <p>Please Login with your wallet to see available games!</p>
+          <p>Please Login with your wallet to see the poll!</p>
         </div>
       </div>
     </div>
