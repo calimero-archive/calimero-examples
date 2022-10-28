@@ -1,21 +1,18 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import LoginComponent from "../components/dashboard/LoginComponent";
-import MenuNavigation from "../components/Navigation";
-import LogedInComponent from "../components/LogedInComponent";
 import calimeroSdk from "../utils/calimeroSdk";
 
-export default function Dashboard() {
-  const [logged, setLogged] = useState<boolean>(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+export default function Login() {
+  const [user, setUser] = useState<boolean>(false);
+
   useEffect(() => {
-    const loggedIn = calimeroSdk.isSignedIn();
-    if (loggedIn) {
-      setLogged(true);
+    if (calimeroSdk.isSignedIn()) {
+      setUser(true);
     } else {
-      setLogged(false);
+      const res = calimeroSdk.setCredentials();
     }
-  });
+  }, []);
+
   return (
     <div>
       <Head>
@@ -23,24 +20,32 @@ export default function Dashboard() {
         <meta name="description" content="TicTacToe" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MenuNavigation />
-      <main className="h-screen w-full ">
-        <div className=" pt-24 px-32 flex justify-between items-center">
-          <div className="text-5xl font-bold ">
-            <p>Calimero login example</p>
+      <main className="h-screen w-full bg-gray-50">
+        {user ? (
+          <div className="w-96 max-96">
+            <button
+              type="button"
+              className="text-white h-[32px] w-[120px] hover:bg-[#5555FF] bg-black hover:text-white transition duration-1000"
+              onClick={() => {
+                calimeroSdk.signOut();
+              }}
+            >
+              Logout
+            </button>
           </div>
-        </div>
-        <div className="mt-1">
-          {!logged ? (
-            <div>
-              <LogedInComponent />
-            </div>
-          ) : (
-            <div>
-              <LoginComponent />
-            </div>
-          )}
-        </div>
+        ) : (
+          <div className="w-96 max-96">
+            <button
+              type="button"
+              className="text-white h-[32px] w-[120px] hover:bg-[#5555FF] bg-black hover:text-white transition duration-1000"
+              onClick={() => {
+                calimeroSdk.signIn();
+              }}
+            >
+              Login
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
