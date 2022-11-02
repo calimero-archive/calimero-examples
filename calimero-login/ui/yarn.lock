@@ -1458,10 +1458,10 @@ bs58@^5.0.0:
   dependencies:
     base-x "^4.0.0"
 
-calimero-sdk@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/calimero-sdk/-/calimero-sdk-0.0.1.tgz#622a801ebdd5232d6021a93a460fe5da3c4a6095"
-  integrity sha512-sc+kNhP+uH+DczUCZdIQNgk+a2ENeybzAO/eT7RQfStxXuqEFQsZYwzK44hXvOD7ycmF88TwUloMvzjl0POyVQ==
+calimero-auth-sdk@^0.7.2:
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/calimero-auth-sdk/-/calimero-auth-sdk-0.7.5.tgz#8b9348db30d423887078f95ee325faaf8b8bdc18"
+  integrity sha512-pmKhL3NhuFqlIhiTWw9Fh241XTHcs4eNBbxefekEN41gqE2AeGrlvOeLBZnbriFX6qDHnDo8saAOKQFJibs30A==
   dependencies:
     axios "^0.27.2"
     near-api-js "^0.45.1"
