@@ -16,7 +16,7 @@ export default function Board({ gameData, gameId, getGame }: IProps) {
   const [loggedInPlayer, setLoggedInPlayer] = useState<string>("");
 
   useEffect(() => {
-    let signedPlayer = localStorage.getItem("account_id");
+    let signedPlayer = localStorage.getItem("accountId");
     if (signedPlayer) {
       setLoggedInPlayer(signedPlayer);
     }

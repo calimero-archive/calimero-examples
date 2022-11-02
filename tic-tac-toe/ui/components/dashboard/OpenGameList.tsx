@@ -2,44 +2,43 @@ import { useEffect, useState } from "react";
 import * as nearAPI from "near-api-js";
 import { useRouter } from "next/router";
 import { startNewGameMethod } from "../../utils/callMethods";
+import { getGame } from "../../utils/nearCallMethods";
 const { Contract } = nearAPI;
 
 export const config = {
-  networkId: "90-calimero-testnet",
-  nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/90-calimero-testnet/neard-rpc/`,
+  networkId: process.env.NEXT_PUBLIC_CALIMERO_SHARD_ID || "",
+  nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/${process.env.NEXT_PUBLIC_CALIMERO_SHARD_ID}/neard-rpc/`,
   headers: {
-    "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY,
+    "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY || "",
   },
 };
 
 export async function getNumberOfGames() {
-  /*
-    Creating instance of contract and calling simple view methods 
-    Requirements : connection to Calimero private shard using config 
-                   account object 
-  */
-
-  // @ts-expect-error:
   const near = await nearAPI.connect(config);
-  // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-  const account = await near.account(localStorage.getItem("accountId"));
-  const contract = new Contract(account, "tictactoe.90.calimero.testnet", {
-    viewMethods: ["num_of_games"],
-    changeMethods: [],
-  });
+  const account = await near.account(localStorage.getItem("accountId") || "");
+  const contract = new Contract(
+    account,
+    process.env.NEXT_PUBLIC_CALIMERO_CONTRACT_ADDRESS || "",
+    {
+      viewMethods: ["num_of_games"],
+      changeMethods: [],
+    }
+  );
   let numberOfGames = await contract["num_of_games"]();
   return numberOfGames;
 }
 
 export async function getGames(gameId: number) {
-  // @ts-expect-error:
   const near = await nearAPI.connect(config);
-  // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-  const account = await near.account(localStorage.getItem("accountId"));
-  const contract = new Contract(account, "tictactoe.90.calimero.testnet", {
-    viewMethods: ["get_game"],
-    changeMethods: [],
-  });
+  const account = await near.account(localStorage.getItem("accountId") || "");
+  const contract = new Contract(
+    account,
+    process.env.NEXT_PUBLIC_CALIMERO_CONTRACT_ADDRESS || "",
+    {
+      viewMethods: ["get_game"],
+      changeMethods: [],
+    }
+  );
   let game = await contract["get_game"]({ game_id: gameId });
   return game;
 }
@@ -69,7 +68,10 @@ export default function OpenGamesList() {
           playerA: temp.player_a,
           playerB: temp.player_b,
           playerTurn: temp.player_a_turn ? temp.player_a : temp.player_b,
-          status: temp.status,
+          status:
+            temp.status === "InProgress"
+              ? "From Calimero: Game is in progress"
+              : await getGameStatus(i, temp.player_a, temp.player_b),
         };
         gamesDataTemp.push(gameData);
       }
@@ -84,18 +86,17 @@ export default function OpenGamesList() {
       setGames();
     }
   }, [numberOfGames, gamesData]);
-  const getGameStatus = (game: GameProps) => {
-    switch (game.status) {
+  const getGameStatus = async (id, playerA, playerB) => {
+    let status = await getGame(id);
+    switch (status) {
       case "PlayerAWon":
-        return "Player " + game.playerA + " won";
+        return "From NEAR: Player " + playerA + " won";
 
       case "PlayerBWon":
-        return "Player " + game.playerB + " won";
+        return "From NEAR: Player " + playerB + " won";
 
-      case "InProgress":
-        return "In progress";
       default:
-        return "Its a tie";
+        return "From NEAR: Its a tie";
     }
   };
   const startNewGame = async (e: React.SyntheticEvent) => {
@@ -113,7 +114,6 @@ export default function OpenGamesList() {
       const data = {
         playerB: playerb,
       };
-      console.log();
       await startNewGameMethod(data);
       setGamesData(undefined);
       await setGames();
@@ -172,10 +172,22 @@ export default function OpenGamesList() {
                           on turn:{" "}
                           <span className="font-black">{game.playerTurn}</span>
                         </p>
-                        <p className="font-black mt-2">{getGameStatus(game)}</p>
+                        {game.status && (
+                          <p className="font-black mt-2">{game.status}</p>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
+                      {game.status === "From Calimero: Game is in progress" && (
+                        <div className="mx-4 float-left">
+                          <button
+                            className="bg-black text-white rounded-md hover:bg-violet-700 transition duration-700 px-2 py-2"
+                            onClick={() => router.push(`/game/${i}`)}
+                          >
+                            Start Game
+                          </button>
+                        </div>
+                      )}
                       <div className="bg-black rounded-sm w-32 h-32 grid grid-cols-3 gap-x-[4px] gap-y-[4px]">
                         {game.boardStatus.map((block, i) => {
                           return (
@@ -189,14 +201,6 @@ export default function OpenGamesList() {
                             </div>
                           );
                         })}
-                      </div>
-                      <div className="mx-4 float-left">
-                        <button
-                          className="bg-black text-white rounded-md hover:bg-violet-700 transition duration-700 px-2 py-2"
-                          onClick={() => router.push(`/game/${i}`)}
-                        >
-                          Start Game
-                        </button>
                       </div>
                     </div>
                   </div>

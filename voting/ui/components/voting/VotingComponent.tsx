@@ -1,27 +1,30 @@
 import { useEffect, useState } from "react";
 import * as nearAPI from "near-api-js";
-import { createNewVote } from "../../utils/callMethods";
+import { ACCOUNT_ID, createNewVote } from "../../utils/callMethods";
 const { Contract } = nearAPI;
+let networkId: string;
+let contractAddress: string;
 
-export const config = {
-  networkId: "k-calimero-testnet",
-  nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/k-calimero-testnet/neard-rpc/`,
-  headers: {
-    "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY,
-  },
-};
+if (
+  process.env.NEXT_PUBLIC_CALIMERO_SHARD_ID &&
+  process.env.NEXT_PUBLIC_CALIMERO_CONTRACT_ADDRESS
+) {
+  networkId = process.env.NEXT_PUBLIC_CALIMERO_SHARD_ID;
+  contractAddress = process.env.NEXT_PUBLIC_CALIMERO_CONTRACT_ADDRESS;
+}
+
 
 export async function getPoll() {
-  /*
-    Creating instance of contract and calling simple view methods 
-    Requirements : connection to Calimero private shard using config 
-                   account object 
-  */
-  // @ts-expect-error:
-  const near = await nearAPI.connect(config);
+  const near = await nearAPI.connect({
+  networkId: networkId,
+  nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/${networkId}/neard-rpc/`,
+  headers: {
+    "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY || "",
+  },
+});
   // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-  const account = await near.account(localStorage.getItem("account_id"));
-  const contract = new Contract(account, "voting.k.calimero.testnet", {
+  const account = await near.account(localStorage.getItem(ACCOUNT_ID));
+  const contract = new Contract(account, contractAddress, {
     viewMethods: ["get_poll"],
     changeMethods: [],
   });
@@ -31,11 +34,16 @@ export async function getPoll() {
 }
 
 export async function getResults() {
-  // @ts-expect-error:
-  const near = await nearAPI.connect(config);
+  const near = await nearAPI.connect({
+  networkId: networkId,
+  nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/${networkId}/neard-rpc/`,
+  headers: {
+    "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY || "",
+  },
+});
   // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-  const account = await near.account(localStorage.getItem("account_id"));
-  const contract = new Contract(account, "voting.k.calimero.testnet", {
+  const account = await near.account(localStorage.getItem(ACCOUNT_ID));
+  const contract = new Contract(account, contractAddress, {
     viewMethods: ["get_results"],
     changeMethods: [],
   });
@@ -67,17 +75,19 @@ export default function VotingComponent() {
 
   async function getVotesData() {
     let votestmp = await getResults();
+    console.log(votestmp);
     if (votestmp && poll) {
       let data = [];
       for (let i = 0; i < poll.options.length; i++) {
         let option = poll.options[i];
         let votesCount = votestmp[poll.options[i]];
-        data.push({
-          option: option,
-          count: parseInt(votesCount),
-        });
+        if(votesCount){
+          data.push({
+            option: option,
+            count: parseInt(votesCount),
+          });
+        }
       }
-      console.log(data);
       setVotes(data);
     }
   }
