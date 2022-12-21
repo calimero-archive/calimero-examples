@@ -40,13 +40,13 @@ pub struct TicTacToe {
     games: Vec<Game>,
 }
 
-const CROSS_SHARD_CALL_CONTRACT_ID: &str = "xscc.90.calimero.testnet";
+const CROSS_SHARD_CALL_CONTRACT_ID: &str = "xsc_connector.pay14.calimero.testnet";
 const DESTINATION_CONTRACT_ID: &str = "tictactoe.igi.testnet"; // tictactoe on testnet
 const DESTINATION_CONTRACT_METHOD: &str = "game_ended";
-const DESTINATION_GAS: Gas = Gas(20_000_000_000_000);
+const DESTINATION_GAS: Gas = Gas(50_000_000_000_000);
 const DESTINATION_DEPOSIT: Balance = 0;
 const NO_DEPOSIT: Balance = 0;
-const CROSS_CALL_GAS: Gas = Gas(20_000_000_000_000);
+const CROSS_CALL_GAS: Gas = Gas(150_000_000_000_000);
 
 #[near_bindgen]
 impl TicTacToe {
