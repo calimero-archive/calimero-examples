@@ -3,5 +3,10 @@
         "dashboardTitle": "Start New Game",
         "currentGamesTitle": "Current Games",
         "pastGamesTitle": "Past Games"
+    },
+    "loginComponent": {
+        "title": "Login with NEAR",
+        "subtitle": "Connecting NEAR wallet will connect to Calimero Private Shard and sync Account",
+        "buttonText": "Login With NEAR"
     }
 }
