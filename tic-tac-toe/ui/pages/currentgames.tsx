@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import CurrentGames from "../components/nh/currentGamesPage/CurrentGames";
 import PageWrapper from "../components/nh/pageWrapper/PageWrapper";
 
-export default function Dashboard() {
+export default function CurrentGamesPage() {
   const router = useRouter();
-  const [logged, setLogged] = useState<boolean>(true);
+
   return (
     <PageWrapper title={"PropUrl"} currentPage={router.pathname}>
-      <div className="text-white">START GAME POPUP ON THIS CLICK</div>
+      <CurrentGames />
     </PageWrapper>
   );
 }

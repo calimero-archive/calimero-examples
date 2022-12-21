@@ -12,12 +12,12 @@ export function getNavigationMap() {
     },
      {
       name: navigationObject.currentGamesTitle,
-      href: "/current-games",
+      href: "/currentgames",
       icon: LightningBoltIcon,
     },
      {
       name: navigationObject.pastGamesTitle,
-      href: "/past-games",
+      href: "/pastgames",
       icon: ClockIcon,
     },
   ];

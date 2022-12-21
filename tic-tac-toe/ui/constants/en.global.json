@@ -8,5 +8,15 @@
         "title": "Login with NEAR",
         "subtitle": "Connecting NEAR wallet will connect to Calimero Private Shard and sync Account",
         "buttonText": "Login With NEAR"
+    },
+    "currentGamesPage": {
+        "pageTitle": "Current Games",
+        "componentTitle": "There are no games to display, start a new Tictactoe game",
+        "buttonText": "Start New Game"
+    },
+    "pastGamesPage": {
+        "pageTitle": "Past Games",
+        "componentTitle": "You haven't played TicTacToe yet, please start a new game for games to be displayed",
+        "buttonText": "Start New Game"
     }
 }

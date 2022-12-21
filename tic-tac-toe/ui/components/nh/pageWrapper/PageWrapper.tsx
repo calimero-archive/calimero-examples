@@ -16,7 +16,7 @@ export default function PageWrapper({
   title,
   children,
 }: PageWrapperProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   return (
     <>
       <Head>
