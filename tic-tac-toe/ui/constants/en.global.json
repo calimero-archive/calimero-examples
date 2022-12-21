@@ -18,5 +18,16 @@
         "pageTitle": "Past Games",
         "componentTitle": "You haven't played TicTacToe yet, please start a new game for games to be displayed",
         "buttonText": "Start New Game"
+    },
+    "startNewGamePopup": {
+        "popupTitle": "Start New Game",
+        "formTitle": "Play with",
+        "buttonText": "Start New Game",
+        "closeButtonText": "Close"
+    },
+    "GameCard": {
+        "gameText": "GAME #",
+        "playerOneText": "Player One",
+        "playerTwoText": "Player Two"
     }
 }
