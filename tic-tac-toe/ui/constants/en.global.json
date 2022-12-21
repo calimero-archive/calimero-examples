@@ -24,5 +24,10 @@
         "formTitle": "Play with",
         "buttonText": "Start New Game",
         "closeButtonText": "Close"
+    },
+    "GameCard": {
+        "gameText": "GAME #",
+        "playerOneText": "Player One",
+        "playerTwoText": "Player Two"
     }
 }
