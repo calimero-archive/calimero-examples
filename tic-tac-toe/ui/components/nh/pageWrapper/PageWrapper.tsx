@@ -1,5 +1,7 @@
 import Head from "next/head";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import LoginComponent from "../../dashboard/LoginComponent";
+import LoginPopupComponent from "../loginComponent/LoginComponent";
 import Navigation from "../navigation/Navigation";
 import { SideNavigation } from "../sideNavigation/SideNavigation";
 
@@ -14,6 +16,7 @@ export default function PageWrapper({
   title,
   children,
 }: PageWrapperProps) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
     <>
       <Head>
@@ -24,12 +27,20 @@ export default function PageWrapper({
         <div className="w-full max-w-nh">
           <Navigation />
         </div>
-        <div className="w-full max-w-nh flex">
-          <div className="w-1/4">
-            <SideNavigation menuPage={currentPage} />
+        {isLoggedIn ? (
+          <div className="w-full max-w-nh flex">
+            <div className="w-1/4">
+              <SideNavigation menuPage={currentPage} />
+            </div>
+            <div className={`${isLoggedIn ? "w-3/4" : "w-full"}`}>
+              {children}
+            </div>
           </div>
-          <div className="w-3/4">{children}</div>
-        </div>
+        ) : (
+          <div className="w-full">
+            <LoginPopupComponent />
+          </div>
+        )}
       </div>
     </>
   );

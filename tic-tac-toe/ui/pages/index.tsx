@@ -1,11 +1,5 @@
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import LoginComponent from "../components/dashboard/LoginComponent";
-import OpenGamesList from "../components/dashboard/OpenGameList";
-import MenuNavigation from "../components/Navigation";
-import CalimeroLogo from "../components/nh/images/CalimeroLogo";
-import TictactoeLogo from "../components/nh/images/TictactoeLogo";
 import PageWrapper from "../components/nh/pageWrapper/PageWrapper";
 import calimeroSdk from "../utils/calimeroSdk";
 
