@@ -1,3 +1,4 @@
+import Link from "next/link";
 import translations from "../../../constants/en.global.json";
 
 const GameCardTranslations = translations.GameCard;
@@ -7,6 +8,7 @@ interface GameCardProps {
   playerA: string;
   playerB: string;
   status: string;
+  play?: boolean;
 }
 
 export default function GameCard({
@@ -14,35 +16,38 @@ export default function GameCard({
   playerA,
   playerB,
   status,
+  play = true,
 }: GameCardProps) {
   const getStyle = (status: string) => {
     switch (status) {
-      case "playerAwon":
+      case "Win!":
         return "linear-gradient(90deg, rgba(0, 255, 171, 0.138) 0%, rgba(33, 35, 37, 0.2) 100%), #212325";
-      case "playerBwon":
+      case "Lose!":
         return "linear-gradient(90deg, rgba(239, 68, 68, 0.138) 0%, rgba(33, 35, 37, 0.2) 100%), #212325";
-      case "InProgress":
+      case "Continue game":
         return "#212325";
-      case "Tie":
+      case "Tie!":
         return "linear-gradient(90deg, rgba(239, 180, 28, 0.184) 0%, rgba(33, 35, 37, 0.2) 100%), #212325";
     }
   };
   const textColor = (status: string) => {
     switch (status) {
-      case "playerAwon":
+      case "Win!":
         return "text-nh-green";
-      case "playerBwon":
+      case "Lose!":
         return "text-nh-red";
-      case "InProgress":
+      case "Continue game":
         return "text-nh-navigation-text";
-      case "Tie":
+      case "Tie!":
         return "text-nh-testnet";
     }
   };
 
   return (
     <div
-      className="rounded-lg px-6 py-8 flex items-center"
+      className={`rounded-lg px-6 py-8 flex ${
+        !play && "justify-between"
+      } items-center`}
       style={{
         background: getStyle(status),
       }}
@@ -58,7 +63,7 @@ export default function GameCard({
           </div>
           <div className="text-sm text-white">{playerA}</div>
         </div>
-        <div className="text-white font-black text-base mx-10">VS</div>
+        <div className="text-white font-black text-base mx-10 mt-2">VS</div>
         <div>
           <div className="text-xs text-gray-500">
             {GameCardTranslations.playerTwoText}
@@ -66,9 +71,25 @@ export default function GameCard({
           <div className="text-sm text-white">{playerB}</div>
         </div>
       </div>
-      <div className={`${textColor(status)} font-semibold text-base`}>
-        {status}
-      </div>
+      {play && (
+        <div>
+          {status !== "Continue game" ? (
+            <div className={`${textColor(status)} font-semibold text-base`}>
+              {status}
+            </div>
+          ) : (
+            <Link href={`/game/${gameId}`}>
+              <div
+                className={`${textColor(
+                  status
+                )} font-semibold text-base hover:text-nh-purple cursor-pointer`}
+              >
+                {status}
+              </div>
+            </Link>
+          )}
+        </div>
+      )}
     </div>
   );
 }

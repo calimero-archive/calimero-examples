@@ -1,3 +1,4 @@
+import Link from "next/link";
 import translations from "../../../constants/en.global.json";
 
 const popupTranslations = translations.startNewGamePopup;
@@ -29,12 +30,14 @@ export default function StartGamePopup() {
                     </span>
                   </button>
                 </div>
-                <div
-                  className="text-white text-center text-sm mt-4 hover:text-nh-text-3 cursor-pointer"
-                  onClick={() => console.log("to do close function")}
-                >
-                  {popupTranslations.closeButtonText}
-                </div>
+                <Link href="/">
+                  <div
+                    className="text-white text-center text-sm mt-4 hover:text-nh-text-3 cursor-pointer"
+                    onClick={() => console.log("to do close function")}
+                  >
+                    {popupTranslations.closeButtonText}
+                  </div>
+                </Link>
               </div>
             </div>
           </div>

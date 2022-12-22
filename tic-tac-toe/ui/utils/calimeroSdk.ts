@@ -1,15 +1,15 @@
-import { CalimeroSdk } from "calimero-sdk";
+// import { CalimeroSdk } from "calimero-sdk";
 
-export default CalimeroSdk.init({
-  // @ts-ignore
-  shardId: process.env.NEXT_PUBLIC_CALIMERO_SHARD_ID,
-  // @ts-ignore
-  walletUrl: process.env.NEXT_PUBLIC_WALLET_ENDPOINT_URL,
-  // @ts-ignore
-  calimeroUrl: process.env.NEXT_PUBLIC_CALIMERO_ENDPOINT_URL,
-  // @ts-ignore
-  calimeroWebSdkService: process.env.NEXT_PUBLIC_CALIMERO_WEB_SDK_SERVICE_URL,
-});
+// export default CalimeroSdk.init({
+//   // @ts-ignore
+//   shardId: process.env.NEXT_PUBLIC_CALIMERO_SHARD_ID,
+//   // @ts-ignore
+//   walletUrl: process.env.NEXT_PUBLIC_WALLET_ENDPOINT_URL,
+//   // @ts-ignore
+//   calimeroUrl: process.env.NEXT_PUBLIC_CALIMERO_ENDPOINT_URL,
+//   // @ts-ignore
+//   calimeroWebSdkService: process.env.NEXT_PUBLIC_CALIMERO_WEB_SDK_SERVICE_URL,
+// });
 
 /**
  * Shard ID -> find it in your Calimero dashboard
@@ -17,3 +17,14 @@ export default CalimeroSdk.init({
  * calimeroUrl -> calimero endpoint for querying -> e.g.  url.../neard-rpc
  * calimeroWebSdkService ->  url of the calimero dashboard
  */
+
+import { CalimeroSdk } from "calimero-sdk";
+
+export const config = {
+  shardId: "fran-calimero-testnet",
+  walletUrl: "https://localhost:1234",
+  calimeroUrl: "https://api.development.calimero.network",
+  calimeroWebSdkService: "http://localhost:3000",
+};
+
+export default CalimeroSdk.init(config);

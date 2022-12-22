@@ -1,6 +1,6 @@
 {
     "navigation": {
-        "dashboardTitle": "Start New Game",
+        "startGameTitle": "Start New Game",
         "currentGamesTitle": "Current Games",
         "pastGamesTitle": "Past Games"
     },
