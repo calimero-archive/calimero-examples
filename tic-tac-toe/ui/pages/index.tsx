@@ -16,7 +16,7 @@ export interface GameProps {
 export const getGameStatus = (status: string) => {
   switch (status) {
     case "PlayerAWon":
-      return "win!";
+      return "Win!";
     case "PlayerBWon":
       return "Lose!";
     case "InProgress":

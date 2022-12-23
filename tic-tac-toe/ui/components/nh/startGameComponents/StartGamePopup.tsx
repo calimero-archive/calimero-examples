@@ -1,9 +1,21 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import translations from "../../../constants/en.global.json";
 
 const popupTranslations = translations.startNewGamePopup;
 
-export default function StartGamePopup() {
+interface StartGamePopupProps {
+  contractCall: (playerB) => void;
+}
+
+export default function StartGamePopup({ contractCall }: StartGamePopupProps) {
+  const [playerB, setPlayerB] = useState("");
+  const router = useRouter();
+  const startGame = () => {
+    contractCall(playerB);
+    router.push("/");
+  };
   return (
     <div>
       <div className="relative z-10">
@@ -17,13 +29,15 @@ export default function StartGamePopup() {
                 <div className="text-white">{popupTranslations.formTitle}</div>
                 <input
                   placeholder="Wallet Address"
+                  value={playerB}
+                  onChange={(e) => setPlayerB(e.target.value)}
                   type="text"
                   className="bg-nh-gray rounded-md text-sm leading-6 p-2 text-white w-full mt-1"
                 />
                 <div className="pt-4 w-full">
                   <button
                     className="bg-nh-purple roudned-lg py-2 px-10 flex items-center justify-center rounded-lg w-full"
-                    onClick={() => console.log("call contract and start game")}
+                    onClick={() => startGame()}
                   >
                     <span className="text-white text-sm leading-5 font-medium">
                       {popupTranslations.buttonText}
@@ -31,10 +45,7 @@ export default function StartGamePopup() {
                   </button>
                 </div>
                 <Link href="/">
-                  <div
-                    className="text-white text-center text-sm mt-4 hover:text-nh-text-3 cursor-pointer"
-                    onClick={() => console.log("to do close function")}
-                  >
+                  <div className="text-white text-center text-sm mt-4 hover:text-nh-text-3 cursor-pointer">
                     {popupTranslations.closeButtonText}
                   </div>
                 </Link>

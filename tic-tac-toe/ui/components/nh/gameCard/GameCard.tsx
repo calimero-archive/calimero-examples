@@ -18,6 +18,7 @@ export default function GameCard({
   status,
   play = true,
 }: GameCardProps) {
+  console.log(status);
   const getStyle = (status: string) => {
     switch (status) {
       case "Win!":

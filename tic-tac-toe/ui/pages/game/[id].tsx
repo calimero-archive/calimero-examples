@@ -69,7 +69,7 @@ export default function Game() {
           nearAPI.transactions.functionCall(
             "make_a_move",
             Buffer.from(JSON.stringify(contractArgs)),
-            10000000000000,
+            30000000000000,
             "0"
           ),
         ],
