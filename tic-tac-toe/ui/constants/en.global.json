@@ -2,7 +2,8 @@
     "navigation": {
         "startGameTitle": "Start New Game",
         "currentGamesTitle": "Current Games",
-        "pastGamesTitle": "Past Games"
+        "pastGamesTitle": "Past Games",
+        "addFunctionKeyTitle": "Add function key"
     },
     "loginComponent": {
         "title": "Login with NEAR",
@@ -12,7 +13,9 @@
     "currentGamesPage": {
         "pageTitle": "Current Games",
         "componentTitle": "There are no games to display, start a new Tictactoe game",
-        "buttonText": "Start New Game"
+        "buttonText": "Start New Game",
+        "turnText": "Your Turn",
+        "refreshButtonTitle": "Refresh Games"
     },
     "pastGamesPage": {
         "pageTitle": "Past Games",
@@ -29,5 +32,11 @@
         "gameText": "GAME #",
         "playerOneText": "Player One",
         "playerTwoText": "Player Two"
+    },
+    "pages": {
+        "pastGamesTitle": "Tictactoe | Past Games",
+        "currentGame": "Tictactoe | Current Game",
+        "indexPageTitle": "TicTacToe | Running Games",
+        "startGameTitle": "TicTacToe | Start new Game"
     }
 }

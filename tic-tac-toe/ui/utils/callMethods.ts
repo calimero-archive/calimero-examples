@@ -1,225 +1,179 @@
-import calimeroSdk from "./calimeroSdk";
+import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import * as nearAPI from "near-api-js";
-import bs58 from "bs58";
-import * as big from "bn.js";
-import { InMemorySigner } from "near-api-js";
-import { KeyPair } from "near-api-js/lib/utils";
+import { GameProps } from "../pages";
 
-const ACCOUNT_ID = "accountId";
-const PUBLIC_KEY = "publicKey";
-const contractAddress = "tictactoe.90.calimero.testnet";
-const networkId = "90-calimero-testnet";
+export const startGameMethod = async (playerB: string, calimero: CalimeroSdk | undefined) => {
+    const accountId = localStorage.getItem("accountId");
+    const publicKey = localStorage.getItem("publicKey");
+    //@ts-ignore
+    const calimeroConnection = await calimero.connect();
+    const walletConnection = new nearAPI.WalletConnection(
+      calimeroConnection.connection,
+      ""
+    );
+    //@ts-ignore
+    walletConnection._authData = { accountId, allKeys: [publicKey] };
 
-interface IProps {
-  boardIndex: number;
-  gameId: number;
-}
-export async function makeMoveMethod({ boardIndex, gameId }: IProps) {
-  let sender;
-  try {
-    sender = localStorage.getItem(ACCOUNT_ID);
-  } catch (error) {
-    console.log("Error while fetching local storage.");
-  }
+    //@ts-ignore
+    const account = walletConnection.account(accountId);
 
-  //1.1 Fetching keyStore saved in browserlocalstorage
-  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
-    localStorage,
-    "competition:"
-  );
-  //1.1. Fetching function key from keyStore
-  let keyPair = await keyStore.getKey(networkId, sender);
-  const signer = await nearAPI.InMemorySigner.fromKeyPair(
-    networkId,
-    sender,
-    keyPair
-  );
-
-  const calimeroConnection = await nearAPI.connect({
-    networkId: networkId,
-    keyStore: keyStore,
-    signer: signer,
-    nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/k-calimero-testnet/neard-rpc/`,
-    walletUrl: "https://localhost:1234/",
-    headers: {
-      // @ts-expect-error: Type 'undefined' is not assignable to type 'string | number'
-      "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY,
-    },
-  });
-  let account = new nearAPI.Account(calimeroConnection.connection, sender);
-  //init instance of Contract and call its change Method make_a_move
-  let contract = new nearAPI.Contract(account, contractAddress, {
-    viewMethods: [],
-    changeMethods: ["make_a_move"],
-  });
-  await contract["make_a_move"](
-    {
-      game_id: gameId,
-      selected_field: boardIndex,
-    },
-    new big.BN("300000000000000"),
-    new big.BN("0")
-  );
-}
-
-interface NewProps {
-  playerB: string;
-}
-
-export async function startNewGameMethod({ playerB }: NewProps) {
-  let sender;
-  try {
-    sender = localStorage.getItem(ACCOUNT_ID);
-  } catch (error) {
-    console.log("Error while fetching local storage.");
-  }
-  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
-    localStorage,
-    "competition:"
-  );
-
-  let keyPair = await keyStore.getKey(networkId, sender);
-  const signer = await nearAPI.InMemorySigner.fromKeyPair(
-    networkId,
-    sender,
-    keyPair
-  );
-
-  const calimeroConnection = await nearAPI.connect({
-    networkId: networkId,
-    keyStore: keyStore,
-    signer: signer,
-    nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/90-calimero-testnet/neard-rpc/`,
-    walletUrl: "https://testnet.mynearwallet.com/",
-    headers: {
-      // @ts-expect-error: Type 'undefined' is not assignable to type 'string | number'
-      "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY,
-    },
-  });
-  let account = new nearAPI.Account(calimeroConnection.connection, sender);
-  let contract = new nearAPI.Contract(account, contractAddress, {
-    viewMethods: [],
-    changeMethods: ["start_game"],
-  });
-  await contract["start_game"](
-    {
-      player_a: sender.toString(),
+    const contractArgs = {
+      player_a: accountId,
       player_b: playerB,
-    },
-    new big.BN("300000000000000"),
-    new big.BN("0")
-  );
-}
+    };
 
-export async function addFunctionKey() {
-  //Currently signed in user is "sender"
-  let sender;
-  let publicKeyAsStr;
-  try {
-    sender = localStorage.getItem(ACCOUNT_ID);
-    //Fetching public key as string from wallet data
-    publicKeyAsStr = bs58.encode(
-      // @ts-expect-error: Argument of type 'string | null' is not assignable to parameter of type 'SetStateAction<string>'.
-      JSON.parse(localStorage.getItem(PUBLIC_KEY))
+    const metaJson = {
+      //@ts-ignore
+      calimeroRPCEndpoint: calimeroConnection.config.nodeUrl,
+      //@ts-ignore
+      calimeroShardId: calimeroConnection.config.networkId,
+      calimeroAuthToken: localStorage.getItem("calimeroToken"),
+    };
+    const meta = JSON.stringify(metaJson);
+
+    try {
+      //@ts-ignoreS
+      await account.signAndSendTransaction({
+        receiverId: "tictactoe.fran.calimero.testnet",
+        actions: [
+          nearAPI.transactions.functionCall(
+            "start_game",
+            Buffer.from(JSON.stringify(contractArgs)),
+            10000000000000,
+            "0"
+          ),
+        ],
+        walletMeta: meta,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+};
+
+export async function getNumberOfGames(walletConnectionObject: WalletConnection | undefined) {
+    if (walletConnectionObject) {
+      const account = await walletConnectionObject.account();
+      if(account.accountId){
+      const contract = new nearAPI.Contract(
+        account,
+        "tictactoe.fran.calimero.testnet",
+        { viewMethods: ["num_of_games"], changeMethods: [] }
+      );
+      const numOfGames = await contract["num_of_games"]({});
+      return numOfGames;
+      }
+    }
+  };
+
+export async function getGame(gameId: number, walletConnectionObject: WalletConnection | undefined) {
+    if (walletConnectionObject) {
+      const account = await walletConnectionObject.account();
+      const contract = new nearAPI.Contract(
+        account,
+        "tictactoe.fran.calimero.testnet",
+        { viewMethods: ["get_game"], changeMethods: [] }
+      );
+      const game = await contract["get_game"]({ game_id: gameId });
+      return game;
+    }
+};
+
+export const setGames = async (
+    setNumberOfGames: (numberOfGames: string) => void,
+    numberOfGames: string,
+    setGamesData: (gameData: GameProps[]) => void,
+    walletConnectionObject: WalletConnection | undefined,
+) => {
+    setNumberOfGames(await getNumberOfGames(walletConnectionObject));
+    if (numberOfGames) {
+      const gamesDataTemp: GameProps[] = [];
+      for (let i = 0; i < parseInt(numberOfGames); i++) {
+        let temp = await getGame(i, walletConnectionObject);
+        const gameData = {
+          boardStatus: temp.board[0].concat(temp.board[1], temp.board[2]),
+          playerA: temp.player_a,
+          playerB: temp.player_b,
+          playerTurn: temp.player_a_turn ? temp.player_a : temp.player_b,
+          status: temp.status,
+          gameId: i,
+        };
+        const loggedUser = localStorage.getItem("accountId");
+        if (gameData.playerA == loggedUser || gameData.playerB === loggedUser) {
+          gamesDataTemp.push(gameData);
+        }
+      }
+      setGamesData(gamesDataTemp);
+    }
+  };
+
+  export const makeAMoveMethod = async (id : number, squareId: number, calimero: CalimeroSdk | undefined) => {
+    const accountId = localStorage.getItem("accountId");
+    const publicKey = localStorage.getItem("publicKey");
+    //@ts-expect-error
+    const calimeroConnection = await calimero.connect();
+    //@ts-expect-error
+    const walletConnection = new nearAPI.WalletConnection(
+      calimeroConnection.connection
     );
-  } catch (error) {
-    console.log("Error while fetching local storage.");
-  }
+    //@ts-expect-error
+    walletConnection._authData = { accountId, allKeys: [publicKey] };
 
-  //Fetch KeyStore from browser local storage
-  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
+    const account = walletConnection.account();
 
-  //Create connection to the network using the signer's keystore and config for your Calimero Private Shard
-  const calimeroConnection = await nearAPI.connect({
-    networkId: networkId,
-    keyStore: keyStore,
-    //create new InMemorySigner using keystore
-    signer: new InMemorySigner(keyStore),
-    //Calimero RPC endpoint
-    nodeUrl: `${process.env.NEXT_PUBLIC_CALIMERO_NODE_URL}/90-calimero-testnet/neard-rpc/`,
-    walletUrl: "https://testnet.mynearwallet.com/",
-    headers: {
-      //Auth token used to authenticate connection to calimero
-      // @ts-expect-error: Type 'undefined' is not assignable to type 'string | number'
-      "x-api-key": process.env.NEXT_PUBLIC_CALIMERO_X_API_HEADER_KEY,
-    },
-  });
+    const contractArgs = {
+      game_id: id,
+      selected_field: squareId,
+    };
 
-  const calimeroProvider = calimeroConnection.connection.provider;
-  //Fetch accessKey to save latest blockchain data and nonce
-  // @ts-expect-error: Argument of type 'string[]' is not assignable to parameter of type 'RpcQueryRequest'
-  const accessKey = await calimeroProvider.query([
-    `access_key/${sender}/${publicKeyAsStr}`,
-    "",
-  ]);
-  const recentBlockHash = nearAPI.utils.serialize.base_decode(
-    accessKey.block_hash
-  );
-  // @ts-expect-error: Property 'nonce' does not exist on type 'QueryResponseKind'
-  const nonce = ++accessKey.nonce + 1;
+    const metaJson = {
+      //@ts-expect-error
+      calimeroRPCEndpoint: calimeroConnection.config.nodeUrl,
+      //@ts-expect-error
+      calimeroShardId: calimeroConnection.config.networkId,
+      calimeroAuthToken: localStorage.getItem("calimeroToken"),
+    };
+    const meta = JSON.stringify(metaJson);
 
-  /*
-    2. CREATE RANDOM KEYPAIR WHICH IS GOING TO BE USED AND SAVED AS A CONTRACT FUNCTION CALL KEY
-  */
+    try {
+      //@ts-expect-error
+      await account.signAndSendTransaction({
+        receiverId: "tictactoe.fran.calimero.testnet",
+        actions: [
+          nearAPI.transactions.functionCall(
+            "make_a_move",
+            Buffer.from(JSON.stringify(contractArgs)),
+            30000000000000,
+            "0"
+          ),
+        ],
+        walletMeta: meta,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+};
 
-  //Create new random key pair
-  let newKeyPair = KeyPair.fromRandom("ed25519");
-  //Create new keystore for newly created key pair
-  let keystore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
-    localStorage,
-    "competition:"
-  );
-  //Save key to local storage so it can be fetched later and used to sign transactions
-  keystore.setKey(networkId, sender, newKeyPair);
-
-  //Contract default config
-  const method_names = ["make_a_move", "start_game"];
-  //NEAR value which this key can spend
-  const allowance = nearAPI.utils.format.parseNearAmount("1");
-  //Create Actions array -> can batch transactions
-  const actions = [
-    nearAPI.transactions.addKey(
-      newKeyPair.getPublicKey(),
-      nearAPI.transactions.functionCallAccessKey(
-        contractAddress,
-        method_names,
-        allowance
-      )
-    ),
-  ];
-  //Create transaction with provided sender, keypair, receiver and actions
-  const transaction = nearAPI.transactions.createTransaction(
-    sender,
-    newKeyPair.getPublicKey(),
-    sender,
-    nonce,
-    actions,
-    recentBlockHash
-  );
-  let serializedTx;
-  try {
-    //Serializing transactions
-    serializedTx = nearAPI.utils.serialize.serialize(
-      nearAPI.transactions.SCHEMA,
-      transaction
-    );
-  } catch (e) {
-    console.log("ERROR: serialization of transaction!");
-  }
-
-  try {
-    //Using CalimeroSdk function to sign transaction and openup a wallet approve request
-    calimeroSdk.signTransaction(
-      encodeURIComponent(Buffer.from(serializedTx).toString("base64")),
-      window.location.href
-    );
-  } catch (e) {
-    console.log("EXCEPTION: signing transaction failed");
-    console.log(e);
-  }
-
-  /**
-   * FINAL: After function key is added it is no longer required to approve transactions from wallet. Methods defined in actions:
-   * -> start_game, make_a_move can be called without approval
-   */
-}
+export async function getGameData(
+    gameId: number,
+    setGameStatus: (gameStatus: GameProps) => void,
+    walletConnectionObject: WalletConnection | undefined
+  ) {
+    if (walletConnectionObject) {
+      const account = walletConnectionObject.account();
+      const contract = new nearAPI.Contract(
+        account,
+        "tictactoe.fran.calimero.testnet",
+        { viewMethods: ["get_game"], changeMethods: [] }
+      );
+      const temp = await contract["get_game"]({ game_id: gameId });
+      const gameData = {
+        boardStatus: temp.board[0].concat(temp.board[1], temp.board[2]),
+        playerA: temp.player_a,
+        playerB: temp.player_b,
+        playerTurn: temp.player_a_turn ? temp.player_a : temp.player_b,
+        status: temp.status,
+        gameId: gameId,
+      };
+      setGameStatus(gameData);
+    }
+};

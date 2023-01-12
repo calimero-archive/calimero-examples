@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Square from "./Square";
-import * as nearAPI from "near-api-js";
 import NotificationCard from "../notificationCard/NotificationCard";
 
 export interface GameProps {
@@ -14,23 +13,18 @@ export interface GameProps {
 interface IProps {
   gameData: GameProps;
   gameId: number;
-  callMethod: (id, squareId) => void;
+  callMethod: (id: number, squareId: number) => void;
 }
 
 export default function GameBoard({ gameData, gameId, callMethod }: IProps) {
   const [squares, setSquares] = useState<string[]>(Array(9).fill(null));
   const [ended, setEnded] = useState<string>("");
   const [color, setColor] = useState<string>("bg-white");
-  const [loggedInPlayer, setLoggedInPlayer] = useState<string>("");
   const [show, setShow] = useState(false);
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
 
   useEffect(() => {
-    let signedPlayer = localStorage.getItem("account_id");
-    if (signedPlayer) {
-      setLoggedInPlayer(signedPlayer);
-    }
     setBoard();
   }, []);
 

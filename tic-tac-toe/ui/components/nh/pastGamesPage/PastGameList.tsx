@@ -1,25 +1,24 @@
 import StartGameComponent from "../startGameComponents/StartGameComponent";
 import translations from "../../../constants/en.global.json";
-import { GameProps, getGameStatus } from "../../../pages";
+import { GameProps } from "../../../pages";
 import GameCard from "../gameCard/GameCard";
+import { getGameStatus } from "../../../utils/styleFunctions";
 
 const translation = translations.currentGamesPage;
 
 interface PastGameListProps {
   gamesList: GameProps[];
-  loading: boolean;
   accountId: String | null;
 }
 
 export default function PastGameList({
   gamesList,
-  loading,
   accountId,
 }: PastGameListProps) {
   return (
     <div>
       <div className="font-medium text-2xl leading-7 mt-12 text-white">
-        Past Games
+        {translation.pageTitle}
       </div>
       {gamesList.length === 0 && accountId ? (
         <StartGameComponent

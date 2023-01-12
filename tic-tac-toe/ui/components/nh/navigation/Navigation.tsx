@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import CalimeroLogo from "../images/CalimeroLogo";
 import TictactoeLogo from "../images/TictactoeLogo";
 import * as nearAPI from "near-api-js";
+import translations from "../../../constants/en.global.json";
 
 interface NavigationProps {
   walletConnection?: WalletConnection;
@@ -42,7 +43,7 @@ export default function Navigation({ walletConnection }: NavigationProps) {
             className="bg-white text-sm font-medium text-black rounded-lg px-4 h-8 mt-2 flex items-center justify-center hover:bg-nh-purple cursor-pointer"
             onClick={addFunctionkey}
           >
-            Add Function Key
+            {translations.navigation.addFunctionKeyTitle}
           </div>
           <div
             className="text-white hover:text-nh-purple text-base leading-6 

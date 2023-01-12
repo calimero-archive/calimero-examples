@@ -1,3 +1,4 @@
+import { CalimeroSdk } from "calimero-sdk";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -6,14 +7,18 @@ import translations from "../../../constants/en.global.json";
 const popupTranslations = translations.startNewGamePopup;
 
 interface StartGamePopupProps {
-  contractCall: (playerB) => void;
+  contractCall: (playerB: string, calimero: CalimeroSdk | undefined) => void;
+  calimero: CalimeroSdk | undefined;
 }
 
-export default function StartGamePopup({ contractCall }: StartGamePopupProps) {
+export default function StartGamePopup({
+  contractCall,
+  calimero,
+}: StartGamePopupProps) {
   const [playerB, setPlayerB] = useState("");
   const router = useRouter();
   const startGame = () => {
-    contractCall(playerB);
+    contractCall(playerB, calimero);
     router.push("/");
   };
   return (

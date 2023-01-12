@@ -1,22 +1,20 @@
 import StartGameComponent from "../startGameComponents/StartGameComponent";
 import translations from "../../../constants/en.global.json";
-import { GameProps, getGameStatus } from "../../../pages";
+import { GameProps } from "../../../pages";
 import GameCard from "../gameCard/GameCard";
-import useCalimero from "../../../hooks/useCalimero";
 import { RefreshIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
+import { getGameStatus } from "../../../utils/styleFunctions";
 
 const translation = translations.currentGamesPage;
 
 interface CurrentGameListProps {
   gamesList: GameProps[];
-  loading: boolean;
   accountId: String | null;
 }
 
 export default function CurrentGamesList({
   gamesList,
-  loading,
   accountId,
 }: CurrentGameListProps) {
   const router = useRouter();
@@ -27,7 +25,7 @@ export default function CurrentGamesList({
       </div>
       <div className="w-full flex justify-end" onClick={() => router.reload()}>
         <div className="flex text-white cursor-pointer hover:text-nh-purple">
-          <p className="mr-2">Refresh Games</p>
+          <p className="mr-2">{translation.refreshButtonTitle}</p>
           <RefreshIcon className="w-6 h-6" />
         </div>
       </div>
