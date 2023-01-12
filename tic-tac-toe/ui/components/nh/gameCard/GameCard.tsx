@@ -18,7 +18,6 @@ export default function GameCard({
   status,
   play = true,
 }: GameCardProps) {
-  console.log(status);
   const getStyle = (status: string) => {
     switch (status) {
       case "Win!":
@@ -72,25 +71,27 @@ export default function GameCard({
           <div className="text-sm text-white">{playerB}</div>
         </div>
       </div>
-      {play && (
-        <div>
-          {status !== "Continue game" ? (
-            <div className={`${textColor(status)} font-semibold text-base`}>
-              {status}
-            </div>
-          ) : (
-            <Link href={`/game/${gameId}`}>
-              <div
-                className={`${textColor(
-                  status
-                )} font-semibold text-base hover:text-nh-purple cursor-pointer`}
-              >
+      <div className="w-full flex justify-end pr-10">
+        {play && (
+          <div>
+            {status !== "Continue game" ? (
+              <div className={`${textColor(status)} font-semibold text-base`}>
                 {status}
               </div>
-            </Link>
-          )}
-        </div>
-      )}
+            ) : (
+              <Link href={`/game/${gameId}`}>
+                <span
+                  className={`${textColor(
+                    status
+                  )} font-semibold text-base hover:text-nh-purple cursor-pointer`}
+                >
+                  {status}
+                </span>
+              </Link>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

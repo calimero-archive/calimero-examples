@@ -11,6 +11,7 @@ export interface GameProps {
   playerB: string;
   playerTurn: string;
   status: string;
+  gameId: number;
 }
 
 export const getGameStatus = (status: string) => {
@@ -46,8 +47,12 @@ export default function CurrentGamesPage() {
           playerB: temp.player_b,
           playerTurn: temp.player_a_turn ? temp.player_a : temp.player_b,
           status: temp.status,
+          gameId: i,
         };
-        gamesDataTemp.push(gameData);
+        const loggedUser = localStorage.getItem("accountId");
+        if (gameData.playerA == loggedUser || gameData.playerB == loggedUser) {
+          gamesDataTemp.push(gameData);
+        }
       }
       setGamesData(gamesDataTemp);
       if (gamesDataTemp) {
@@ -70,13 +75,15 @@ export default function CurrentGamesPage() {
   async function getNumberOfGames() {
     if (walletConnectionObject) {
       const account = await walletConnectionObject.account();
-      const contract = new nearAPI.Contract(
-        account,
-        "tictactoe.fran.calimero.testnet",
-        { viewMethods: ["num_of_games"], changeMethods: [] }
-      );
-      const numOfGames = await contract["num_of_games"]({});
-      return numOfGames;
+      if (account.accountId) {
+        const contract = new nearAPI.Contract(
+          account,
+          "tictactoe.fran.calimero.testnet",
+          { viewMethods: ["num_of_games"], changeMethods: [] }
+        );
+        const numOfGames = await contract["num_of_games"]({});
+        return numOfGames;
+      }
     }
   }
 

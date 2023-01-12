@@ -28,6 +28,7 @@ export default function Game() {
         playerB: temp.player_b,
         playerTurn: temp.player_a_turn ? temp.player_a : temp.player_b,
         status: temp.status,
+        gameId: gameId,
       };
       setGameStatus(gameData);
     }
