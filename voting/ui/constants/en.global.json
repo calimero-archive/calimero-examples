@@ -1,0 +1,16 @@
+{
+    "navigation": {
+        "startGameTitle": "Start New Game",
+        "currentGamesTitle": "Current Games",
+        "pastGamesTitle": "Past Games",
+        "addFunctionKeyTitle": "Add function key"
+    },
+    "loginComponent": {
+        "title": "Login with NEAR",
+        "subtitle": "Connecting NEAR wallet will connect to Calimero Private Shard and sync Account",
+        "buttonText": "Login With NEAR"
+    },
+    "pages": {
+        "indexPageTitle": "Voting | Calimero Example"
+    }
+}

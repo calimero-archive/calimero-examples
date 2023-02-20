@@ -1,47 +1,32 @@
-import Head from "next/head";
+import { useRouter } from "next/router";
+import useCalimero from "../hooks/useCalimero";
 import { useEffect, useState } from "react";
-import LoginComponent from "../components/dashboard/LoginComponent";
-import MenuNavigation from "../components/Navigation";
+import translations from "../constants/en.global.json";
 import VotingComponent from "../components/voting/VotingComponent";
-import calimeroSdk from "../utils/calimeroSdk";
+import PageWrapper from "../components/nh/pageWrapper/PageWrapper";
+import { createVoteContractCall } from "../utils/callMethods";
+
+
 
 export default function Dashboard() {
-  const [logged, setLogged] = useState<boolean>(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const { isSignedIn, calimero, walletConnectionObject } = useCalimero();
+  const [accountId, setAccountId] = useState<String | null>("");
+
   useEffect(() => {
-    const loggedIn = calimeroSdk.isSignedIn();
-    if (loggedIn) {
-      setLogged(true);
-    } else {
-      setLogged(false);
+    if (isSignedIn && localStorage.getItem("accountId")) {
+      setAccountId(localStorage.getItem("accountId"));
     }
-  });
+  }, [isSignedIn]);
+
   return (
-    <div>
-      <Head>
-        <title>Dashboard | Calimero</title>
-        <meta name="description" content="TicTacToe" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <MenuNavigation />
-      <main className="h-screen w-full ">
-        <div className=" pt-24 px-32 flex justify-between items-center">
-          <div className="text-5xl font-bold ">
-            <p>Voting Smart Contract</p>
-          </div>
-        </div>
-        <div className="mt-1">
-          {logged ? (
-            <div>
-              <VotingComponent />
-            </div>
-          ) : (
-            <div>
-              <LoginComponent />
-            </div>
-          )}
-        </div>
-      </main>
-    </div>
+    <PageWrapper
+      title={translations.pages.indexPageTitle}
+    >
+     <VotingComponent
+        contractCall={(option, calimero) => createVoteContractCall(option, calimero)}
+        calimero={calimero}
+        walletConnectionObject={walletConnectionObject}
+      />
+    </PageWrapper>
   );
 }
