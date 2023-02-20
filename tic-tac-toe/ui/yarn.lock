@@ -497,10 +497,10 @@ buffer@^6.0.3:
     base64-js "^1.3.1"
     ieee754 "^1.2.1"
 
-calimero-sdk@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/calimero-sdk/-/calimero-sdk-0.0.3.tgz#fccf1648372310db1c2797766b0ad8d96eb39f24"
-  integrity sha512-3lnNPHcMsS0nDhpmmAItQ5Izl+Lg9hdsfg4IQwR8EAOLyAwvIxisCZ3rzoE19Fyt83Jrd/kdLTuWRKoU3QiDeA==
+calimero-sdk@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/calimero-sdk/-/calimero-sdk-0.0.8.tgz#f01882dff83452a76f0a102d9653aa033e74eafc"
+  integrity sha512-ZD+JyUeJg1vjmymIprg9tGvQ7j5Tb4uO1qmvdusnrRRD5fkFj8E7AaN4Fw44Vz/2/VKZOIaJJizKftweka9hlg==
   dependencies:
     axios "^0.27.2"
     buffer "^6.0.3"

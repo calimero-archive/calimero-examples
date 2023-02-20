@@ -15,7 +15,7 @@ export default function Navigation({ walletConnection }: NavigationProps) {
   const addFunctionkey = async () => {
     //@ts-ignore
     await walletConnection.addFunctionKey(
-      "tictactoe.fran.calimero.testnet",
+      "tictactoe.lal20.calimero.testnet",
       ["make_a_move", "start_game"],
       nearAPI.utils.format.parseNearAmount("1"),
       localStorage.getItem("calimeroToken")

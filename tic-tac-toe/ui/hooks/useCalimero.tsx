@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import calimeroSdk from "../utils/calimeroSdk";
 import walletConnection from "../utils/walletConnection";
 
-import { Buffer } from "buffer";
 
 export default function useCalimero() {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -22,7 +21,6 @@ export default function useCalimero() {
 
   useEffect(() => {
     const initialiseCalimero = async () => {
-      window.Buffer = window.Buffer || Buffer;
       setCalimero(calimeroSdk);
       const wallet = await walletConnection();
       setWalletConnectionObject(wallet);

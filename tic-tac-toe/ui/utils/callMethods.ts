@@ -34,7 +34,7 @@ export const startGameMethod = async (playerB: string, calimero: CalimeroSdk | u
     try {
       //@ts-ignoreS
       await account.signAndSendTransaction({
-        receiverId: "tictactoe.fran.calimero.testnet",
+        receiverId: "tictactoe.lal89.calimero.testnet",
         actions: [
           nearAPI.transactions.functionCall(
             "start_game",
@@ -56,7 +56,7 @@ export async function getNumberOfGames(walletConnectionObject: WalletConnection 
       if(account.accountId){
       const contract = new nearAPI.Contract(
         account,
-        "tictactoe.fran.calimero.testnet",
+        "tictactoe.lal89.calimero.testnet",
         { viewMethods: ["num_of_games"], changeMethods: [] }
       );
       const numOfGames = await contract["num_of_games"]({});
@@ -70,7 +70,7 @@ export async function getGame(gameId: number, walletConnectionObject: WalletConn
       const account = await walletConnectionObject.account();
       const contract = new nearAPI.Contract(
         account,
-        "tictactoe.fran.calimero.testnet",
+        "tictactoe.lal89.calimero.testnet",
         { viewMethods: ["get_game"], changeMethods: [] }
       );
       const game = await contract["get_game"]({ game_id: gameId });
@@ -137,7 +137,7 @@ export const setGames = async (
     try {
       //@ts-expect-error
       await account.signAndSendTransaction({
-        receiverId: "tictactoe.fran.calimero.testnet",
+        receiverId: "tictactoe.lal89.calimero.testnet",
         actions: [
           nearAPI.transactions.functionCall(
             "make_a_move",
@@ -162,7 +162,7 @@ export async function getGameData(
       const account = walletConnectionObject.account();
       const contract = new nearAPI.Contract(
         account,
-        "tictactoe.fran.calimero.testnet",
+        "tictactoe.lal89.calimero.testnet",
         { viewMethods: ["get_game"], changeMethods: [] }
       );
       const temp = await contract["get_game"]({ game_id: gameId });

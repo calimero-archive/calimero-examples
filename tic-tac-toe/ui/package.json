@@ -12,7 +12,7 @@
     "@headlessui/react": "^1.6.6",
     "@heroicons/react": "^1.0.6",
     "bs58": "^5.0.0",
-    "calimero-sdk": "0.0.3",
+    "calimero-sdk": "0.0.8",
     "near-api-js": "^1.1.0",
     "next": "12.2.5",
     "react": "18.2.0",
