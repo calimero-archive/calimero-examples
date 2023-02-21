@@ -6,5 +6,5 @@ export default CalimeroSdk.init({
   //@ts-ignore
   calimeroUrl: process.env.NEXT_PUBLIC_CALIMERO_NODE_BASE,
   //@ts-ignore
-  calimeroWebSdkService: process.env.NEXT_PUBLIC_CALIMERO_NODE_BASE,
+  calimeroWebSdkService: process.env.NEXT_PUBLIC_CALIMERO_WEB_SDK_SERVICE_URL,
 });

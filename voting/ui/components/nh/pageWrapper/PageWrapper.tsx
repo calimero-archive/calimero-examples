@@ -25,9 +25,9 @@ export default function PageWrapper({
         <div className="w-full max-w-nh">
           <Navigation walletConnection={walletConnectionObject} />
         </div>
-        {!isSignedIn ? (
+        {isSignedIn ? (
           <div className="w-full max-w-nh flex">
-            <div className={`${!isSignedIn ? "w-3/4" : "w-full"}`}>
+            <div className={`${isSignedIn ? "w-3/4" : "w-full"}`}>
               {children}
             </div>
           </div>
