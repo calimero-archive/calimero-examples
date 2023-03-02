@@ -2,7 +2,14 @@ import translations from "../../../constants/en.global.json";
 import NearLogo from "../images/NearLogo";
 
 const componentTranslations = translations.loginComponent;
-export default function LoginPopupComponent() {
+
+interface LoginPopupComponentProps {
+  login: () => Promise<void>;
+}
+
+export default function LoginPopupComponent({
+  login,
+}: LoginPopupComponentProps) {
   return (
     <div className="h-screen flex justify-center">
       <div className="w-[434px] pt-40">
@@ -16,7 +23,7 @@ export default function LoginPopupComponent() {
           <div className="pt-9">
             <button
               className="bg-white roudned-lg py-3 gap-x-4 px-10 flex items-center text-nh-bglight rounded-lg hover:bg-nh-purple"
-              onClick={() => console.log("calimerosdk login")}
+              onClick={login}
             >
               <NearLogo />
               <span className="text-base leading-6 font-medium">

@@ -11,7 +11,7 @@ near create-account \
   --networkId "$1-calimero-testnet" && \
 near deploy \
   --accountId "voting.$destination_master_account" \
-  --initFunction new --initArgs '{"question": "how can i deploy this?", "options": ["dunno","google it"]}' \
+  --initFunction new --initArgs '{"question": "Which blockchain is best?", "options": ["NEAR","Bitcoin"]}' \
   --wasmFile target/wasm32-unknown-unknown/release/poll.wasm \
-  --nodeUrl "" \
+  --nodeUrl "calimero-rpc-node-url" \
   --networkId "$1-calimero-testnet"

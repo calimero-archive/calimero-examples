@@ -1,65 +1,61 @@
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Board from "../../components/Board";
-import { GameProps, getGames } from "../../components/dashboard/OpenGameList";
-import MenuNavigation from "../../components/Navigation";
-import calimeroSdk from "../../utils/calimeroSdk";
+import PageWrapper from "../../components/nh/pageWrapper/PageWrapper";
+import useCalimero from "../../hooks/useCalimero";
+import GameCard from "../../components/nh/gameCard/GameCard";
+import { GameProps } from "..";
+import GameBoard from "../../components/nh/gameBoard/GameBoard";
+import { getGameData, makeAMoveMethod } from "../../utils/callMethods";
+import { getGameStatus } from "../../utils/styleFunctions";
+import translations from "../../constants/en.global.json";
 
 export default function Game() {
   const router = useRouter();
-  const [gameData, setGameData] = useState<GameProps>();
-  const [loading, setLoading] = useState<boolean>(false);
   const { id } = router.query;
-  const getGame = async () => {
-    if (id) {
-      setLoading(true);
-      const temp = await getGames(parseInt(id.toString()));
-      let gameData = {
-        boardStatus: temp.board[0].concat(temp.board[1], temp.board[2]),
-        playerA: temp.player_a,
-        playerB: temp.player_b,
-        playerTurn: temp.player_a_turn ? temp.player_a : temp.player_b,
-        status: temp.status,
-      };
-      setGameData(gameData);
-      setLoading(false);
-    }
-  };
+  const { calimero, walletConnectionObject } = useCalimero();
+  const [gameStatus, setGameStatus] = useState<GameProps>();
 
   useEffect(() => {
-    if (!calimeroSdk.isSignedIn()) {
-      router.replace("/");
-    }
-    const setupGame = async () => {
-      await getGame();
+    const setGame = async () => {
+      getGameData(
+        parseInt(id?.toString() || ""),
+        setGameStatus,
+        walletConnectionObject
+      );
     };
-    if (!gameData) {
-      setupGame();
+    if (!!id) {
+      setGame();
     }
-  }, [id]);
+  }, [id, walletConnectionObject]);
 
   return (
-    <div>
-      <Head>
-        <title>Tic Tac Toe | Calimero Game</title>
-        <meta name="description" content="TicTacToe" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <MenuNavigation />
-      <div className="pt-24 flex justify-center items-center bg-black h-screen">
-        <div className="w-2/3">
-          <div className="bg-white">
-            {!loading && gameData && id && (
-              <Board
-                gameData={gameData}
-                gameId={parseInt(id.toString())}
-                getGame={getGame}
-              />
-            )}
-          </div>
+    <PageWrapper
+      title={translations.pages.currentGame}
+      currentPage={router.pathname}
+    >
+      {gameStatus && id && (
+        <div className="mt-10">
+          <GameCard
+            gameId={parseInt(id.toString())}
+            playerA={gameStatus.playerA}
+            playerB={gameStatus.playerB}
+            status={getGameStatus(gameStatus.status)}
+            play={false}
+          />
+          {gameStatus.playerTurn == localStorage.getItem("accountId") && (
+            <div className="flex justify-center items-center mt-4 text-white text-base font-semibold">
+              {translations.currentGamesPage.turnText}
+            </div>
+          )}
+          <GameBoard
+            gameData={gameStatus}
+            gameId={parseInt(id.toString())}
+            callMethod={(id, squareId) =>
+              makeAMoveMethod(id, squareId, calimero)
+            }
+          />
         </div>
-      </div>
-    </div>
+      )}
+    </PageWrapper>
   );
 }

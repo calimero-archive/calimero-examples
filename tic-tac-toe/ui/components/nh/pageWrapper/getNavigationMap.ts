@@ -6,13 +6,13 @@ const navigationObject = translation.navigation;
 export function getNavigationMap() {
   const navigation = [
     {
-      name: navigationObject.dashboardTitle,
-      href: "/",
+      name: navigationObject.startGameTitle,
+      href: "/startgame",
       icon: PlayIcon,
     },
      {
       name: navigationObject.currentGamesTitle,
-      href: "/currentgames",
+      href: "/",
       icon: LightningBoltIcon,
     },
      {

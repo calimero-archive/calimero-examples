@@ -1,5 +1,5 @@
 {
-  "name": "ui",
+  "name": "simple-voting-example",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,9 +12,9 @@
     "@headlessui/react": "^1.6.6",
     "@heroicons/react": "^1.0.6",
     "bs58": "^5.0.0",
-    "calimero-auth-sdk": "^0.7.5",
+    "calimero-sdk": "^0.0.9",
     "near-api-js": "^1.1.0",
-    "next": "12.3.1",
+    "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
