@@ -4,7 +4,7 @@ import NearLogo from "../images/NearLogo";
 const componentTranslations = translations.loginComponent;
 
 interface LoginPopupComponentProps {
-  login: () => Promise<void>;
+  login: () => void;
 }
 
 export default function LoginPopupComponent({

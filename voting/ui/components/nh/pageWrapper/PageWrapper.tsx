@@ -2,7 +2,6 @@ import Head from "next/head";
 import { ReactNode } from "react";
 import LoginPopupComponent from "../loginComponent/LoginComponent";
 import Navigation from "../navigation/Navigation";
-import { WalletConnection } from "calimero-sdk";
 
 
 interface PageWrapperProps {
