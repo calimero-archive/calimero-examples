@@ -1,55 +1,26 @@
 import * as nearAPI from "near-api-js";
-import * as big from "bn.js";
-import { CalimeroSdk, WalletConnection } from "calimero-sdk";
+import { WalletConnection } from "calimero-sdk";
 import { Poll } from "../components/voting/VotingComponent";
+import { Contract } from "near-api-js";
 
-export const createVoteContractCall = async (option: string, calimero: CalimeroSdk | undefined) => {
-    const accountId = localStorage.getItem("accountId");
-    const publicKey = localStorage.getItem("publicKey");
-    //@ts-ignore
-    const calimeroConnection = await calimero.connect();
-    const walletConnection = new nearAPI.WalletConnection(
-      calimeroConnection.connection,
-      ""
+export const createVoteContractCall = async (option: string, walletConnectionObject: WalletConnection | undefined) => {
+    const account = walletConnectionObject?.account();
+    if (account){
+      const contract = new Contract(account,
+        "voting.my-awesome-shard.calimero.testnet",
+        {
+          viewMethods: [],
+          changeMethods: ["vote"],
+        });
+      // @ts-expect-error: get_results does not exist on type contract
+      await contract['vote'](
+      {
+        option: option,
+      },
+      "300000000000000",
     );
-    //@ts-ignore
-    walletConnection._authData = { accountId, allKeys: [publicKey] };
-
-    //@ts-ignore
-    const account = walletConnection.account(accountId);
-
-    const contractArgs = {
-      option: option
-    };
-
-    const metaJson = {
-      //@ts-ignore
-      calimeroRPCEndpoint: calimeroConnection.config.nodeUrl,
-      //@ts-ignore
-      calimeroShardId: calimeroConnection.config.networkId,
-      calimeroAuthToken: localStorage.getItem("calimeroToken"),
-    };
-    const meta = JSON.stringify(metaJson);
-
-    try {
-      //@ts-ignoreS
-      await account.signAndSendTransaction({
-        receiverId: "vote.lal89.calimero.testnet",
-        actions: [
-          nearAPI.transactions.functionCall(
-            "vote",
-            Buffer.from(JSON.stringify(contractArgs)),
-            new big.BN("300000000000000"),
-            new big.BN("0")
-          ),
-        ],
-        walletMeta: meta,
-      });
-    } catch (error) {
-      console.log(error);
     }
 };
-
 
 export async function setPollOptions(
     setPollData: (pollData: Poll) => void,
@@ -59,19 +30,12 @@ export async function setPollOptions(
       const account = walletConnectionObject.account();
       const contract = new nearAPI.Contract(
         account,
-        "vote.lal89.calimero.testnet",
+        "voting.my-awesome-shard.calimero.testnet",
         { viewMethods: ["get_poll"], changeMethods: [] }
       );
       // @ts-expect-error: get_results does not exist on type contract
       const results = await contract['get_poll']();
-      // this returns object
-      /*
-        {
-          question: 'how can i deploy this?',
-          options: [ 'dunno', 'google it' ]
-        }
-      */
-     setPollData(results);
+      setPollData(results);
     }
 };
 
@@ -92,17 +56,12 @@ export async function getVoteResults(
       const account = walletConnectionObject.account();
       const contract = new nearAPI.Contract(
         account,
-        "voting.fran.lal89.calimero.testnet",
+        "voting.my-awesome-shard.calimero.testnet",
         { viewMethods: ["get_results"], changeMethods: [] }
       );
-      /**
-       * returns 
-       * { 'google it': 1, dunno: 2 }
-       */
       // @ts-expect-error: get_results does not exist on type contract
-
       const results = await contract['get_results']();
       const parsedResults = parseContractResult(results);
-
+      setOptions(parsedResults);
     }
 };

@@ -1,33 +1,24 @@
 import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import { useEffect, useState } from "react";
-import calimeroSdk from "../utils/calimeroSdk";
-import walletConnection from "../utils/walletConnection";
+import { config } from "../utils/calimeroSdk";
 
+let walletConnectionObject: WalletConnection | undefined = undefined;
+
+const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
 
 export default function useCalimero() {
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [calimero, setCalimero] = useState<CalimeroSdk>();
-  const [walletConnectionObject, setWalletConnectionObject] =
-    useState<WalletConnection>();
-
+  
   useEffect(() => {
-    const initialiseWalletConnection = async () => {
-      if (walletConnectionObject) {
-        setIsSignedIn(walletConnectionObject.isSignedIn());
-      }
-    };
-    initialiseWalletConnection();
-  }, [walletConnectionObject]);
-
-  useEffect(() => {
-    const initialiseCalimero = async () => {
-      setCalimero(calimeroSdk);
-      const wallet = await walletConnection();
-      setWalletConnectionObject(wallet);
-    };
-    if (!calimero || !walletConnectionObject) {
-      initialiseCalimero();
+    const init = async () => {
+      const calimero = await CalimeroSdk.init(config).connect();
+      walletConnectionObject = new WalletConnection(calimero, contractName);
+      console.log(calimero);
+      await walletConnectionObject.isSignedInAsync();
+      setIsSignedIn(walletConnectionObject.isSignedIn());
     }
-  }, [calimero, walletConnectionObject]);
-  return { isSignedIn, calimero, walletConnectionObject };
+    init()
+  }, []);
+
+  return { isSignedIn, walletConnectionObject };
 }

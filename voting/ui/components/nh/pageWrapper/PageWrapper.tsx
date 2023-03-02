@@ -2,19 +2,25 @@ import Head from "next/head";
 import { ReactNode } from "react";
 import LoginPopupComponent from "../loginComponent/LoginComponent";
 import Navigation from "../navigation/Navigation";
-import useCalimero from "../../../hooks/useCalimero";
+import { WalletConnection } from "calimero-sdk";
+
 
 interface PageWrapperProps {
+  signIn: () => void;
+  isSignedIn: boolean;
+  signOut: () => void;
   title: String;
   children: ReactNode;
 }
 
 export default function PageWrapper({
+  signIn,
+  isSignedIn,
+  signOut,
   title,
-  children,
+  children
 }: PageWrapperProps) {
-  const { isSignedIn, walletConnectionObject } = useCalimero();
-
+  
   return (
     <>
       <Head>
@@ -23,10 +29,10 @@ export default function PageWrapper({
       </Head>
       <div className="flex flex-col w-screen bg-nh-bglight items-center min-h-screen py-8">
         <div className="w-full max-w-nh">
-          <Navigation walletConnection={walletConnectionObject} />
+          <Navigation isSignedIn={isSignedIn} signOut={signOut} />
         </div>
         {isSignedIn ? (
-          <div className="w-full max-w-nh flex">
+          <div className="w-full justify-center flex">
             <div className={`${isSignedIn ? "w-3/4" : "w-full"}`}>
               {children}
             </div>
@@ -34,7 +40,7 @@ export default function PageWrapper({
         ) : (
           <div className="w-full">
             <LoginPopupComponent
-              login={async () => walletConnectionObject?.requestSignIn({})}
+              login={signIn}
             />
           </div>
         )}

@@ -13,13 +13,12 @@ export interface Option {
 }
 
 interface VotingComponentProps {
-  contractCall: (option: string, calimero: CalimeroSdk | undefined) => void;
-  calimero: CalimeroSdk | undefined;
+  contractCall: (option: string, walletConnectionObject: WalletConnection | undefined) => void;
   walletConnectionObject: WalletConnection | undefined
 }
 
 export default function VotingComponent(
-  {contractCall, calimero, walletConnectionObject}: VotingComponentProps 
+  {contractCall, walletConnectionObject}: VotingComponentProps 
 ) {
   const [pollData, setPollData] = useState<Poll>({
           question: '',
@@ -33,7 +32,7 @@ export default function VotingComponent(
   },[]);
 
   const createNewVote = async (option: string) => {
-      await contractCall(option, calimero);
+      await contractCall(option, walletConnectionObject);
       await getVoteResults(setOptions, walletConnectionObject);
   };
 
