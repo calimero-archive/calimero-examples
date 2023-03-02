@@ -47,7 +47,7 @@ const DESTINATION_GAS: Gas = Gas(50_000_000_000_000);
 const DESTINATION_DEPOSIT: Balance = 0;
 const CROSS_CALL_GAS: Gas = Gas(150_000_000_000_000);
 
-calimero_cross_shard_connector!("xsc_connector.lal89.calimero.testnet");
+calimero_cross_shard_connector!("xsc_connector.demos.calimero.testnet");
 
 #[near_bindgen]
 impl TicTacToe {

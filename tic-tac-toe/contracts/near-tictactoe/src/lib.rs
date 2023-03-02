@@ -44,13 +44,13 @@ pub struct TicTacToe {
     player_awaiting_for_opponent: Option<AccountId>,
 }
 
-const DESTINATION_CONTRACT_ID: &str = "tictactoe.lal89.calimero.testnet"; // tictactoe on calimero
+const DESTINATION_CONTRACT_ID: &str = "tictactoe.demos.calimero.testnet"; // tictactoe on calimero
 const DESTINATION_CONTRACT_METHOD: &str = "start_game";
 const DESTINATION_GAS: Gas = Gas(50_000_000_000_000);
 const DESTINATION_DEPOSIT: Balance = 0;
 const CROSS_CALL_GAS: Gas = Gas(100_000_000_000_000);
 
-calimero_cross_shard_connector!("xsc_connector.lal89.dev.calimero.testnet");
+calimero_cross_shard_connector!("xsc_connector.demos.calimero.testnet");
 
 #[calimero_expand]
 #[near_bindgen]
