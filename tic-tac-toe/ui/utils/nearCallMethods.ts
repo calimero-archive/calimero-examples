@@ -17,6 +17,7 @@ export interface GameProps {
 
 async function initContract() {
   const near = await nearAPI.connect({
+    //@ts-expect-error
     deps: {
       keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore(),
     },

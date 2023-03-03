@@ -1,52 +1,26 @@
 import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import * as nearAPI from "near-api-js";
+import { Contract } from "near-api-js";
 import { GameProps } from "../pages";
 
-export const startGameMethod = async (playerB: string, calimero: CalimeroSdk | undefined) => {
-    const accountId = localStorage.getItem("accountId");
-    const publicKey = localStorage.getItem("publicKey");
-    //@ts-ignore
-    const calimeroConnection = await calimero.connect();
-    const walletConnection = new nearAPI.WalletConnection(
-      calimeroConnection.connection,
-      ""
-    );
-    //@ts-ignore
-    walletConnection._authData = { accountId, allKeys: [publicKey] };
+const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
 
-    //@ts-ignore
-    const account = walletConnection.account(accountId);
-
-    const contractArgs = {
-      player_a: accountId,
+export const startGameMethod = async (playerB: string, walletConnectionObject: WalletConnection | undefined) => {
+    const account = walletConnectionObject?.account();  
+    if (account){
+      const contract = new Contract(account,
+        contractName,
+        {
+          viewMethods: [],
+          changeMethods: ["vote"],
+        });
+      await contract["start_game"](
+      {
+      player_a: account.accountId,
       player_b: playerB,
-    };
-
-    const metaJson = {
-      //@ts-ignore
-      calimeroRPCEndpoint: calimeroConnection.config.nodeUrl,
-      //@ts-ignore
-      calimeroShardId: calimeroConnection.config.networkId,
-      calimeroAuthToken: localStorage.getItem("calimeroToken"),
-    };
-    const meta = JSON.stringify(metaJson);
-
-    try {
-      //@ts-ignoreS
-      await account.signAndSendTransaction({
-        receiverId: "tictactoe.lal89.calimero.testnet",
-        actions: [
-          nearAPI.transactions.functionCall(
-            "start_game",
-            Buffer.from(JSON.stringify(contractArgs)),
-            10000000000000,
-            "0"
-          ),
-        ],
-        walletMeta: meta,
-      });
-    } catch (error) {
-      console.log(error);
+    },
+      "300000000000000",
+    );
     }
 };
 
@@ -56,7 +30,7 @@ export async function getNumberOfGames(walletConnectionObject: WalletConnection 
       if(account.accountId){
       const contract = new nearAPI.Contract(
         account,
-        "tictactoe.lal89.calimero.testnet",
+        contractName,
         { viewMethods: ["num_of_games"], changeMethods: [] }
       );
       const numOfGames = await contract["num_of_games"]({});
@@ -70,7 +44,7 @@ export async function getGame(gameId: number, walletConnectionObject: WalletConn
       const account = await walletConnectionObject.account();
       const contract = new nearAPI.Contract(
         account,
-        "tictactoe.lal89.calimero.testnet",
+        contractName,
         { viewMethods: ["get_game"], changeMethods: [] }
       );
       const game = await contract["get_game"]({ game_id: gameId });
@@ -87,7 +61,7 @@ export const setGames = async (
     setNumberOfGames(await getNumberOfGames(walletConnectionObject));
     if (numberOfGames) {
       const gamesDataTemp: GameProps[] = [];
-      for (let i = 0; i < parseInt(numberOfGames); i++) {
+      for (let i = 1; i < parseInt(numberOfGames); i++) {
         let temp = await getGame(i, walletConnectionObject);
         const gameData = {
           boardStatus: temp.board[0].concat(temp.board[1], temp.board[2]),
@@ -98,6 +72,7 @@ export const setGames = async (
           gameId: i,
         };
         const loggedUser = localStorage.getItem("accountId");
+        console.log(gameData);
         if (gameData.playerA == loggedUser || gameData.playerB === loggedUser) {
           gamesDataTemp.push(gameData);
         }
@@ -137,7 +112,7 @@ export const setGames = async (
     try {
       //@ts-expect-error
       await account.signAndSendTransaction({
-        receiverId: "tictactoe.lal89.calimero.testnet",
+        receiverId: contractName,
         actions: [
           nearAPI.transactions.functionCall(
             "make_a_move",
@@ -162,7 +137,7 @@ export async function getGameData(
       const account = walletConnectionObject.account();
       const contract = new nearAPI.Contract(
         account,
-        "tictactoe.lal89.calimero.testnet",
+        contractName,
         { viewMethods: ["get_game"], changeMethods: [] }
       );
       const temp = await contract["get_game"]({ game_id: gameId });
