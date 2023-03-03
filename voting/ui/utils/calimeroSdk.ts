@@ -1,22 +1,7 @@
-import { CalimeroSdk } from "calimero-sdk";
-
-const shardId = process.env.NEXT_PUBLIC_CALIMERO_SHARD_ID;
-const walletUrl = process.env.NEXT_PUBLIC_WALLET_ENDPOINT_URL;
-const calimeroUrl = process.env.NEXT_PUBLIC_CALIMERO_ENDPOINT_URL;
-const calimeroWebSdkService =
-  process.env.NEXT_PUBLIC_CALIMERO_WEB_SDK_SERVICE_URL;
-
-function getConfig() {
-  if (shardId && walletUrl && calimeroUrl && calimeroWebSdkService) {
-    return {
-      shardId: shardId,
-      walletUrl: walletUrl,
-      calimeroUrl: calimeroUrl,
-      calimeroWebSdkService: calimeroWebSdkService,
-    };
-  } else {
-    throw new Error("Please fill your configuration!");
-  }
-}
-
-export default CalimeroSdk.init(getConfig());
+export const config = {
+  shardId: process.env.NEXT_PUBLIC_SHARD_ID || "calimero-testnet",
+  walletUrl: process.env.NEXT_PUBLIC_WALLET_URL || "https://testnet.mynearwallet.com" ,
+  calimeroUrl: process.env.NEXT_PUBLIC_CALIMERO_URL || "https://api.calimero.network",
+  calimeroWebSdkService: process.env.NEXT_PUBLIC_CALIMERO_WS || "https://app.calimero.network",
+  calimeroToken: process.env.NEXT_PUBLIC_CALIMERO_TOKEN || ""
+};

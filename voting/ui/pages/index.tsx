@@ -1,42 +1,60 @@
-import Head from "next/head";
 import { useEffect, useState } from "react";
-import LoginComponent from "../components/dashboard/LoginComponent";
-import MenuNavigation from "../components/Navigation";
+import translations from "../constants/en.global.json";
 import VotingComponent from "../components/voting/VotingComponent";
-import calimeroSdk from "../utils/calimeroSdk";
+import PageWrapper from "../components/nh/pageWrapper/PageWrapper";
+import { createVoteContractCall } from "../utils/callMethods";
+
+import { CalimeroSdk, WalletConnection } from "calimero-sdk";
+import { config } from "../utils/calimeroSdk";
+import { useRouter } from "next/router";
+
+const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
+let walletConnectionObject: WalletConnection | undefined = undefined;
 
 export default function Dashboard() {
-  const [logged, setLogged] = useState<boolean>(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const router = useRouter();
+  
   useEffect(() => {
-    calimeroSdk.isSignedIn() ? setLogged(true) : setLogged(false);
-  });
+    const init = async () => {
+      const calimero = await CalimeroSdk.init(config).connect();
+      walletConnectionObject = new WalletConnection(calimero, contractName);
+      const signedIn = await walletConnectionObject?.isSignedInAsync();
+      const account = await walletConnectionObject?.account();
+      if(account && signedIn) {
+        localStorage.setItem("accountId", account.accountId);
+      }
+      setIsSignedIn(signedIn);
+    }
+    init()
+  }, []);
+
+  useEffect(()=>{
+    const absolute = window.location.href.split("/")
+    const url = absolute[0] + "//" + absolute[2];
+    router.replace(url)
+  },[isSignedIn])
+
+  const signIn = async() => {
+    await walletConnectionObject?.requestSignIn({contractId: contractName, methodNames: ["vote"]});
+  }
+
+  const signOut = async() => {
+    await walletConnectionObject?.signOut() 
+    setIsSignedIn(false);
+  }
+
   return (
-    <div>
-      <Head>
-        <title>Dashboard | Calimero</title>
-        <meta name="description" content="TicTacToe" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <MenuNavigation />
-      <main className="h-screen w-full ">
-        <div className=" pt-24 px-32 flex justify-between items-center">
-          <div className="text-5xl font-bold ">
-            <p>Voting Smart Contract</p>
-          </div>
-        </div>
-        <div className="mt-1">
-          {logged ? (
-            <div>
-              <VotingComponent />
-            </div>
-          ) : (
-            <div>
-              <LoginComponent />
-            </div>
-          )}
-        </div>
-      </main>
-    </div>
+    <PageWrapper 
+      signIn={signIn}
+      isSignedIn={isSignedIn}
+      signOut={signOut}
+      title={translations.pages.indexPageTitle}
+    >
+      <VotingComponent
+        contractCall={(option, walletConnectionObject) => createVoteContractCall(option, walletConnectionObject)}
+        walletConnectionObject={walletConnectionObject}
+      />
+    </PageWrapper>
   );
 }

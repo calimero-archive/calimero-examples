@@ -1,12 +1,42 @@
 {
     "navigation": {
-        "dashboardTitle": "Start New Game",
+        "startGameTitle": "Start New Game",
         "currentGamesTitle": "Current Games",
-        "pastGamesTitle": "Past Games"
+        "pastGamesTitle": "Past Games",
+        "addFunctionKeyTitle": "Add function key"
     },
     "loginComponent": {
         "title": "Login with NEAR",
         "subtitle": "Connecting NEAR wallet will connect to Calimero Private Shard and sync Account",
         "buttonText": "Login With NEAR"
+    },
+    "currentGamesPage": {
+        "pageTitle": "Current Games",
+        "componentTitle": "There are no games to display, start a new Tictactoe game",
+        "buttonText": "Start New Game",
+        "turnText": "Your Turn",
+        "refreshButtonTitle": "Refresh Games"
+    },
+    "pastGamesPage": {
+        "pageTitle": "Past Games",
+        "componentTitle": "You haven't played TicTacToe yet, please start a new game for games to be displayed",
+        "buttonText": "Start New Game"
+    },
+    "startNewGamePopup": {
+        "popupTitle": "Start New Game",
+        "formTitle": "Play with",
+        "buttonText": "Start New Game",
+        "closeButtonText": "Close"
+    },
+    "GameCard": {
+        "gameText": "GAME #",
+        "playerOneText": "Player One",
+        "playerTwoText": "Player Two"
+    },
+    "pages": {
+        "pastGamesTitle": "Tictactoe | Past Games",
+        "currentGame": "Tictactoe | Current Game",
+        "indexPageTitle": "TicTacToe | Running Games",
+        "startGameTitle": "TicTacToe | Start new Game"
     }
 }
