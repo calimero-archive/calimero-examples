@@ -36,7 +36,7 @@ export default function Dashboard() {
   },[isSignedIn])
 
   const signIn = async() => {
-    await walletConnectionObject?.requestSignIn({contractId: "voting.my-awesome-shard.calimero.testnet", methodNames: ["vote"]});
+    await walletConnectionObject?.requestSignIn({contractId: contractName, methodNames: ["vote"]});
   }
 
   const signOut = async() => {
