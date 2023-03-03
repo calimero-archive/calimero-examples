@@ -3,11 +3,13 @@ import { WalletConnection } from "calimero-sdk";
 import { Poll } from "../components/voting/VotingComponent";
 import { Contract } from "near-api-js";
 
+const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
+
 export const createVoteContractCall = async (option: string, walletConnectionObject: WalletConnection | undefined) => {
     const account = walletConnectionObject?.account();
     if (account){
       const contract = new Contract(account,
-        "voting.my-awesome-shard.calimero.testnet",
+        contractName,
         {
           viewMethods: [],
           changeMethods: ["vote"],
@@ -30,7 +32,7 @@ export async function setPollOptions(
       const account = walletConnectionObject.account();
       const contract = new nearAPI.Contract(
         account,
-        "voting.my-awesome-shard.calimero.testnet",
+        contractName,
         { viewMethods: ["get_poll"], changeMethods: [] }
       );
       // @ts-expect-error: get_results does not exist on type contract
@@ -56,7 +58,7 @@ export async function getVoteResults(
       const account = walletConnectionObject.account();
       const contract = new nearAPI.Contract(
         account,
-        "voting.my-awesome-shard.calimero.testnet",
+        contractName,
         { viewMethods: ["get_results"], changeMethods: [] }
       );
       // @ts-expect-error: get_results does not exist on type contract
