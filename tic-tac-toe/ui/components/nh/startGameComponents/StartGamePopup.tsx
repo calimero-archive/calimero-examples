@@ -6,13 +6,14 @@ const popupTranslations = translations.startNewGamePopup;
 
 interface StartGamePopupProps {
   contractCall: (playerB: string) => void;
+  setClose?: (close: boolean) => void;
 }
 
 export default function StartGamePopup({
   contractCall,
+  setClose,
 }: StartGamePopupProps) {
   const [playerB, setPlayerB] = useState("");
-  
 
   return (
     <div>
@@ -35,18 +36,31 @@ export default function StartGamePopup({
                 <div className="pt-4 w-full">
                   <button
                     className="bg-nh-purple roudned-lg py-2 px-10 flex items-center justify-center rounded-lg w-full"
-                    onClick={() => contractCall(playerB)}
+                    onClick={() => {
+                      if (playerB) {
+                        contractCall(playerB);
+                      }
+                    }}
                   >
                     <span className="text-white text-sm leading-5 font-medium">
                       {popupTranslations.buttonText}
                     </span>
                   </button>
                 </div>
-                <Link href="/">
-                  <div className="text-white text-center text-sm mt-4 hover:text-nh-text-3 cursor-pointer">
+                {setClose ? (
+                  <div
+                    className="text-white text-center text-sm mt-4 hover:text-nh-text-3 cursor-pointer"
+                    onClick={() => setClose(false)}
+                  >
                     {popupTranslations.closeButtonText}
                   </div>
-                </Link>
+                ) : (
+                  <Link href="/">
+                    <div className="text-white text-center text-sm mt-4 hover:text-nh-text-3 cursor-pointer">
+                      {popupTranslations.closeButtonText}
+                    </div>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

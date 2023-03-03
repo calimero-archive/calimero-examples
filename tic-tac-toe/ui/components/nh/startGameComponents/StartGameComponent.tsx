@@ -1,11 +1,13 @@
 interface StartGameComponentProps {
   title: string;
   buttonTitle: string;
+  setStartupPopup: (startupPopup: boolean) => void;
 }
 
 export default function StartGameComponent({
   title,
   buttonTitle,
+  setStartupPopup,
 }: StartGameComponentProps) {
   return (
     <div className="mt-8 w-full">
@@ -16,7 +18,7 @@ export default function StartGameComponent({
         <div className="pt-4">
           <button
             className="bg-nh-purple roudned-lg py-2 px-3 flex items-center rounded-lg"
-            onClick={() => console.log("show popup")}
+            onClick={() => setStartupPopup(true)}
           >
             <span className="text-white text-sm leading-5 font-medium">
               {buttonTitle}

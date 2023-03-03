@@ -30,38 +30,47 @@ export default function Game() {
       setGame();
     }
   }, [id, walletConnectionObject]);
-  
+
   useEffect(() => {
     const init = async () => {
       const calimero = await CalimeroSdk.init(config).connect();
       walletConnectionObject = new WalletConnection(calimero, contractName);
       const signedIn = await walletConnectionObject?.isSignedInAsync();
       const account = await walletConnectionObject?.account();
-      if(account && signedIn) {
+      if (account && signedIn) {
         localStorage.setItem("accountId", account.accountId);
       }
       setIsSignedIn(signedIn);
-    }
-    init()
+    };
+    init();
   }, []);
 
-  useEffect(()=>{
-    const absolute = window.location.href.split("/")
-    const url = absolute[0] + "//" + absolute[2];
-    router.replace(url)
-  },[isSignedIn])
+  const signIn = async () => {
+    await walletConnectionObject?.requestSignIn({
+      contractId: contractName,
+      methodNames: ["make_a_move", "start_game"],
+    });
+  };
 
-  const signIn = async() => {
-    await walletConnectionObject?.requestSignIn({contractId: contractName, methodNames: ["vote"]});
-  }
-
-  const signOut = async() => {
-    await walletConnectionObject?.signOut() 
+  const signOut = async () => {
+    await walletConnectionObject?.signOut();
     setIsSignedIn(false);
-  }
+  };
+
+  const makeMoveFunctionCall = async (id: number, squareId: number) => {
+    await makeAMoveMethod(id, squareId, walletConnectionObject);
+    router.reload();
+  };
+
+  useEffect(() => {
+    const absolute = window.location.href.split("?");
+    const url = absolute[0];
+    router.replace(url);
+  }, [isSignedIn]);
+
 
   return (
-    <PageWrapper 
+    <PageWrapper
       signIn={signIn}
       isSignedIn={isSignedIn}
       signOut={signOut}
@@ -85,9 +94,7 @@ export default function Game() {
           <GameBoard
             gameData={gameStatus}
             gameId={parseInt(id.toString())}
-            callMethod={(id, squareId) =>
-              console.log("abc")
-            }
+            callMethod={(id, squareId) => makeMoveFunctionCall(id, squareId)}
           />
         </div>
       )}

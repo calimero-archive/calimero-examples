@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import CurrentGamesList from "../components/nh/currentGamesPage/CurrentGamesList";
 import PageWrapper from "../components/nh/pageWrapper/PageWrapper";
 import { useEffect, useState } from "react";
-import { setGames } from "../utils/callMethods";
+import { setGames, startGameMethod } from "../utils/callMethods";
 import translations from "../constants/en.global.json";
 import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import { config } from "../utils/calimeroSdk";
@@ -25,6 +25,23 @@ export default function CurrentGamesPage() {
   const [numberOfGames, setNumberOfGames] = useState<string>("");
   const [gamesData, setGamesData] = useState<GameProps[]>();
   const [accountId, setAccountId] = useState<String | null>("");
+
+  const signIn = async () => {
+    await walletConnectionObject?.requestSignIn({
+      contractId: contractName,
+      methodNames: ["make_a_move"],
+    });
+  };
+
+  const signOut = () => {
+    walletConnectionObject?.signOut();
+    setIsSignedIn(false);
+  };
+
+  const startGameFunctionCall = async (playerB: string) => {
+    const res = await startGameMethod(playerB, walletConnectionObject);
+    router.reload();
+  };
   useEffect(() => {
     if (!numberOfGames || (!gamesData && localStorage.getItem("accountId"))) {
       setGames(
@@ -47,40 +64,34 @@ export default function CurrentGamesPage() {
       const calimero = await CalimeroSdk.init(config).connect();
       walletConnectionObject = new WalletConnection(calimero, contractName);
       const signedIn = await walletConnectionObject?.isSignedInAsync();
-      const account = await walletConnectionObject?.account();
-      if(account && signedIn) {
+      const account = walletConnectionObject?.account();
+      if (account && signedIn) {
         localStorage.setItem("accountId", account.accountId);
       }
       setIsSignedIn(signedIn);
-    }
-    init()
+    };
+    init();
   }, []);
 
-  useEffect(()=>{
-    const absolute = window.location.href.split("/")
-    const url = absolute[0] + "//" + absolute[2];
-    router.replace(url)
-  },[isSignedIn])
-
-  const signIn = async() => {
-    await walletConnectionObject?.requestSignIn({contractId: contractName, methodNames: ["vote"]});
-  }
-
-  const signOut = async() => {
-    await walletConnectionObject?.signOut() 
-    setIsSignedIn(false);
-  }
-
+  useEffect(() => {
+    const absolute = window.location.href.split("?");
+    const url = absolute[0];
+    router.replace(url);
+  }, [isSignedIn]);
 
   return (
-    <PageWrapper 
+    <PageWrapper
       signIn={signIn}
       isSignedIn={isSignedIn}
       signOut={signOut}
       title={translations.pages.indexPageTitle}
       currentPage={router.pathname}
     >
-      <CurrentGamesList gamesList={gamesData || []} accountId={accountId} />
+      <CurrentGamesList
+        gamesList={gamesData || []}
+        accountId={accountId}
+        startGameMethod={(playerB) => startGameFunctionCall(playerB)}
+      />
     </PageWrapper>
   );
 }

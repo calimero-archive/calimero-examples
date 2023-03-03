@@ -7,13 +7,13 @@ interface NavigationProps {
   signOut: () => void;
 }
 
-export default function Navigation({ isSignedIn, signOut}: NavigationProps) {
+export default function Navigation({ isSignedIn, signOut }: NavigationProps) {
   const [accountId, setAccountId] = useState("");
 
-  useEffect(()=>{
+  useEffect(() => {
     const account = localStorage.getItem("accountId");
     setAccountId(account || "");
-  },[isSignedIn]);
+  }, [isSignedIn]);
 
   return (
     <div className="flex justify-between">
@@ -26,13 +26,13 @@ export default function Navigation({ isSignedIn, signOut}: NavigationProps) {
         </div>
       </div>
       {isSignedIn && (
-          <div
-            className="text-white hover:text-nh-purple text-base leading-6 
+        <div
+          className="text-white hover:text-nh-purple text-base leading-6 
         font-medium flex items-center cursor-pointer"
-            onClick={signOut}
-          >
-            {accountId}
-          </div>
+          onClick={signOut}
+        >
+          {accountId}
+        </div>
       )}
     </div>
   );
