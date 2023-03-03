@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Square from "./Square";
 import NotificationCard from "../notificationCard/NotificationCard";
+import { useRouter } from "next/router";
 
 export interface GameProps {
   boardStatus: string[];
@@ -17,6 +18,7 @@ interface IProps {
 }
 
 export default function GameBoard({ gameData, gameId, callMethod }: IProps) {
+  const router = useRouter();
   const [squares, setSquares] = useState<string[]>(Array(9).fill(null));
   const [ended, setEnded] = useState<string>("");
   const [color, setColor] = useState<string>("bg-white");
@@ -48,6 +50,7 @@ export default function GameBoard({ gameData, gameId, callMethod }: IProps) {
       setTitle("Move has been made");
       setSubtitle("Please wait for Blockchain to save your data!");
       await callMethod(gameId, index);
+      router.reload();
     }
   };
   return (

@@ -1,10 +1,7 @@
-import { CalimeroSdk } from "calimero-sdk";
-
 export const config = {
-  shardId: "lal89-calimero-testnet",
-  walletUrl: "https://localhost:1234",
-  calimeroUrl: "https://api.development.calimero.network",
-  calimeroWebSdkService: "http://localhost:3000",
+  shardId: process.env.NEXT_PUBLIC_SHARD_ID || "calimero-testnet",
+  walletUrl: process.env.NEXT_PUBLIC_WALLET_URL || "https://testnet.mynearwallet.com" ,
+  calimeroUrl: process.env.NEXT_PUBLIC_CALIMERO_URL || "https://api.calimero.network",
+  calimeroWebSdkService: process.env.NEXT_PUBLIC_CALIMERO_WS || "https://app.calimero.network",
+  calimeroToken: process.env.NEXT_PUBLIC_CALIMERO_TOKEN || ""
 };
-
-export default CalimeroSdk.init(config);

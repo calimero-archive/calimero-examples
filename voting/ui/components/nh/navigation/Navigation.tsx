@@ -1,9 +1,6 @@
-import { WalletConnection } from "near-api-js";
 import { useEffect, useState } from "react";
 import CalimeroLogo from "../images/CalimeroLogo";
 import TictactoeLogo from "../images/TictactoeLogo";
-import * as nearAPI from "near-api-js";
-import translations from "../../../constants/en.global.json";
 
 interface NavigationProps {
   isSignedIn: boolean;
