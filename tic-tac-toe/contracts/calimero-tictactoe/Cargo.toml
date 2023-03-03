@@ -9,6 +9,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 near-sdk = "4.0.0"
+calimero-sdk = "0.0.1"
 
 [profile.release]
 codegen-units = 1

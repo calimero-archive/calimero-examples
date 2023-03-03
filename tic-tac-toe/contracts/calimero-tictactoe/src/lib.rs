@@ -6,6 +6,7 @@ use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{env, near_bindgen, require, AccountId, PanicOnDefault, Gas, Balance};
 use near_sdk::serde_json::{json, self};
+use calimero_sdk::{calimero_cross_shard_connector, calimero_cross_call_execute};
 
 #[derive(BorshDeserialize, BorshSerialize, PartialEq, Eq, Copy, Clone, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
@@ -40,13 +41,13 @@ pub struct TicTacToe {
     games: Vec<Game>,
 }
 
-const CROSS_SHARD_CALL_CONTRACT_ID: &str = "xscc.90.calimero.testnet";
 const DESTINATION_CONTRACT_ID: &str = "tictactoe.igi.testnet"; // tictactoe on testnet
 const DESTINATION_CONTRACT_METHOD: &str = "game_ended";
-const DESTINATION_GAS: Gas = Gas(20_000_000_000_000);
+const DESTINATION_GAS: Gas = Gas(50_000_000_000_000);
 const DESTINATION_DEPOSIT: Balance = 0;
-const NO_DEPOSIT: Balance = 0;
-const CROSS_CALL_GAS: Gas = Gas(20_000_000_000_000);
+const CROSS_CALL_GAS: Gas = Gas(150_000_000_000_000);
+
+calimero_cross_shard_connector!("xsc_connector.lal89.calimero.testnet");
 
 #[near_bindgen]
 impl TicTacToe {
@@ -159,20 +160,17 @@ impl TicTacToe {
         }
 
         if selected_game.status != GameStatus::InProgress {
-            env::promise_return(env::promise_create(
-                AccountId::new_unchecked(CROSS_SHARD_CALL_CONTRACT_ID.to_string()
-            ),
-                "cross_call",
-                &serde_json::to_vec(&(
-                    DESTINATION_CONTRACT_ID, 
-                    DESTINATION_CONTRACT_METHOD, 
-                    json!({"game_id":game_id,"game":selected_game}).to_string(), 
-                    DESTINATION_GAS, 
-                    DESTINATION_DEPOSIT, 
-                    "callback_game_ended")).unwrap(),
-                NO_DEPOSIT,
-                CROSS_CALL_GAS,
-            ));
+            let args = json!({"game_id":game_id,"game":selected_game});
+
+            calimero_cross_call_execute!(
+                DESTINATION_CONTRACT_ID,
+                DESTINATION_CONTRACT_METHOD,
+                args,
+                DESTINATION_GAS,
+                DESTINATION_DEPOSIT,
+                "callback_game_ended",
+                CROSS_CALL_GAS
+            );
         }
 
         selected_game.status == GameStatus::InProgress 

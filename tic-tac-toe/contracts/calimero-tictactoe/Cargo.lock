@@ -191,6 +191,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "calimero-sdk"
+version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "229adc21f68e0bfb6bbfc35beb0c83940164bb3fecfab1812a0300733fd4e972"
+dependencies = [
+ "calimero-sdk-macros",
+]
+
+[[package]]
+name = "calimero-sdk-macros"
+version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "13638cfbc4087496bddeac045e013c1a94c04b5add9da075a9b5d831e2065594"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "cc"
 version = "1.0.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1128,6 +1148,7 @@ dependencies = [
 name = "tic_tac_toe"
 version = "0.1.0"
 dependencies = [
+ "calimero-sdk",
  "near-sdk",
 ]
 

@@ -7,6 +7,7 @@ use near_sdk::collections::{LookupMap, UnorderedSet};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{env, near_bindgen, require, AccountId, PanicOnDefault, Gas, Balance};
 use near_sdk::serde_json::{json, self};
+use calimero_sdk::{calimero_cross_shard_connector, calimero_cross_call_execute, calimero_expand};
 
 #[derive(BorshDeserialize, BorshSerialize, PartialEq, Eq, Copy, Clone, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
@@ -43,14 +44,15 @@ pub struct TicTacToe {
     player_awaiting_for_opponent: Option<AccountId>,
 }
 
-const CROSS_SHARD_CALL_CONTRACT_ID: &str = "xscc.90.apptest-development.testnet";
-const DESTINATION_CONTRACT_ID: &str = "tictactoe.90.calimero.testnet"; 
+const DESTINATION_CONTRACT_ID: &str = "tictactoe.lal89.calimero.testnet"; // tictactoe on calimero
 const DESTINATION_CONTRACT_METHOD: &str = "start_game";
-const DESTINATION_GAS: Gas = Gas(20_000_000_000_000);
+const DESTINATION_GAS: Gas = Gas(50_000_000_000_000);
 const DESTINATION_DEPOSIT: Balance = 0;
-const NO_DEPOSIT: Balance = 0;
-const CROSS_CALL_GAS: Gas = Gas(20_000_000_000_000);
+const CROSS_CALL_GAS: Gas = Gas(100_000_000_000_000);
 
+calimero_cross_shard_connector!("xsc_connector.lal89.dev.calimero.testnet");
+
+#[calimero_expand]
 #[near_bindgen]
 impl TicTacToe {
     #[init]
@@ -79,35 +81,25 @@ impl TicTacToe {
 
             self.player_awaiting_for_opponent = None;
 
-            env::promise_return(env::promise_create(
-                AccountId::new_unchecked(CROSS_SHARD_CALL_CONTRACT_ID.to_string()
-            ),
-                "cross_call",
-                &serde_json::to_vec(&(
-                    DESTINATION_CONTRACT_ID, 
-                    DESTINATION_CONTRACT_METHOD, 
-                    json!({"player_a":first_player,"player_b":env::predecessor_account_id()}).to_string(), 
-                    DESTINATION_GAS, 
-                    DESTINATION_DEPOSIT, 
-                    "game_started")).unwrap(),
-                NO_DEPOSIT,
-                CROSS_CALL_GAS,
-            ));
+            let args = json!({"player_a":first_player,"player_b":env::predecessor_account_id()});
+
+            calimero_cross_call_execute!(
+                DESTINATION_CONTRACT_ID,
+                DESTINATION_CONTRACT_METHOD,
+                args,
+                DESTINATION_GAS,
+                DESTINATION_DEPOSIT,
+                "game_started",
+                CROSS_CALL_GAS
+            );
         } else {
             self.player_awaiting_for_opponent = Some(env::predecessor_account_id());
         }
     }
 
-    pub fn game_started(&mut self, response: Option<Vec<u8>>) {
-        require!(env::predecessor_account_id().to_string() == CROSS_SHARD_CALL_CONTRACT_ID);
-        if response.is_none() {
-            // Call failed
-            env::log_str(&format!("Got empty response!"));
-        } else {
-            let game_id: usize = near_sdk::serde_json::from_slice::<usize>(&response.unwrap()).unwrap();
-            env::log_str(&format!("GOT THE CALLBACK WITH EXEC RESULT {}", game_id));
-            self.all_games.insert(&game_id);
-        }
+    #[calimero_receive_response]
+    pub fn game_started(&mut self, game_id: usize) {
+        self.all_games.insert(&game_id);
     }
 
     pub fn game_ended(&mut self, game_id: usize, game: Game) {
