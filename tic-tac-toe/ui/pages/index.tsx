@@ -8,6 +8,7 @@ import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import { config } from "../utils/calimeroSdk";
 
 const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
+
 let walletConnectionObject: WalletConnection | undefined = undefined;
 
 export interface GameProps {
