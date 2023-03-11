@@ -15,7 +15,7 @@ export interface RegisterStatus {
     loading: boolean
 }
 
-export default function useNear() {
+export default function useNear(isSignedIn: boolean) {
   const [config, setConfig] = useState<ConnectConfig | undefined>(undefined);
   const [nearSignedIn, setNearSignedIn] = useState(false);
   const [registerStatus, setRegisterStatus] = useState<RegisterStatus>({
@@ -58,16 +58,18 @@ export default function useNear() {
   }
 
   useEffect(() => {
-    const connectionConfig = {
+    if (isSignedIn) {
+      const connectionConfig = {
       networkId: "testnet",
-      keyStore: new keyStores.BrowserLocalStorageKeyStore(), // first create a key store
+      keyStore: new keyStores.BrowserLocalStorageKeyStore(),
       nodeUrl: "https://rpc.testnet.near.org",
       walletUrl: "https://testnet-calimero-mnw.netlify.app/",
       helperUrl: "https://helper.testnet.near.org",
       explorerUrl: "https://explorer.testnet.near.org",
     };
     setConfig(connectionConfig);
-  }, []);
+    }
+  }, [isSignedIn]);
 
   useEffect(() => {
     const isSigned = async () => {

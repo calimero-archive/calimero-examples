@@ -35,7 +35,6 @@ export default function PageWrapper({
   setStatus,
   nearSignedIn
 }: PageWrapperProps) {
-  
   return (
     <>
       <Head>

@@ -12,6 +12,7 @@
   },
   "currentGamesPage": {
     "pageTitle": "Current Games",
+    "pastGamesTitle": "Past Games",
     "componentTitle": "There are no games to display, start a new Tictactoe game",
     "buttonText": "Start New Game",
     "turnText": "Your Turn",

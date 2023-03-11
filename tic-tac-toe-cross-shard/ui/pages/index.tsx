@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import CurrentGamesList from "../components/nh/currentGamesPage/CurrentGamesList";
 import PageWrapper from "../components/nh/pageWrapper/PageWrapper";
 import { useEffect, useState } from "react";
-import { setGames, startGameMethod } from "../utils/callMethods";
+import { setGames } from "../utils/callMethods";
 import translations from "../constants/en.global.json";
 import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import { config } from "../utils/calimeroSdk";
@@ -27,7 +27,8 @@ export default function CurrentGamesPage() {
   const [numberOfGames, setNumberOfGames] = useState<string>("");
   const [gamesData, setGamesData] = useState<GameProps[]>();
   const [accountId, setAccountId] = useState<String | null>("");
-  const { login, logout, register, registerStatus, nearSignedIn, setRegisterStatus } = useNear();
+  const [loadingGamesData, setLoadingGamesData] = useState(false);
+  const { login, logout, register, registerStatus, nearSignedIn, setRegisterStatus } = useNear(isSignedIn);
 
   const signIn = async () => {
     await walletConnectionObject?.requestSignIn({
@@ -41,17 +42,14 @@ export default function CurrentGamesPage() {
     setIsSignedIn(false);
   };
 
-  const startGameFunctionCall = async (playerB: string) => {
-    const res = await startGameMethod(playerB, walletConnectionObject);
-    router.reload();
-  };
   useEffect(() => {
     if (!numberOfGames || (!gamesData && localStorage.getItem("accountId"))) {
       setGames(
         setNumberOfGames,
         numberOfGames,
         setGamesData,
-        walletConnectionObject
+        walletConnectionObject,
+        setLoadingGamesData,
       );
     }
   }, [numberOfGames, gamesData]);
@@ -98,8 +96,8 @@ export default function CurrentGamesPage() {
     >
       <CurrentGamesList
         gamesList={gamesData || []}
+        loadingGamesData={loadingGamesData}
         accountId={accountId}
-        startGameMethod={(playerB) => startGameFunctionCall(playerB)}
       />
     </PageWrapper>
   );

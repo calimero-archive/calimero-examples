@@ -5,8 +5,9 @@ import translations from "../constants/en.global.json";
 import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import { config } from "../utils/calimeroSdk";
 import { useEffect, useState } from "react";
-import { setGames, startGameMethod } from "../utils/callMethods";
+import { setGames } from "../utils/callMethods";
 import { GameProps } from ".";
+import useNear from "../utils/useNear";
 
 const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
 let walletConnectionObject: WalletConnection | undefined = undefined;
@@ -19,6 +20,10 @@ export default function PastGames() {
   const [numberOfGames, setNumberOfGames] = useState<string>("");
   const [gamesData, setGamesData] = useState<GameProps[]>();
 
+  const [loadingGamesData, setLoadingGamesData] = useState(true);
+  const { login, logout, register, registerStatus, nearSignedIn, setRegisterStatus } = useNear(isSignedIn);
+
+
   const signIn = async () => {
     await walletConnectionObject?.requestSignIn({
       contractId: contractName,
@@ -29,10 +34,6 @@ export default function PastGames() {
   const signOut = () => {
     walletConnectionObject?.signOut();
     setIsSignedIn(false);
-  };
-
-  const startGameFunctionCall = async (playerB: string) => {
-    await startGameMethod(playerB, walletConnectionObject);
     router.push("/");
   };
 
@@ -42,7 +43,8 @@ export default function PastGames() {
         setNumberOfGames,
         numberOfGames,
         setGamesData,
-        walletConnectionObject
+        walletConnectionObject,
+        setLoadingGamesData
       );
     }
   }, [numberOfGames, gamesData]);
@@ -61,13 +63,6 @@ export default function PastGames() {
     init();
   }, []);
 
-  useEffect(() => {
-    const absolute = window.location.href.split("?");
-    const url = absolute[0];
-    router.replace(url);
-  }, [isSignedIn]);
-
-
   return (
     <PageWrapper
       signIn={signIn}
@@ -75,11 +70,17 @@ export default function PastGames() {
       signOut={signOut}
       title={translations.pages.indexPageTitle}
       currentPage={router.pathname}
+      nearLogin={login}
+      nearLogout={logout}
+      gameRegister={register}
+      status={registerStatus}
+      setStatus={setRegisterStatus}
+      nearSignedIn={nearSignedIn}
     >
       <PastGameList
         gamesList={gamesData || []}
+        loadingGamesData={loadingGamesData}
         accountId={accountId}
-        startGameMethod={(playerB) => startGameFunctionCall(playerB)}
       />
     </PageWrapper>
   );

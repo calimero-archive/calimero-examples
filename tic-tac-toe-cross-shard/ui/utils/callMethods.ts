@@ -5,32 +5,6 @@ import { GameProps } from "../pages";
 
 const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
 
-export const startGameMethod = async (
-  playerB: string,
-  walletConnectionObject: WalletConnection | undefined
-): Promise<number> => {
-  const account = walletConnectionObject?.account();
-  if (account) {
-    const contract = new Contract(account, contractName, {
-      viewMethods: [],
-      changeMethods: ["start_game"],
-    });
-    try {
-      const res = await contract["start_game"](
-        {
-          player_a: account.accountId,
-          player_b: playerB,
-        },
-        "300000000000000"
-      );
-      return res;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  return -1;
-};
-
 export async function getNumberOfGames(
   walletConnectionObject: WalletConnection | undefined
 ) {
@@ -70,8 +44,10 @@ export const setGames = async (
   setNumberOfGames: (numberOfGames: string) => void,
   numberOfGames: string,
   setGamesData: (gameData: GameProps[]) => void,
-  walletConnectionObject: WalletConnection | undefined
+  walletConnectionObject: WalletConnection | undefined,
+  setLoadingGamesData: (loadingGamesData: boolean) => void,
 ) => {
+  setLoadingGamesData(true);
   setNumberOfGames(await getNumberOfGames(walletConnectionObject));
   if (numberOfGames) {
     const gamesDataTemp: GameProps[] = [];
@@ -91,7 +67,9 @@ export const setGames = async (
       }
     }
     setGamesData(gamesDataTemp);
+    setLoadingGamesData(false);
   }
+  setLoadingGamesData(false);
 };
 
 export const makeAMoveMethod = async (

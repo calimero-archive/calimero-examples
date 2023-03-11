@@ -1,9 +1,7 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { Transition } from "@headlessui/react";
-import CheckCircleIcon from "@heroicons/react/outline/CheckCircleIcon";
-import XIcon from "@heroicons/react/outline/XIcon";
 import translations from "../../../constants/en.global.json";
-
+import { CheckCircleIcon } from "@heroicons/react/outline";
 interface NotificationCardProps {
   title: string;
   subtitle: string;
@@ -55,7 +53,6 @@ export default function NotificationCard({
                       <span className="sr-only">
                         {translations.startNewGamePopup.closeButtonText}
                       </span>
-                      <XIcon className="h-5 w-5" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
