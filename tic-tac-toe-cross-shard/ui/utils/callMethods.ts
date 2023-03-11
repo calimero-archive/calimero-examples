@@ -77,7 +77,6 @@ export const setGames = async (
     const gamesDataTemp: GameProps[] = [];
     for (let i = 0; i < parseInt(numberOfGames); i++) {
       let temp = await getGame(i, walletConnectionObject);
-      console.log(temp);
       const gameData = {
         boardStatus: temp.board[0].concat(temp.board[1], temp.board[2]),
         playerA: temp.player_a,

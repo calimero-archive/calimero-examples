@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.6.6",
-    "@heroicons/react": "^1.0.6",
+    "@heroicons/react": "^2.0.13",
     "bs58": "^5.0.0",
     "calimero-sdk": "0.0.10",
     "near-api-js": "^1.1.0",

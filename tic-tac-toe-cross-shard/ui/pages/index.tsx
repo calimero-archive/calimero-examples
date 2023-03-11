@@ -6,6 +6,7 @@ import { setGames, startGameMethod } from "../utils/callMethods";
 import translations from "../constants/en.global.json";
 import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import { config } from "../utils/calimeroSdk";
+import useNear from "../utils/useNear";
 
 const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
 
@@ -26,6 +27,7 @@ export default function CurrentGamesPage() {
   const [numberOfGames, setNumberOfGames] = useState<string>("");
   const [gamesData, setGamesData] = useState<GameProps[]>();
   const [accountId, setAccountId] = useState<String | null>("");
+  const { login, logout, register, registerStatus, nearSignedIn, setRegisterStatus } = useNear();
 
   const signIn = async () => {
     await walletConnectionObject?.requestSignIn({
@@ -87,6 +89,12 @@ export default function CurrentGamesPage() {
       signOut={signOut}
       title={translations.pages.indexPageTitle}
       currentPage={router.pathname}
+      nearLogin={login}
+      nearLogout={logout}
+      gameRegister={register}
+      status={registerStatus}
+      setStatus={setRegisterStatus}
+      nearSignedIn={nearSignedIn}
     >
       <CurrentGamesList
         gamesList={gamesData || []}

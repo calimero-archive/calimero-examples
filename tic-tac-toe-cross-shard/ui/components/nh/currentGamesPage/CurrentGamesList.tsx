@@ -1,4 +1,3 @@
-import StartGameComponent from "../startGameComponents/StartGameComponent";
 import translations from "../../../constants/en.global.json";
 import { GameProps } from "../../../pages";
 import GameCard from "../gameCard/GameCard";
@@ -6,7 +5,6 @@ import { RefreshIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { getGameStatus } from "../../../utils/styleFunctions";
 import { useState } from "react";
-import StartGamePopup from "../startGameComponents/StartGamePopup";
 
 const translation = translations.currentGamesPage;
 
@@ -27,10 +25,7 @@ export default function CurrentGamesList({
   return (
     <>
       {startupPopup ? (
-        <StartGamePopup
-          contractCall={(playerB) => startGameMethod(playerB)}
-          setClose={setStartupPopup}
-        />
+        <div></div>
       ) : (
         <div>
           <div className="font-medium text-2xl leading-7 mt-12 text-white">
@@ -46,11 +41,7 @@ export default function CurrentGamesList({
             </div>
           </div>
           {gamesList.length === 0 && accountId ? (
-            <StartGameComponent
-              buttonTitle={translation.buttonText}
-              title={translation.componentTitle}
-              setStartupPopup={setStartupPopup}
-            />
+            <div></div>
           ) : (
             <div className="grid grid-cols-1 space-y-6 mt-8">
               {gamesList

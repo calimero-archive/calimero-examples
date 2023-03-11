@@ -1,19 +1,40 @@
 import { useEffect, useState } from "react";
+import { RegisterStatus } from "../../../utils/useNear";
 import CalimeroLogo from "../images/CalimeroLogo";
+import NearLogo from "../images/NearLogo";
 import TictactoeLogo from "../images/TictactoeLogo";
+import StartGameDialog from "../StartGameDialog/StartGameDialog";
 
 interface NavigationProps {
   isSignedIn: boolean;
   signOut: () => void;
+  nearLogin: () => void;
+  nearLogout: () => void;
+  gameRegister: () => void;
+  status: RegisterStatus;
+  setStatus: (status: RegisterStatus) => void;
+  nearSignedIn: boolean;
 }
 
-export default function Navigation({ isSignedIn, signOut }: NavigationProps) {
+export default function Navigation({
+  isSignedIn,
+  signOut,
+  nearLogin,
+  nearLogout,
+  gameRegister,
+  status,
+  setStatus,
+  nearSignedIn,
+}: NavigationProps) {
   const [accountId, setAccountId] = useState("");
+  const [nearAccountId, setNearAccountId] = useState("");
 
   useEffect(() => {
     const account = localStorage.getItem("accountId");
     setAccountId(account || "");
-  }, [isSignedIn]);
+    const nearAccount = localStorage.getItem("nearAccountId");
+    setNearAccountId(nearAccount || "");
+  }, [isSignedIn, nearSignedIn]);
 
   return (
     <div className="flex justify-between">
@@ -26,13 +47,54 @@ export default function Navigation({ isSignedIn, signOut }: NavigationProps) {
         </div>
       </div>
       {isSignedIn && (
-        <div
-          className="text-white hover:text-nh-purple text-base leading-6 
+        <>
+          {!nearSignedIn ? (
+            <button
+              className="bg-white roudned-lg py-3 gap-x-4 px-10 flex items-center text-nh-bglight rounded-lg hover:bg-nh-purple"
+              onClick={nearLogin}
+            >
+              <NearLogo />
+              <span className="text-base leading-6 font-medium">
+                Login NEAR testnet
+              </span>
+            </button>
+          ) : (
+            <button
+              className="bg-white roudned-lg py-3 gap-x-4 px-10 flex items-center
+         text-nh-bglight rounded-lg hover:bg-nh-purple"
+              onClick={gameRegister}
+            >
+              Start new Game
+            </button>
+          )}
+          {status.started && (
+            <StartGameDialog
+              status={status}
+              onClose={() =>
+                setStatus({
+                  started: false,
+                  loading: false,
+                })
+              }
+            />
+          )}
+          <div>
+            <div
+              className="text-white hover:text-nh-purple text-base leading-6 
         font-medium flex items-center cursor-pointer"
-          onClick={signOut}
-        >
-          {accountId}
-        </div>
+              onClick={nearLogout}
+            >
+              Near Account: {nearAccountId}
+            </div>
+            <div
+              className="text-white hover:text-nh-purple text-base leading-6 
+        font-medium flex items-center cursor-pointer"
+              onClick={signOut}
+            >
+              Calimero Account: {accountId}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
