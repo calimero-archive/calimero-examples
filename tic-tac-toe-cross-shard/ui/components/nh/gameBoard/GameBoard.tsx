@@ -15,10 +15,10 @@ interface IProps {
   gameData: GameProps;
   gameId: number;
   callMethod: (id: number, squareId: number) => void;
+  updateBoard: () => void;
 }
 
-export default function GameBoard({ gameData, gameId, callMethod }: IProps) {
-  const router = useRouter();
+export default function GameBoard({ gameData, gameId, callMethod, updateBoard }: IProps) {
   const [squares, setSquares] = useState<string[]>(Array(9).fill(null));
   const [ended, setEnded] = useState<string>("");
   const [color, setColor] = useState<string>("bg-white");
@@ -28,7 +28,7 @@ export default function GameBoard({ gameData, gameId, callMethod }: IProps) {
 
   useEffect(() => {
     setBoard();
-  }, []);
+  }, [gameData]);
 
   const setBoard = async () => {
     setSquares(gameData.boardStatus);
@@ -50,7 +50,7 @@ export default function GameBoard({ gameData, gameId, callMethod }: IProps) {
       setTitle("Move has been made");
       setSubtitle("Please wait for Blockchain to save your data!");
       await callMethod(gameId, index);
-      // router.reload();
+      updateBoard();
     }
   };
   return (

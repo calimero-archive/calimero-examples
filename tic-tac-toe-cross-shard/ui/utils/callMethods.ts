@@ -79,7 +79,6 @@ export const makeAMoveMethod = async (
   router: NextRouter
 ) => {
   const account = walletConnectionObject?.account();
-  console.log("acc:"+account?.accountId);
   if (!account?.accountId && !localStorage.getItem("calimeroAccountId")) {
     signIn();
   } else if (account) {
@@ -94,7 +93,6 @@ export const makeAMoveMethod = async (
       },
       "300000000000000"
     );
-    router.reload();
   }
 };
 
@@ -122,5 +120,6 @@ export async function getGameData(
       gameId: gameId,
     };
     setGameStatus(gameData);
+    return gameData;
   }
 }

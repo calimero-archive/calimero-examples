@@ -20,6 +20,7 @@ export default function Game() {
   const { id } = router.query;
   const [gameStatus, setGameStatus] = useState<GameProps>();
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
   const {
     login,
     logout,
@@ -43,8 +44,23 @@ export default function Game() {
   };
 
   const makeMoveFunctionCall = async (id: number, squareId: number) => {
+    setLoading(true);
     await makeAMoveMethod(id, squareId, walletConnectionObject, signIn, router);
+    const updatedGameStatus = await getGameData(parseInt(id?.toString() || ""), setGameStatus, calimero);
+    setGameStatus(updatedGameStatus);
+    setLoading(false);
   };
+
+  useEffect(()=>{
+    const updateBoard = async () => {
+    if(!loading){
+      const data = await getGameData(parseInt(id?.toString() || ""), setGameStatus, calimero);
+      setLoading(true);
+    }
+    }
+    updateBoard();
+    
+  },[loading, gameStatus])
 
   useEffect(() => {
     const init = async () => {
@@ -80,6 +96,7 @@ export default function Game() {
       setStatus={setRegisterStatus}
       nearSignedIn={nearSignedIn}
     >
+      <>
       {gameStatus && id && (
         <div className="mt-10">
           <GameCard
@@ -101,10 +118,13 @@ export default function Game() {
           <GameBoard
             gameData={gameStatus}
             gameId={parseInt(id.toString())}
+            updateBoard={() => getGameData(parseInt(id?.toString() || ""), setGameStatus, calimero)}
             callMethod={(id, squareId) => makeMoveFunctionCall(id, squareId)}
           />
         </div>
       )}
+      </>
+      
     </PageWrapper>
   );
 }
