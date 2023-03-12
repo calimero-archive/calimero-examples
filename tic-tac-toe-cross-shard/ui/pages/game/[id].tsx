@@ -20,37 +20,20 @@ export default function Game() {
   const { id } = router.query;
   const [gameStatus, setGameStatus] = useState<GameProps>();
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const { login, logout, register, registerStatus, nearSignedIn, setRegisterStatus } = useNear();
+  const {
+    login,
+    logout,
+    register,
+    registerStatus,
+    nearSignedIn,
+    setRegisterStatus,
+  } = useNear();
 
-  useEffect(() => {
-    const setGame = async () => {
-      if(calimero){
-        getGameData(
-        parseInt(id?.toString() || ""),
-        setGameStatus,
-        calimero
-      );
-      }
-    };
-    if (!!id) {
-      setGame();
-    }
-  }, [id, calimero]);
-
-  useEffect(() => {
-    const init = async () => {
-      calimero = await CalimeroSdk.init(config).connect();
-      walletConnectionObject = new WalletConnection(calimero, contractName);
-      const isSigned = await walletConnectionObject?.isSignedInAsync();
-      console.log(isSigned);
-      if (isSigned) {
-        localStorage.setItem("accountId", walletConnectionObject.getAccountId());
-      }
-      setIsSignedIn(isSigned);
-
-    };
-    init();
-  }, []);
+  const signOut = () => {
+    walletConnectionObject?.signOut();
+    localStorage.removeItem("calimeroAccountId");
+    setIsSignedIn(false);
+  };
 
   const signIn = async () => {
     await walletConnectionObject?.requestSignIn({
@@ -59,16 +42,30 @@ export default function Game() {
     });
   };
 
-  const signOut = async () => {
-    walletConnectionObject?.signOut();
-    setIsSignedIn(false);
-    router.push("/");
+  const makeMoveFunctionCall = async (id: number, squareId: number) => {
+    await makeAMoveMethod(id, squareId, walletConnectionObject, signIn, router);
   };
 
-  const makeMoveFunctionCall = async (id: number, squareId: number) => {
-    await makeAMoveMethod(id, squareId, walletConnectionObject,signIn);
-    // router.reload();
-  };
+  useEffect(() => {
+    const init = async () => {
+      calimero = await CalimeroSdk.init(config).connect();
+      if (id) {
+        getGameData(parseInt(id?.toString() || ""), setGameStatus, calimero);
+      }
+      walletConnectionObject = new WalletConnection(calimero, contractName);
+      await walletConnectionObject.isSignedInAsync();
+      localStorage.setItem("calimeroAccountId",walletConnectionObject.getAccountId());
+    };
+    if (nearSignedIn) {
+      init();
+    }
+  }, [nearSignedIn, id]);
+
+  useEffect(() => {
+    const absolute = window.location.href.split("?");
+    const url = absolute[0];
+    router.replace(url);
+  }, []);
 
   return (
     <PageWrapper
@@ -77,6 +74,7 @@ export default function Game() {
       currentPage={router.pathname}
       nearLogin={login}
       nearLogout={logout}
+      calimeroLogout={signOut}
       gameRegister={register}
       status={registerStatus}
       setStatus={setRegisterStatus}
@@ -88,7 +86,11 @@ export default function Game() {
             gameId={parseInt(id.toString())}
             playerA={gameStatus.playerA}
             playerB={gameStatus.playerB}
-            status={getGameStatus(gameStatus.status)}
+            status={getGameStatus(
+                              gameStatus.status,
+                              gameStatus.playerA,
+                              walletConnectionObject?.getAccountId()
+                            )}
             play={false}
           />
           {gameStatus.playerTurn == localStorage.getItem("nearAccountId") && (

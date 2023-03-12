@@ -9,6 +9,7 @@ interface NavigationProps {
   isSignedIn: boolean;
   nearLogin: () => void;
   nearLogout: () => void;
+  calimeroLogout: () => void;
   gameRegister: () => void;
   status: RegisterStatus;
   setStatus: (status: RegisterStatus) => void;
@@ -19,6 +20,7 @@ export default function Navigation({
   isSignedIn,
   nearLogin,
   nearLogout,
+  calimeroLogout,
   gameRegister,
   status,
   setStatus,
@@ -28,7 +30,7 @@ export default function Navigation({
   const [nearAccountId, setNearAccountId] = useState("");
 
   useEffect(() => {
-    const account = localStorage.getItem("accountId");
+    const account = localStorage.getItem("calimeroAccountId");
     setAccountId(account || "");
     const nearAccount = localStorage.getItem("nearAccountId");
     setNearAccountId(nearAccount || "");
@@ -87,6 +89,7 @@ export default function Navigation({
             <div
               className="text-white hover:text-nh-purple text-base leading-6 
         font-medium flex items-center cursor-pointer"
+              onClick={calimeroLogout}
             >
               Calimero Account: {accountId}
             </div>

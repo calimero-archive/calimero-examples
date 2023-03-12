@@ -13,6 +13,7 @@ interface PageWrapperProps {
   currentPage: string;
   nearLogin: () => void;
   nearLogout: () => void;
+  calimeroLogout: () => void;
   gameRegister: () => void;
   status: RegisterStatus;
   setStatus: (status: RegisterStatus) => void;
@@ -25,6 +26,7 @@ export default function PageWrapper({
   children,
   currentPage,
   nearLogin,
+  calimeroLogout,
   nearLogout,
   gameRegister,
   status,
@@ -43,6 +45,7 @@ export default function PageWrapper({
             isSignedIn={isSignedIn} 
             nearLogin={nearLogin}
             nearLogout={nearLogout}
+            calimeroLogout={calimeroLogout}
             gameRegister={gameRegister}
             status={status}
             setStatus={setStatus}

@@ -11,8 +11,8 @@ import { useRouter } from "next/router";
 const contractName = process.env.NEXT_PUBLIC_NEAR_CONTRACT_ID || "";
 
 export interface RegisterStatus {
-    started: boolean;
-    loading: boolean
+  started: boolean;
+  loading: boolean;
 }
 
 export default function useNear() {
@@ -49,10 +49,10 @@ export default function useNear() {
     const nearConnection = await connect(config);
     const wallet = new WalletConnection(nearConnection, contractName);
     try {
+      router.push("/");
       await wallet.signOut();
       localStorage.removeItem("nearAccountId");
       localStorage.removeItem("accountId");
-      router.push("/");
     } catch (error) {
       console.error(error);
     }
@@ -61,14 +61,14 @@ export default function useNear() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const connectionConfig = {
-      networkId: "testnet",
-      keyStore: new keyStores.BrowserLocalStorageKeyStore(),
-      nodeUrl: "https://rpc.testnet.near.org",
-      walletUrl: "https://testnet-calimero-mnw.netlify.app/",
-      helperUrl: "https://helper.testnet.near.org",
-      explorerUrl: "https://explorer.testnet.near.org",
-    };
-    setConfig(connectionConfig);
+        networkId: "testnet",
+        keyStore: new keyStores.BrowserLocalStorageKeyStore(),
+        nodeUrl: "https://rpc.testnet.near.org",
+        walletUrl: "https://testnet-calimero-mnw.netlify.app/",
+        helperUrl: "https://helper.testnet.near.org",
+        explorerUrl: "https://explorer.testnet.near.org",
+      };
+      setConfig(connectionConfig);
     }
   }, []);
 
@@ -79,8 +79,8 @@ export default function useNear() {
         const wallet = new WalletConnection(nearConnection, contractName);
         const nearSignedIn = await wallet.isSignedInAsync();
         setNearSignedIn(nearSignedIn);
-        if(nearSignedIn){
-            localStorage.setItem("nearAccountId", wallet.getAccountId());
+        if (nearSignedIn) {
+          localStorage.setItem("nearAccountId", wallet.getAccountId());
         }
       }
     };
@@ -105,5 +105,12 @@ export default function useNear() {
       });
     }
   };
-  return { login, logout, register, registerStatus, nearSignedIn, setRegisterStatus };
+  return {
+    login,
+    logout,
+    register,
+    registerStatus,
+    nearSignedIn,
+    setRegisterStatus,
+  };
 }

@@ -1,36 +1,40 @@
 import { WalletConnection } from "calimero-sdk";
 import * as nearAPI from "near-api-js";
 import { Contract } from "near-api-js";
+import { NextRouter } from "next/router";
 import { Calimero, GameProps } from "../pages";
 
 const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
 
-export async function getNumberOfGames(
-  calimero: Calimero | undefined
-) {
+export async function getNumberOfGames(calimero: Calimero | undefined) {
   if (calimero) {
-      const contract = new nearAPI.Contract(new nearAPI.Account(calimero.connection.connection, contractName), contractName, {
+    const contract = new nearAPI.Contract(
+      new nearAPI.Account(calimero.connection.connection, contractName),
+      contractName,
+      {
         viewMethods: ["num_of_games"],
         changeMethods: [],
-      });
-      try {
-        const numOfGames = await contract["num_of_games"]({});
-        return numOfGames;
-      } catch (error) {
-        console.log(error);
       }
+    );
+    try {
+      const numOfGames = await contract["num_of_games"]({});
+      return numOfGames;
+    } catch (error) {
+      console.log(error);
     }
+  }
 }
 
-export async function getGame(
-  gameId: number,
-  calimero: Calimero | undefined
-) {
+export async function getGame(gameId: number, calimero: Calimero | undefined) {
   if (calimero) {
-    const contract = new nearAPI.Contract(new nearAPI.Account(calimero.connection.connection, contractName), contractName, {
-      viewMethods: ["get_game"],
-      changeMethods: [],
-    });
+    const contract = new nearAPI.Contract(
+      new nearAPI.Account(calimero.connection.connection, contractName),
+      contractName,
+      {
+        viewMethods: ["get_game"],
+        changeMethods: [],
+      }
+    );
     const game = await contract["get_game"]({ game_id: gameId });
     return game;
   }
@@ -71,27 +75,27 @@ export const makeAMoveMethod = async (
   id: number,
   squareId: number,
   walletConnectionObject: WalletConnection | undefined,
-  signIn: () => void
+  signIn: () => void,
+  router: NextRouter
 ) => {
-  console.log("tu sam");
   const account = walletConnectionObject?.account();
-  console.log(account);
-  if(!account || !localStorage.getItem("accountId")){
+  console.log("acc:"+account?.accountId);
+  if (!account?.accountId && !localStorage.getItem("calimeroAccountId")) {
     signIn();
+  } else if (account) {
+    const contract = new Contract(account, contractName, {
+      viewMethods: [],
+      changeMethods: ["make_a_move"],
+    });
+    const res = await contract["make_a_move"](
+      {
+        game_id: id,
+        selected_field: squareId,
+      },
+      "300000000000000"
+    );
+    router.reload();
   }
-  // if (account) {
-  //   const contract = new Contract(account, contractName, {
-  //     viewMethods: [],
-  //     changeMethods: ["make_a_move"],
-  //   });
-  //   const res = await contract["make_a_move"](
-  //     {
-  //       game_id: id,
-  //       selected_field: squareId,
-  //     },
-  //     "300000000000000"
-  //   );
-  // }
 };
 
 export async function getGameData(
@@ -100,10 +104,14 @@ export async function getGameData(
   calimero: Calimero | undefined
 ) {
   if (calimero) {
-    const contract = new nearAPI.Contract(new nearAPI.Account(calimero.connection.connection, contractName), contractName, {
-      viewMethods: ["get_game"],
-      changeMethods: [],
-    });
+    const contract = new nearAPI.Contract(
+      new nearAPI.Account(calimero.connection.connection, contractName),
+      contractName,
+      {
+        viewMethods: ["get_game"],
+        changeMethods: [],
+      }
+    );
     const temp = await contract["get_game"]({ game_id: gameId });
     const gameData = {
       boardStatus: temp.board[0].concat(temp.board[1], temp.board[2]),

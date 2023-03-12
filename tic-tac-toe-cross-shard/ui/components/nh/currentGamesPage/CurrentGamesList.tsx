@@ -11,7 +11,7 @@ const translation = translations.currentGamesPage;
 interface CurrentGameListProps {
   gamesList: GameProps[];
   loadingGamesData: boolean;
-  accountId: String | null;
+  accountId: string | null;
 }
 
 export default function CurrentGamesList({
@@ -20,8 +20,9 @@ export default function CurrentGamesList({
   accountId,
 }: CurrentGameListProps) {
   const router = useRouter();
+
   return (
-    <div>
+    <>
       <div className="font-medium text-2xl leading-7 mt-12 text-white">
         {translation.pageTitle}
       </div>
@@ -42,8 +43,10 @@ export default function CurrentGamesList({
         </div>
       ) : (
         <>
-          {gamesList.length === 0 && accountId ? (
-            <div></div>
+          {gamesList.filter((game) => game.status === "InProgress").length == 0  && accountId ? (
+            <div className="flex justify-center text-white">
+                No games available yet
+            </div>
           ) : (
             <div className="grid grid-cols-1 space-y-6 mt-8">
               {gamesList
@@ -64,6 +67,6 @@ export default function CurrentGamesList({
           )}
         </>
       )}
-    </div>
+    </>
   );
 }
