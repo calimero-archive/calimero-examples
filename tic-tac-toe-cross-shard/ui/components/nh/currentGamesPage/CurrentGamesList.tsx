@@ -4,7 +4,6 @@ import GameCard from "../gameCard/GameCard";
 import { RefreshIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { getGameStatus } from "../../../utils/styleFunctions";
-import { useState } from "react";
 import Spinner from "../spinner/Spinner";
 
 const translation = translations.currentGamesPage;
@@ -21,7 +20,6 @@ export default function CurrentGamesList({
   accountId,
 }: CurrentGameListProps) {
   const router = useRouter();
-
   return (
     <div>
       <div className="font-medium text-2xl leading-7 mt-12 text-white">
@@ -33,19 +31,19 @@ export default function CurrentGamesList({
           <RefreshIcon className="w-6 h-6" />
         </div>
       </div>
-      {gamesList.length === 0 && accountId ? (
-        <div></div>
+      {loadingGamesData ? (
+        <div className="flex justify-center mt-20">
+          <div>
+            <div className="flex justify-center items-center pb-4">
+              <Spinner />
+            </div>
+            <p className="text-white">Loading games</p>
+          </div>
+        </div>
       ) : (
         <>
-          {loadingGamesData ? (
-            <div className="flex justify-center mt-20">
-              <div>
-                <div className="flex justify-center items-center pb-4">
-                  <Spinner />
-                </div>
-                <p className="text-white">Loading games</p>
-              </div>
-            </div>
+          {gamesList.length === 0 && accountId ? (
+            <div></div>
           ) : (
             <div className="grid grid-cols-1 space-y-6 mt-8">
               {gamesList

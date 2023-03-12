@@ -7,9 +7,7 @@ import { SideNavigation } from "../sideNavigation/SideNavigation";
 
 
 interface PageWrapperProps {
-  signIn: () => void;
   isSignedIn: boolean;
-  signOut: () => void;
   title: String;
   children: ReactNode;
   currentPage: string;
@@ -22,9 +20,7 @@ interface PageWrapperProps {
 }
 
 export default function PageWrapper({
-  signIn,
   isSignedIn,
-  signOut,
   title,
   children,
   currentPage,
@@ -45,7 +41,6 @@ export default function PageWrapper({
         <div className="w-full max-w-nh">
           <Navigation 
             isSignedIn={isSignedIn} 
-            signOut={signOut} 
             nearLogin={nearLogin}
             nearLogout={nearLogout}
             gameRegister={gameRegister}
@@ -54,7 +49,7 @@ export default function PageWrapper({
             nearSignedIn={nearSignedIn}
           />
         </div>
-        {isSignedIn ? (
+        {nearSignedIn ? (
           <div className="w-full max-w-nh flex">
             <div className="w-1/4">
               <SideNavigation menuPage={currentPage} />
@@ -66,7 +61,7 @@ export default function PageWrapper({
         ) : (
           <div className="w-full">
             <LoginPopupComponent
-              login={signIn}
+              login={nearLogin}
             />
           </div>
         )}

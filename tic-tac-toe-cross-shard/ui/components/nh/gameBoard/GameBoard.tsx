@@ -40,7 +40,7 @@ export default function GameBoard({ gameData, gameId, callMethod }: IProps) {
     setEnded(gameData.status);
   };
   const makeMove = async (index: number) => {
-    const loggedUser = localStorage.getItem("accountId");
+    const loggedUser = localStorage.getItem("nearAccountId");
     if (gameData.playerTurn !== loggedUser) {
       setShow(true);
       setTitle("Its not your turn");
@@ -50,7 +50,7 @@ export default function GameBoard({ gameData, gameId, callMethod }: IProps) {
       setTitle("Move has been made");
       setSubtitle("Please wait for Blockchain to save your data!");
       await callMethod(gameId, index);
-      router.reload();
+      // router.reload();
     }
   };
   return (

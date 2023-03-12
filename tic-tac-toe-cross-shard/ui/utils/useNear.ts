@@ -15,7 +15,7 @@ export interface RegisterStatus {
     loading: boolean
 }
 
-export default function useNear(isSignedIn: boolean) {
+export default function useNear() {
   const [config, setConfig] = useState<ConnectConfig | undefined>(undefined);
   const [nearSignedIn, setNearSignedIn] = useState(false);
   const [registerStatus, setRegisterStatus] = useState<RegisterStatus>({
@@ -51,14 +51,15 @@ export default function useNear(isSignedIn: boolean) {
     try {
       await wallet.signOut();
       localStorage.removeItem("nearAccountId");
-      router.reload();
+      localStorage.removeItem("accountId");
+      router.push("/");
     } catch (error) {
       console.error(error);
     }
   }
 
   useEffect(() => {
-    if (isSignedIn) {
+    if (typeof window !== "undefined") {
       const connectionConfig = {
       networkId: "testnet",
       keyStore: new keyStores.BrowserLocalStorageKeyStore(),
@@ -69,7 +70,7 @@ export default function useNear(isSignedIn: boolean) {
     };
     setConfig(connectionConfig);
     }
-  }, [isSignedIn]);
+  }, []);
 
   useEffect(() => {
     const isSigned = async () => {
@@ -87,7 +88,6 @@ export default function useNear(isSignedIn: boolean) {
   }, [config]);
   const register = async () => {
     if (config) {
-        console.log("tu sam");
       setRegisterStatus({
         started: true,
         loading: true,

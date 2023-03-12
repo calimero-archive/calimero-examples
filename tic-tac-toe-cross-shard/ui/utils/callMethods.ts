@@ -1,17 +1,15 @@
 import { WalletConnection } from "calimero-sdk";
 import * as nearAPI from "near-api-js";
 import { Contract } from "near-api-js";
-import { GameProps } from "../pages";
+import { Calimero, GameProps } from "../pages";
 
 const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
 
 export async function getNumberOfGames(
-  walletConnectionObject: WalletConnection | undefined
+  calimero: Calimero | undefined
 ) {
-  if (walletConnectionObject) {
-    const account = await walletConnectionObject.account();
-    if (account.accountId) {
-      const contract = new nearAPI.Contract(account, contractName, {
+  if (calimero) {
+      const contract = new nearAPI.Contract(new nearAPI.Account(calimero.connection.connection, contractName), contractName, {
         viewMethods: ["num_of_games"],
         changeMethods: [],
       });
@@ -22,16 +20,14 @@ export async function getNumberOfGames(
         console.log(error);
       }
     }
-  }
 }
 
 export async function getGame(
   gameId: number,
-  walletConnectionObject: WalletConnection | undefined
+  calimero: Calimero | undefined
 ) {
-  if (walletConnectionObject) {
-    const account = await walletConnectionObject.account();
-    const contract = new nearAPI.Contract(account, contractName, {
+  if (calimero) {
+    const contract = new nearAPI.Contract(new nearAPI.Account(calimero.connection.connection, contractName), contractName, {
       viewMethods: ["get_game"],
       changeMethods: [],
     });
@@ -44,15 +40,15 @@ export const setGames = async (
   setNumberOfGames: (numberOfGames: string) => void,
   numberOfGames: string,
   setGamesData: (gameData: GameProps[]) => void,
-  walletConnectionObject: WalletConnection | undefined,
   setLoadingGamesData: (loadingGamesData: boolean) => void,
+  calimero: Calimero | undefined
 ) => {
   setLoadingGamesData(true);
-  setNumberOfGames(await getNumberOfGames(walletConnectionObject));
+  setNumberOfGames(await getNumberOfGames(calimero));
   if (numberOfGames) {
     const gamesDataTemp: GameProps[] = [];
     for (let i = 0; i < parseInt(numberOfGames); i++) {
-      let temp = await getGame(i, walletConnectionObject);
+      let temp = await getGame(i, calimero);
       const gameData = {
         boardStatus: temp.board[0].concat(temp.board[1], temp.board[2]),
         playerA: temp.player_a,
@@ -61,7 +57,7 @@ export const setGames = async (
         status: temp.status,
         gameId: i,
       };
-      const loggedUser = localStorage.getItem("accountId");
+      const loggedUser = localStorage.getItem("nearAccountId");
       if (gameData.playerA == loggedUser || gameData.playerB === loggedUser) {
         gamesDataTemp.push(gameData);
       }
@@ -69,38 +65,42 @@ export const setGames = async (
     setGamesData(gamesDataTemp);
     setLoadingGamesData(false);
   }
-  setLoadingGamesData(false);
 };
 
 export const makeAMoveMethod = async (
   id: number,
   squareId: number,
-  walletConnectionObject: WalletConnection | undefined
+  walletConnectionObject: WalletConnection | undefined,
+  signIn: () => void
 ) => {
+  console.log("tu sam");
   const account = walletConnectionObject?.account();
-  if (account) {
-    const contract = new Contract(account, contractName, {
-      viewMethods: [],
-      changeMethods: ["make_a_move"],
-    });
-    const res = await contract["make_a_move"](
-      {
-        game_id: id,
-        selected_field: squareId,
-      },
-      "300000000000000"
-    );
+  console.log(account);
+  if(!account || !localStorage.getItem("accountId")){
+    signIn();
   }
+  // if (account) {
+  //   const contract = new Contract(account, contractName, {
+  //     viewMethods: [],
+  //     changeMethods: ["make_a_move"],
+  //   });
+  //   const res = await contract["make_a_move"](
+  //     {
+  //       game_id: id,
+  //       selected_field: squareId,
+  //     },
+  //     "300000000000000"
+  //   );
+  // }
 };
 
 export async function getGameData(
   gameId: number,
   setGameStatus: (gameStatus: GameProps) => void,
-  walletConnectionObject: WalletConnection | undefined
+  calimero: Calimero | undefined
 ) {
-  if (walletConnectionObject) {
-    const account = walletConnectionObject.account();
-    const contract = new nearAPI.Contract(account, contractName, {
+  if (calimero) {
+    const contract = new nearAPI.Contract(new nearAPI.Account(calimero.connection.connection, contractName), contractName, {
       viewMethods: ["get_game"],
       changeMethods: [],
     });

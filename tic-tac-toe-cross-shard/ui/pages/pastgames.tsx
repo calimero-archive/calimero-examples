@@ -21,7 +21,7 @@ export default function PastGames() {
   const [gamesData, setGamesData] = useState<GameProps[]>();
 
   const [loadingGamesData, setLoadingGamesData] = useState(true);
-  const { login, logout, register, registerStatus, nearSignedIn, setRegisterStatus } = useNear(isSignedIn);
+  const { login, logout, register, registerStatus, nearSignedIn, setRegisterStatus } = useNear();
 
 
   const signIn = async () => {

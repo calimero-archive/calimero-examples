@@ -7,10 +7,24 @@ import translations from "../constants/en.global.json";
 import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import { config } from "../utils/calimeroSdk";
 import useNear from "../utils/useNear";
+import { Near } from "near-api-js";
 
 const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
 
+export interface CalimeroConfig {
+    shardId?: string;
+    calimeroUrl: string;
+    walletUrl?: string;
+    calimeroToken: string;
+}
+
+export interface Calimero {
+    connection: Near;
+    config: CalimeroConfig;
+}
+
 let walletConnectionObject: WalletConnection | undefined = undefined;
+let calimero: Calimero | undefined = undefined;
 
 export interface GameProps {
   boardStatus: string[];
@@ -28,48 +42,44 @@ export default function CurrentGamesPage() {
   const [gamesData, setGamesData] = useState<GameProps[]>();
   const [accountId, setAccountId] = useState<String | null>("");
   const [loadingGamesData, setLoadingGamesData] = useState(false);
-  const { login, logout, register, registerStatus, nearSignedIn, setRegisterStatus } = useNear(isSignedIn);
+  const { login, logout, register, registerStatus, nearSignedIn, setRegisterStatus } = useNear();
 
-  const signIn = async () => {
-    await walletConnectionObject?.requestSignIn({
-      contractId: contractName,
-      methodNames: ["make_a_move"],
-    });
-  };
+  // const signIn = async () => {
+  //   await walletConnectionObject?.requestSignIn({
+  //     contractId: contractName,
+  //     methodNames: ["make_a_move"],
+  //   });
+  // };
 
-  const signOut = () => {
-    walletConnectionObject?.signOut();
-    setIsSignedIn(false);
-  };
+  // const signOut = () => {
+  //   walletConnectionObject?.signOut();
+  //   setIsSignedIn(false);
+  // };
 
   useEffect(() => {
-    if (!numberOfGames || (!gamesData && localStorage.getItem("accountId"))) {
-      setGames(
+    if (!numberOfGames || (!gamesData && localStorage.getItem("nearAccountId"))) {
+      if(nearSignedIn){
+        setGames(
         setNumberOfGames,
         numberOfGames,
         setGamesData,
-        walletConnectionObject,
         setLoadingGamesData,
+        calimero
       );
+      }
     }
-  }, [numberOfGames, gamesData]);
+  }, [numberOfGames, gamesData, nearSignedIn]);
 
   useEffect(() => {
-    if (isSignedIn && localStorage.getItem("accountId")) {
-      setAccountId(localStorage.getItem("accountId"));
+    if (nearSignedIn && localStorage.getItem("nearAccountId")) {
+      setAccountId(localStorage.getItem("nearAccountId"));
     }
-  }, [gamesData]);
+  }, [gamesData,nearSignedIn]);
 
   useEffect(() => {
     const init = async () => {
-      const calimero = await CalimeroSdk.init(config).connect();
+      calimero = await CalimeroSdk.init(config).connect();
       walletConnectionObject = new WalletConnection(calimero, contractName);
-      const signedIn = await walletConnectionObject?.isSignedInAsync();
-      const account = walletConnectionObject?.account();
-      if (account && signedIn) {
-        localStorage.setItem("accountId", account.accountId);
-      }
-      setIsSignedIn(signedIn);
     };
     init();
   }, []);
@@ -82,9 +92,7 @@ export default function CurrentGamesPage() {
 
   return (
     <PageWrapper
-      signIn={signIn}
       isSignedIn={isSignedIn}
-      signOut={signOut}
       title={translations.pages.indexPageTitle}
       currentPage={router.pathname}
       nearLogin={login}

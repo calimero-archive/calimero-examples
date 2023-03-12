@@ -7,7 +7,6 @@ import StartGameDialog from "../StartGameDialog/StartGameDialog";
 
 interface NavigationProps {
   isSignedIn: boolean;
-  signOut: () => void;
   nearLogin: () => void;
   nearLogout: () => void;
   gameRegister: () => void;
@@ -18,7 +17,6 @@ interface NavigationProps {
 
 export default function Navigation({
   isSignedIn,
-  signOut,
   nearLogin,
   nearLogout,
   gameRegister,
@@ -46,7 +44,7 @@ export default function Navigation({
           <TictactoeLogo size="navbar" />
         </div>
       </div>
-      {isSignedIn && (
+      {nearSignedIn && (
         <>
           {!nearSignedIn ? (
             <button
@@ -89,7 +87,6 @@ export default function Navigation({
             <div
               className="text-white hover:text-nh-purple text-base leading-6 
         font-medium flex items-center cursor-pointer"
-              onClick={signOut}
             >
               Calimero Account: {accountId}
             </div>
