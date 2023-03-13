@@ -57,7 +57,10 @@ export default function PastGames() {
       calimero = await CalimeroSdk.init(config).connect();
       walletConnectionObject = new WalletConnection(calimero, contractName);
       await walletConnectionObject.isSignedInAsync();
-      localStorage.setItem("calimeroAccountId",walletConnectionObject.getAccountId());
+      localStorage.setItem(
+        "calimeroAccountId",
+        walletConnectionObject.getAccountId()
+      );
     };
     if (nearSignedIn) {
       init();

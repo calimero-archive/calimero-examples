@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Square from "./Square";
 import NotificationCard from "../notificationCard/NotificationCard";
-import { useRouter } from "next/router";
 
 export interface GameProps {
   boardStatus: string[];
@@ -50,9 +49,11 @@ export default function GameBoard({ gameData, gameId, callMethod, updateBoard }:
       setTitle("Move has been made");
       setSubtitle("Please wait for Blockchain to save your data!");
       await callMethod(gameId, index);
+      setShow(false);
       updateBoard();
     }
   };
+
   return (
     <>
       <div className="absolute top-20 right-8">

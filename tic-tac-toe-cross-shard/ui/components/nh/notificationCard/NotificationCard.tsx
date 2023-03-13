@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import translations from "../../../constants/en.global.json";
 import { CheckCircleIcon, XIcon } from "@heroicons/react/outline";
@@ -16,6 +16,7 @@ export default function NotificationCard({
   setShow,
 }: NotificationCardProps) {
   return (
+
     <>
       <div aria-live="assertive">
         <div className="flex w-80 flex-col items-center space-y-4 sm:items-end">

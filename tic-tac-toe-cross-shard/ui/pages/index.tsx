@@ -78,7 +78,10 @@ export default function CurrentGamesPage() {
       calimero = await CalimeroSdk.init(config).connect();
       walletConnectionObject = new WalletConnection(calimero, contractName);
       await walletConnectionObject.isSignedInAsync();
-      localStorage.setItem("calimeroAccountId",walletConnectionObject.getAccountId());
+      localStorage.setItem(
+        "calimeroAccountId",
+        walletConnectionObject.getAccountId()
+      );
     };
     if (nearSignedIn) {
       init();
@@ -98,7 +101,10 @@ export default function CurrentGamesPage() {
       title={translations.pages.indexPageTitle}
       currentPage={router.pathname}
       nearLogin={login}
-      nearLogout={() => { logout(); router.reload();}}
+      nearLogout={() => {
+        logout();
+        router.reload();
+      }}
       calimeroLogout={signOut}
       gameRegister={register}
       status={registerStatus}

@@ -46,21 +46,28 @@ export default function Game() {
   const makeMoveFunctionCall = async (id: number, squareId: number) => {
     setLoading(true);
     await makeAMoveMethod(id, squareId, walletConnectionObject, signIn, router);
-    const updatedGameStatus = await getGameData(parseInt(id?.toString() || ""), setGameStatus, calimero);
+    const updatedGameStatus = await getGameData(
+      parseInt(id?.toString() || ""),
+      setGameStatus,
+      calimero
+    );
     setGameStatus(updatedGameStatus);
     setLoading(false);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const updateBoard = async () => {
-    if(!loading){
-      const data = await getGameData(parseInt(id?.toString() || ""), setGameStatus, calimero);
-      setLoading(true);
-    }
-    }
+      if (!loading) {
+        const data = await getGameData(
+          parseInt(id?.toString() || ""),
+          setGameStatus,
+          calimero
+        );
+        setLoading(true);
+      }
+    };
     updateBoard();
-    
-  },[loading, gameStatus])
+  }, [loading, gameStatus]);
 
   useEffect(() => {
     const init = async () => {
@@ -70,7 +77,10 @@ export default function Game() {
       }
       walletConnectionObject = new WalletConnection(calimero, contractName);
       await walletConnectionObject.isSignedInAsync();
-      localStorage.setItem("calimeroAccountId",walletConnectionObject.getAccountId());
+      localStorage.setItem(
+        "calimeroAccountId",
+        walletConnectionObject.getAccountId()
+      );
     };
     if (nearSignedIn) {
       init();
@@ -97,34 +107,39 @@ export default function Game() {
       nearSignedIn={nearSignedIn}
     >
       <>
-      {gameStatus && id && (
-        <div className="mt-10">
-          <GameCard
-            gameId={parseInt(id.toString())}
-            playerA={gameStatus.playerA}
-            playerB={gameStatus.playerB}
-            status={getGameStatus(
-                              gameStatus.status,
-                              gameStatus.playerA,
-                              walletConnectionObject?.getAccountId()
-                            )}
-            play={false}
-          />
-          {gameStatus.playerTurn == localStorage.getItem("nearAccountId") && (
-            <div className="flex justify-center items-center mt-4 text-white text-base font-semibold">
-              {translations.currentGamesPage.turnText}
-            </div>
-          )}
-          <GameBoard
-            gameData={gameStatus}
-            gameId={parseInt(id.toString())}
-            updateBoard={() => getGameData(parseInt(id?.toString() || ""), setGameStatus, calimero)}
-            callMethod={(id, squareId) => makeMoveFunctionCall(id, squareId)}
-          />
-        </div>
-      )}
+        {gameStatus && id && (
+          <div className="mt-10">
+            <GameCard
+              gameId={parseInt(id.toString())}
+              playerA={gameStatus.playerA}
+              playerB={gameStatus.playerB}
+              status={getGameStatus(
+                gameStatus.status,
+                gameStatus.playerA,
+                walletConnectionObject?.getAccountId()
+              )}
+              play={false}
+            />
+            {gameStatus.playerTurn == localStorage.getItem("nearAccountId") && (
+              <div className="flex justify-center items-center mt-4 text-white text-base font-semibold">
+                {translations.currentGamesPage.turnText}
+              </div>
+            )}
+            <GameBoard
+              gameData={gameStatus}
+              gameId={parseInt(id.toString())}
+              updateBoard={() =>
+                getGameData(
+                  parseInt(id?.toString() || ""),
+                  setGameStatus,
+                  calimero
+                )
+              }
+              callMethod={(id, squareId) => makeMoveFunctionCall(id, squareId)}
+            />
+          </div>
+        )}
       </>
-      
     </PageWrapper>
   );
 }

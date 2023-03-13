@@ -4,6 +4,7 @@ import CalimeroLogo from "../images/CalimeroLogo";
 import NearLogo from "../images/NearLogo";
 import TictactoeLogo from "../images/TictactoeLogo";
 import StartGameDialog from "../StartGameDialog/StartGameDialog";
+import translations from "../../../constants/en.global.json";
 
 interface NavigationProps {
   isSignedIn: boolean;
@@ -29,6 +30,8 @@ export default function Navigation({
   const [accountId, setAccountId] = useState("");
   const [nearAccountId, setNearAccountId] = useState("");
 
+  const translation = translations.navigation;
+
   useEffect(() => {
     const account = localStorage.getItem("calimeroAccountId");
     setAccountId(account || "");
@@ -48,25 +51,13 @@ export default function Navigation({
       </div>
       {nearSignedIn && (
         <>
-          {!nearSignedIn ? (
-            <button
-              className="bg-white roudned-lg py-3 gap-x-4 px-10 flex items-center text-nh-bglight rounded-lg hover:bg-nh-purple"
-              onClick={nearLogin}
-            >
-              <NearLogo />
-              <span className="text-base leading-6 font-medium">
-                Login NEAR testnet
-              </span>
-            </button>
-          ) : (
-            <button
-              className="bg-white roudned-lg py-3 gap-x-4 px-10 flex items-center
+          <button
+            className="bg-white roudned-lg py-3 gap-x-4 px-10 flex items-center
          text-nh-bglight rounded-lg hover:bg-nh-purple"
-              onClick={gameRegister}
-            >
-              Start new Game
-            </button>
-          )}
+            onClick={gameRegister}
+          >
+            {translation.startGameTitle}
+          </button>
           {status.started && (
             <StartGameDialog
               status={status}
@@ -84,14 +75,14 @@ export default function Navigation({
         font-medium flex items-center cursor-pointer"
               onClick={nearLogout}
             >
-              Near Account: {nearAccountId}
+              {translation.nearAccountText} {nearAccountId}
             </div>
             <div
               className="text-white hover:text-nh-purple text-base leading-6 
         font-medium flex items-center cursor-pointer"
               onClick={calimeroLogout}
             >
-              Calimero Account: {accountId}
+              {translation.calimeroAccountText} {accountId}
             </div>
           </div>
         </>

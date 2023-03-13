@@ -5,7 +5,7 @@ import { getGameStatus } from "../../../utils/styleFunctions";
 import Spinner from "../spinner/Spinner";
 import { useEffect, useState } from "react";
 
-const translation = translations.currentGamesPage;
+const translation = translations.pastGamesPage;
 
 interface PastGameListProps {
   gamesList: GameProps[];
@@ -44,7 +44,7 @@ export default function PastGameList({
   return (
     <>
       <div className="font-medium text-2xl leading-7 mt-12 text-white">
-        {translation.pastGamesTitle}
+        {translation.pageTitle}
       </div>
       {loadingGamesData ? (
         <div className="flex justify-center mt-20">
@@ -52,23 +52,23 @@ export default function PastGameList({
             <div className="flex justify-center items-center pb-4">
               <Spinner />
             </div>
-            <p className="text-white">Loading games</p>
+            <p className="text-white">{translation.loading}</p>
           </div>
         </div>
       ) : (
         <>
           {gamesList.filter((game) => game.status !== "InProgress").length == 0 && accountId ? (
             <div className="flex justify-center text-white">
-              No games available yet
+              {translation.noGamesTitle}
             </div>
           ) : (
             <div className="grid grid-cols-1 space-y-6 mt-8">
               {accountId && (
                 <>
                   <div className="text-white">
-                    <p>Win: {scores[0]}</p>
-                    <p>Lose: {scores[1]}</p>
-                    <p>Tie: {scores[2]}</p>
+                    <p>{translation.winText} {scores[0]}</p>
+                    <p>{translation.loseText} {scores[1]}</p>
+                    <p>{translation.tieText} {scores[2]}</p>
                   </div>
                   {gamesList
                     .filter((game) => game.status !== "InProgress")

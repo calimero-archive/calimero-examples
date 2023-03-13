@@ -38,14 +38,14 @@ export default function CurrentGamesList({
             <div className="flex justify-center items-center pb-4">
               <Spinner />
             </div>
-            <p className="text-white">Loading games</p>
+            <p className="text-white">{translation.loadingText}</p>
           </div>
         </div>
       ) : (
         <>
           {gamesList.filter((game) => game.status === "InProgress").length == 0  && accountId ? (
             <div className="flex justify-center text-white">
-                No games available yet
+                {translation.noGamesTitle}
             </div>
           ) : (
             <div className="grid grid-cols-1 space-y-6 mt-8">
