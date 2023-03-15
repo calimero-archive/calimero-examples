@@ -67,7 +67,6 @@ export default function GameCard({
         <div>
           <div className="text-xs text-gray-500">
             {GameCardTranslations.playerTwoText}
-            player2: 
           </div>
           <div className="text-sm text-white">{playerB}</div>
         </div>

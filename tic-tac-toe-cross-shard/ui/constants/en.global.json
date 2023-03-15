@@ -3,7 +3,9 @@
     "startGameTitle": "Start New Game",
     "currentGamesTitle": "Current Games",
     "pastGamesTitle": "Past Games",
-    "addFunctionKeyTitle": "Add function key"
+    "addFunctionKeyTitle": "Add function key",
+    "nearAccountText": "NEAR Account:",
+    "calimeroAccountText": "Calimero Account:"
   },
   "loginComponent": {
     "title": "Login with NEAR",
@@ -12,6 +14,9 @@
   },
   "currentGamesPage": {
     "pageTitle": "Current Games",
+    "pastGamesTitle": "Past Games",
+    "loadingText": "Loading games",
+    "noGamesTitle": "No games available yet",
     "componentTitle": "There are no games to display, start a new Tictactoe game",
     "buttonText": "Start New Game",
     "turnText": "Your Turn",
@@ -20,7 +25,12 @@
   "pastGamesPage": {
     "pageTitle": "Past Games",
     "componentTitle": "You haven't played TicTacToe yet, please start a new game for games to be displayed",
-    "buttonText": "Start New Game"
+    "buttonText": "Start New Game",
+    "loading": "Loading games",
+    "noGamesTitle": "No games available yet",
+    "winText": "Win:",
+    "loseText": "Lose:",
+    "tieText": "Tie:"
   },
   "startNewGamePopup": {
     "popupTitle": "Start New Game",
@@ -38,5 +48,11 @@
     "currentGame": "Tictactoe | Current Game",
     "indexPageTitle": "TicTacToe | Running Games",
     "startGameTitle": "TicTacToe | Start new Game"
+  },
+  "startGameDialog": {
+    "title":"Starting New Game",
+    "subtitle": "Sending your request to blockchain",
+    "description": "You have registered to a new game, please wait for another player to register in order to play.",
+    "buttonText": "Continue"
   }
 }

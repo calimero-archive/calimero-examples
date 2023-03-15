@@ -1,28 +1,38 @@
 import Head from "next/head";
 import { ReactNode } from "react";
+import { RegisterStatus } from "../../../utils/useNear";
 import LoginPopupComponent from "../loginComponent/LoginComponent";
 import Navigation from "../navigation/Navigation";
 import { SideNavigation } from "../sideNavigation/SideNavigation";
 
 
 interface PageWrapperProps {
-  signIn: () => void;
   isSignedIn: boolean;
-  signOut: () => void;
   title: String;
   children: ReactNode;
   currentPage: string;
+  nearLogin: () => void;
+  nearLogout: () => void;
+  calimeroLogout: () => void;
+  gameRegister: () => void;
+  status: RegisterStatus;
+  setStatus: (status: RegisterStatus) => void;
+  nearSignedIn: boolean;
 }
 
 export default function PageWrapper({
-  signIn,
   isSignedIn,
-  signOut,
   title,
   children,
-  currentPage
+  currentPage,
+  nearLogin,
+  calimeroLogout,
+  nearLogout,
+  gameRegister,
+  status,
+  setStatus,
+  nearSignedIn
 }: PageWrapperProps) {
-  
   return (
     <>
       <Head>
@@ -31,9 +41,18 @@ export default function PageWrapper({
       </Head>
       <div className="flex flex-col w-screen bg-nh-bglight items-center min-h-screen py-8">
         <div className="w-full max-w-nh">
-          <Navigation isSignedIn={isSignedIn} signOut={signOut} />
+          <Navigation 
+            isSignedIn={isSignedIn} 
+            nearLogin={nearLogin}
+            nearLogout={nearLogout}
+            calimeroLogout={calimeroLogout}
+            gameRegister={gameRegister}
+            status={status}
+            setStatus={setStatus}
+            nearSignedIn={nearSignedIn}
+          />
         </div>
-        {isSignedIn ? (
+        {nearSignedIn ? (
           <div className="w-full max-w-nh flex">
             <div className="w-1/4">
               <SideNavigation menuPage={currentPage} />
@@ -45,7 +64,7 @@ export default function PageWrapper({
         ) : (
           <div className="w-full">
             <LoginPopupComponent
-              login={signIn}
+              login={nearLogin}
             />
           </div>
         )}

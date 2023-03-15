@@ -1,9 +1,7 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect } from "react";
 import { Transition } from "@headlessui/react";
-import CheckCircleIcon from "@heroicons/react/outline/CheckCircleIcon";
-import XIcon from "@heroicons/react/outline/XIcon";
 import translations from "../../../constants/en.global.json";
-
+import { CheckCircleIcon, XIcon } from "@heroicons/react/outline";
 interface NotificationCardProps {
   title: string;
   subtitle: string;
@@ -18,6 +16,7 @@ export default function NotificationCard({
   setShow,
 }: NotificationCardProps) {
   return (
+
     <>
       <div aria-live="assertive">
         <div className="flex w-80 flex-col items-center space-y-4 sm:items-end">
@@ -51,11 +50,11 @@ export default function NotificationCard({
                       onClick={() => {
                         setShow(false);
                       }}
-                    >
+                    > 
+                      <XIcon className="h-6 w-6 text-black"/>
                       <span className="sr-only">
                         {translations.startNewGamePopup.closeButtonText}
                       </span>
-                      <XIcon className="h-5 w-5" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
