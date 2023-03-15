@@ -56,18 +56,17 @@ export default function Game() {
   };
 
   useEffect(() => {
-    const updateBoard = async () => {
-      if (!loading) {
-        const data = await getGameData(
-          parseInt(id?.toString() || ""),
-          setGameStatus,
-          calimero
-        );
-        setLoading(true);
-      }
-    };
-    updateBoard();
-  }, [loading, gameStatus]);
+  const intervalId = setInterval(async () => {
+      const data = await getGameData(
+        parseInt(id?.toString() || ""),
+        setGameStatus,
+        calimero
+      );
+      setLoading(true);
+  }, 3000);
+
+  return () => clearInterval(intervalId);
+}, [gameStatus]);
 
   useEffect(() => {
     const init = async () => {
