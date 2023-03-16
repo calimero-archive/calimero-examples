@@ -37,6 +37,7 @@ export default function useNear() {
         contractId: contractName,
         methodNames: ["register_player"],
       });
+      await wallet.isSignedInAsync();
     } catch (error) {
       console.error(error);
     }
