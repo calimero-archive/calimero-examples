@@ -1,0 +1,21 @@
+{
+  "navigation": {
+    "nftMarketplace": "NFT Marketplace",
+    "nearAccountText": "NEAR Account:",
+    "mint": "Mint",
+    "myNft": "My NFT",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "NFT Marketplace"
+  },
+  "mint": {
+    "title": "Mint NFT token",
+    "button": "Mint"
+  },
+  "nft": {
+    "button": "Sell"
+  }
+
+}
