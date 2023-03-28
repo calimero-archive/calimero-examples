@@ -11,6 +11,7 @@ interface PageWrapperProps {
   nearSignedIn: boolean;
   mintVisible: () => void;
   nftsVisible: () => void;
+  nftsForSellVisible: () => void;
 }
 
 export default function PageWrapper({
@@ -21,7 +22,8 @@ export default function PageWrapper({
   nearLogout,
   nearSignedIn,
   mintVisible,
-  nftsVisible
+  nftsVisible,
+  nftsForSellVisible
 }: PageWrapperProps) {
   return (
     <>
@@ -38,6 +40,7 @@ export default function PageWrapper({
             nearSignedIn={nearSignedIn}
             mintVisible={mintVisible}
             nftsVisible={nftsVisible}
+            nftsForSellVisible={nftsForSellVisible}
           />
         </div>
         {nearSignedIn && (

@@ -3,7 +3,8 @@
     "nftMarketplace": "NFT Marketplace",
     "nearAccountText": "NEAR Account:",
     "mint": "Mint",
-    "myNft": "My NFT",
+    "myNFTs": "My NFTs",
+    "buyNFTs": "Buy NFTs",
     "login": "Login",
     "logout": "Logout"
   },
@@ -15,7 +16,8 @@
     "button": "Mint"
   },
   "nft": {
-    "button": "Sell"
+    "sell": "Sell",
+    "bid": "Bid"
   }
 
 }

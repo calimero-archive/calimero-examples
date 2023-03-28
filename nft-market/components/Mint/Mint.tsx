@@ -32,7 +32,6 @@ export default function Mint({ walletConnection }: MintProps) {
         mintAssetToNft(walletConnection, title, description, media);
       };
 
-      console.log("3",walletConnection)
       
 
     return (

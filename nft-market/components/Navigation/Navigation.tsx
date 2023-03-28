@@ -9,6 +9,7 @@ interface NavigationProps {
   nearSignedIn: boolean;
   mintVisible: () => void;
   nftsVisible: () => void;
+  nftsForSellVisible: () => void;
 }
 
 export default function Navigation({
@@ -17,7 +18,8 @@ export default function Navigation({
   nearLogout,
   nearSignedIn,
   mintVisible,
-  nftsVisible
+  nftsVisible,
+  nftsForSellVisible
 }: NavigationProps) {
   const [accountId, setAccountId] = useState("");
   const [nearAccountId, setNearAccountId] = useState("");
@@ -50,8 +52,16 @@ export default function Navigation({
           onClick={nftsVisible}
           className="hover:text-nh-purple"
           >
-            {translations.navigation.myNft}
+            {translations.navigation.myNFTs}
         </button>
+
+        <button 
+          onClick={nftsForSellVisible}
+          className="hover:text-nh-purple"
+          >
+            {translations.navigation.buyNFTs}
+        </button>
+        
       </div>
       
       {nearSignedIn ? (
@@ -78,7 +88,7 @@ export default function Navigation({
         className="bg-white roudned-lg py-3 gap-x-4 px-10 flex items-center text-nh-bglight rounded-lg hover:bg-nh-purple"
         onClick={nearLogin}
       >
-        {translations.navigation.logout}
+        {translations.navigation.login}
       </button>
     }
     </div>

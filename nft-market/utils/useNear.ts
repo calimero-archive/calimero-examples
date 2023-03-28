@@ -13,6 +13,7 @@ export const contractName = "nft-contract.kuzmatest2.testnet";
 export default function useNear() {
   const [config, setConfig] = useState<ConnectConfig | undefined>(undefined);
   const [nearSignedIn, setNearSignedIn] = useState(false);
+  const [walletConn, setWalletConn] = useState<WalletConnection>();
   const router = useRouter();
 
   async function login() {
@@ -67,6 +68,7 @@ export default function useNear() {
       if (config) {
         const nearConnection = await connect(config);
         const wallet = new WalletConnection(nearConnection, contractName);
+        setWalletConn(wallet);
         const nearSignedIn = await wallet.isSignedInAsync();
         setNearSignedIn(nearSignedIn);
         if (nearSignedIn) {
@@ -81,5 +83,6 @@ export default function useNear() {
     login,
     logout,
     nearSignedIn,
+    walletConn
   };
 }
