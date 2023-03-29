@@ -23,7 +23,7 @@ export default function PageWrapper({
   nearSignedIn,
   mintVisible,
   nftsVisible,
-  nftsForSellVisible
+  nftsForSellVisible,
 }: PageWrapperProps) {
   return (
     <>
@@ -44,8 +44,7 @@ export default function PageWrapper({
           />
         </div>
         {nearSignedIn && (
-          <div className="w-full max-w-nh flex">
-            
+          <div className="w-full max-w-nh flex justify-center">
             <div className={`${isSignedIn ? "w-3/4" : "w-full"}`}>
               {children}
             </div>

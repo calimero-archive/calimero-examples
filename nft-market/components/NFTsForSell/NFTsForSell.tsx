@@ -1,14 +1,8 @@
 import NFT from "@/components/NFT/NFT";
 import { NFTProps } from "@/components/NFT/NFT";
 import { useState, useEffect } from "react";
-import { WalletConnection } from "near-api-js";
-import { getConfig } from "../../utils/config";
-
-const CONTRACT = "market_contract_test.kuzmatest2.testnet";
-
-const nearConfig = getConfig();
-
-
+import { WalletConnection } from "calimero-sdk";
+import { config } from "../../utils/calimeroSdk"
 
 interface NFTsForSellProps {
     walletConnection: WalletConnection | undefined;
@@ -22,44 +16,36 @@ export default function NFTsForSell({ walletConnection}: NFTsForSellProps) {
             await loadSaleItems();
         }
         find();
-      }, []);
+    }, []);
 
-      const loadSaleItems = async () => {
+    const loadSaleItems = async () => {
         if(walletConnection) {
-            const wallet = walletConnection;
             let nftTokens = await walletConnection
             .account()
-            .viewFunction(nearConfig.contractName, "nft_tokens", {
+            .viewFunction(config.nftContract, "nft_tokens", {
                 from_index: "0",
                 limit: 64,
             });
             let saleTokens = await walletConnection
             .account()
             .viewFunction(
-                CONTRACT,
+                config.marketContract,
                 "get_sales_by_nft_contract_id",
                 {
-                nft_contract_id: nearConfig.contractName,
+                nft_contract_id: config.nftContract,
                 from_index: "0",
                 limit: 64,
                 }
             );
             let sales = [];
             for (let i = 0; i < nftTokens.length; i++) {
-            const { token_id } = nftTokens[i];
-            let saleToken = saleTokens.find(({ token_id: t }: {token_id: string}) => t === token_id);
-            if (saleToken !== undefined) {
-                sales[i] = Object.assign(nftTokens[i], saleToken);
-            
-            }
+                const { token_id } = nftTokens[i];
+                let saleToken = saleTokens.find(({ token_id: t }: {token_id: string}) => t === token_id);
+                if (saleToken !== undefined) {
+                    sales[i] = Object.assign(nftTokens[i], saleToken);
+                }
             }
             setNftsForSell(sales)
-            console.log("sales1");
-            console.log(sales);
-            console.log("sales2");
-            
-            
-        
         }
     }
 
@@ -72,9 +58,7 @@ export default function NFTsForSell({ walletConnection}: NFTsForSellProps) {
                         sale_conditions={nft.sale_conditions}
                     />
                 )
-            }
-
-            )}
+            })}
         </div>
     )
 }

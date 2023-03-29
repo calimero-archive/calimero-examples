@@ -2,13 +2,13 @@ import { useRouter } from "next/router";
 import PageWrapper from "../components/pageWrapper/PageWrapper";
 import { useEffect, useState } from "react";
 import translations from "../constants/en.global.json";
-import useNear from "../utils/useNear";
-import { Near,keyStores, connect, WalletConnection } from "near-api-js";
 import Mint from "@/components/Mint/Mint";
-import { getConfig } from "@/utils/config";
 import MyNFT from "@/components/MyNFT/mynft";
 import NFTsForSell from "@/components/NFTsForSell/NFTsForSell";
+import { CalimeroSdk, WalletConnection } from "calimero-sdk";
+import { config } from "../utils/calimeroSdk";
 
+let walletConnectionObject: WalletConnection | undefined = undefined;
 
 export default function Home() {
   const router = useRouter();
@@ -17,16 +17,44 @@ export default function Home() {
   const [mintVisible, setMintVisible] = useState(false);
   const [nftsVisible, setNftsVisible] = useState(false);
   const [nftsForSellVisible, setNftsForSellVisible] = useState(false);
-  const [wallet, setWallet] = useState<WalletConnection>();
   
-  const {
-    login,
-    logout,
-    nearSignedIn,
-    walletConn
-  } = useNear();
+  const login = async () => {
+    try {
+        await walletConnectionObject?.requestSignIn({
+        contractId: config.nftContract,
+      });
+    } catch (error) {
+       console.log(error);
+    }
+    
+   
+    
+  };
 
-  
+  const logout = () => {
+    walletConnectionObject?.signOut();
+    setIsSignedIn(false);
+  };
+
+  useEffect(() => {
+    if (isSignedIn && localStorage.getItem("accountId")) {
+      setAccountId(localStorage.getItem("accountId"));
+    }
+  }, []);
+
+  useEffect(() => {
+    const init = async () => {
+      const calimero = await CalimeroSdk.init(config).connect();
+      walletConnectionObject = new WalletConnection(calimero, config.nftContract);
+      const signedIn = await walletConnectionObject?.isSignedInAsync();
+      const account = walletConnectionObject?.account();
+      if (account && signedIn) {
+        localStorage.setItem("accountId", account.accountId);
+      }
+      setIsSignedIn(signedIn);
+    };
+    init();
+  }, []);
 
   const handleMint = () => {
     setMintVisible(true);
@@ -46,25 +74,6 @@ export default function Home() {
     setNftsForSellVisible(true);
   }
   
-
-  useEffect(() => {
-    const init = async () => {
-      const nearConfig = getConfig();
-      const keyStore = new keyStores.BrowserLocalStorageKeyStore()
-      const near =  await connect({keyStore, ...nearConfig})
-      const walletConnectionObject = new WalletConnection(near, null)
-      await walletConnectionObject.isSignedInAsync()
-      console.log("1");
-      console.log(walletConnectionObject);
-      console.log("2");
-      
-    };
-    if (nearSignedIn) {
-      init();
-      setAccountId(localStorage.getItem("nearAccountId"));
-    }
-  }, [nearSignedIn]);
-
   useEffect(() => {
     const absolute = window.location.href.split("?");
     const url = absolute[0];
@@ -80,19 +89,19 @@ export default function Home() {
         logout();
         router.reload();
       }}
-      nearSignedIn={nearSignedIn}
+      nearSignedIn={isSignedIn}
       mintVisible={handleMint}
       nftsVisible={handleNfts}
       nftsForSellVisible={handleNftsForSell}
     >
       {mintVisible &&
-        <Mint walletConnection={walletConn}/>
+        <Mint walletConnection={walletConnectionObject}/>
       }
       {nftsVisible &&
-        <MyNFT walletConnection={walletConn}/>
+        <MyNFT walletConnection={walletConnectionObject}/>
       }
       {nftsForSellVisible &&
-        <NFTsForSell walletConnection={walletConn}/>
+        <NFTsForSell walletConnection={walletConnectionObject}/>
       }
     </PageWrapper>
   );

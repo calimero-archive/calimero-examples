@@ -2,14 +2,10 @@ import NFT from "@/components/NFT/NFT";
 import { NFTProps } from "@/components/NFT/NFT";
 import { displayAllNFT } from "@/utils/mint";
 import { useState, useEffect } from "react";
-import { WalletConnection } from "near-api-js";
-
+import { WalletConnection } from "calimero-sdk"
 import * as nearAPI from "near-api-js";
-import { getConfig } from "../../utils/config";
-
-const CONTRACT = "market_contract_test.kuzmatest2.testnet";
-
-const nearConfig = getConfig();
+import { config } from "../../utils/calimeroSdk"
+import translations from "../../constants/en.global.json";
 
 interface MyNFTProps {
     walletConnection: WalletConnection | undefined;
@@ -23,15 +19,15 @@ export default function MyNFT({ walletConnection}: MyNFTProps) {
     const [nfts, setNfts] = useState<NFTProps[]>([]);
 
     const depositStorage = async () => {
+        console.log(walletConnection);
+        
         if(walletConnection) {
             const wallet = walletConnection;
             const contract = new nearAPI.Contract(
                 wallet.account(),
-                CONTRACT,
+                config.marketContract,
                 {
-                    
                     changeMethods: ["storage_deposit"],
-
                     viewMethods: [],
                 }
             ) as MyContract;
@@ -41,7 +37,6 @@ export default function MyNFT({ walletConnection}: MyNFTProps) {
                     30000000000000, // attached gas
                     nearAPI.utils.format.parseNearAmount("1") ?? "1" // account creation costs 0.00125 NEAR for storage
                 );
-                console.log(res);
             } catch (e){
             console.log(e);
             }
@@ -52,7 +47,6 @@ export default function MyNFT({ walletConnection}: MyNFTProps) {
         const find = async () => {
             const nfts = await displayAllNFT(walletConnection)
             setNfts(nfts)
-            console.log(nfts);
         }
         find()
       }, []);
@@ -60,11 +54,13 @@ export default function MyNFT({ walletConnection}: MyNFTProps) {
     return (
         <>
             <div className="flex items-center justify-end gap-2 mb-4">
-                <h1 className="text-white">To sell NFTs, first you have to</h1>
-                <button className="bg-white hover:bg-nh-text  p-2 text-black rounded"
+                <h1 className="text-white">
+                    {translations.mynft.depositText}
+                </h1>
+                <button className="bg-white hover:bg-nh-purple  p-2 text-black rounded"
                     onClick={depositStorage}
                 >
-                    deposit
+                    {translations.mynft.deposit}
                 </button>
             </div>
             <div className="w-full h-scree grid grid-cols-3 gap-8 mb-20">
@@ -75,9 +71,7 @@ export default function MyNFT({ walletConnection}: MyNFTProps) {
                             sale_conditions={nft.sale_conditions}
                         />
                     )
-                }
-
-                )}
+                })}
             </div>
         </>
     )

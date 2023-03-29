@@ -1,5 +1,5 @@
-import { mintAssetToNft, displayAllNFT } from "@/utils/mint";
-import { WalletConnection } from "near-api-js";
+import { mintAssetToNft } from "@/utils/mint";
+import { WalletConnection } from "calimero-sdk"
 import { useState } from "react";
 import translations from "../../constants/en.global.json";
 
@@ -18,21 +18,19 @@ export default function Mint({ walletConnection }: MintProps) {
         title: '',
         description: '',
         media: ''
-      });
+    });
     
-      const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setNftForm({ ...nftForm, [name]: value });
-      };
+    };
     
-      const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         console.log(nftForm);
         const { title, description, media } = nftForm;
         mintAssetToNft(walletConnection, title, description, media);
-      };
-
-      
+    };
 
     return (
         <div className="flex justify-center text-white">
@@ -45,13 +43,17 @@ export default function Mint({ walletConnection }: MintProps) {
                     </h1>
                     <div className="flex flex-col justify-center gap-2 mt-6">
                         <input type="text" name="title" value={nftForm.title} onChange={handleInputChange}
-                        className="text-black text-center rounded-xl h-8 focus:outline-none" placeholder="Title"/>
-                    
+                            className="text-black text-center rounded-xl h-8 focus:outline-none" 
+                            placeholder="Title"
+                        />
                         <input type="text" name="description" value={nftForm.description} onChange={handleInputChange}
-                        className="text-black text-center rounded-xl h-8 focus:outline-none" placeholder="Description"/>
-                    
+                            className="text-black text-center rounded-xl h-8 focus:outline-none" 
+                            placeholder="Description"
+                        />
                         <input type="text" name="media" value={nftForm.media} onChange={handleInputChange}
-                        className="text-black text-center rounded-xl h-8 focus:outline-none" placeholder="Image URL"/>
+                            className="text-black text-center rounded-xl h-8 focus:outline-none" 
+                            placeholder="Image URL"
+                        />
                     </div>
                     <div className="flex justify-center w-full mt-6">
                         <button className="bg-nh-purple hover:bg-nh-purple-highlight h-10 w-full rounded-xl">

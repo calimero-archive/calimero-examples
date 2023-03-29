@@ -21,13 +21,10 @@ export default function Navigation({
   nftsVisible,
   nftsForSellVisible
 }: NavigationProps) {
-  const [accountId, setAccountId] = useState("");
   const [nearAccountId, setNearAccountId] = useState("");
 
   useEffect(() => {
-    const account = localStorage.getItem("calimeroAccountId");
-    setAccountId(account || "");
-    const nearAccount = localStorage.getItem("nearAccountId");
+    const nearAccount = localStorage.getItem("accountId");
     setNearAccountId(nearAccount || "");
   }, [isSignedIn, nearSignedIn]);
 

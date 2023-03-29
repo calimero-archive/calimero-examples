@@ -17,7 +17,12 @@
   },
   "nft": {
     "sell": "Sell",
-    "bid": "Bid"
+    "buy": "Buy",
+    "cancel": "Cancel"
+  },
+  "mynft": {
+    "depositText": "To sell NFTs, first you have to",
+    "deposit": "deposit"
   }
 
 }
