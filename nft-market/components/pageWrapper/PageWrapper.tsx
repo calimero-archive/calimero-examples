@@ -1,17 +1,18 @@
 import Head from "next/head";
 import { ReactNode } from "react";
-import Navigation from "../Navigation/Navigation";
+import LoginPopupComponent from "../loginComponent/LoginComponent";
+import Navigation from "../navigation/Navigation";
 
 interface PageWrapperProps {
   isSignedIn: boolean;
   title: String;
-  children: ReactNode;
+  children?: ReactNode;
   nearLogin: () => void;
   nearLogout: () => void;
   nearSignedIn: boolean;
-  mintVisible: () => void;
-  nftsVisible: () => void;
-  nftsForSellVisible: () => void;
+  openMint?: boolean;
+  openBuy?: boolean;
+  openMyNft?: boolean;
 }
 
 export default function PageWrapper({
@@ -21,33 +22,37 @@ export default function PageWrapper({
   nearLogin,
   nearLogout,
   nearSignedIn,
-  mintVisible,
-  nftsVisible,
-  nftsForSellVisible,
+  openMint,
+  openBuy,
+  openMyNft,
 }: PageWrapperProps) {
   return (
     <>
       <Head>
         <title>{title}</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/calimero.svg" />
       </Head>
-      <div className="flex flex-col w-screen bg-nh-bglight items-center min-h-screen py-8">
+      <div className="flex flex-col w-screen bg-nh-bglight items-center min-h-screen py-6">
         <div className="w-full max-w-nh">
-          <Navigation 
-            isSignedIn={isSignedIn} 
+          <Navigation
+            isSignedIn={isSignedIn}
             nearLogin={nearLogin}
             nearLogout={nearLogout}
             nearSignedIn={nearSignedIn}
-            mintVisible={mintVisible}
-            nftsVisible={nftsVisible}
-            nftsForSellVisible={nftsForSellVisible}
+            openMint={openMint}
+            openMyNft={openMyNft}
+            openBuy={openBuy}
           />
         </div>
-        {nearSignedIn && (
+        {nearSignedIn ? (
           <div className="w-full max-w-nh flex justify-center">
             <div className={`${isSignedIn ? "w-3/4" : "w-full"}`}>
               {children}
             </div>
+          </div>
+        ) : (
+          <div className="w-full">
+            <LoginPopupComponent login={nearLogin} />
           </div>
         )}
       </div>

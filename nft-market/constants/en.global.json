@@ -23,6 +23,10 @@
   "mynft": {
     "depositText": "To sell NFTs, first you have to",
     "deposit": "deposit"
+  },
+  "login": {
+    "title": "Login with NEAR",
+    "subtitle": "Connecting NEAR wallet will connect to Calimero Private Shard and sync Account",
+    "buttonText": "Login With NEAR"
   }
-
 }
