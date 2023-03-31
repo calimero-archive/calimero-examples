@@ -3,8 +3,7 @@ import translations from "../../constants/en.global.json";
 import { useState } from "react";
 import Close from "../closeButton/CloseButton";
 import { WalletConnection } from "calimero-sdk";
-import { config } from "../../utils/calimeroSdk";
-import { BN } from "bn.js";
+import { setNftForSale } from "@/utils/callMethods";
 
 interface SellNftDialogProps {
   onClose: () => void | undefined;
@@ -26,29 +25,6 @@ export default function SellNftDialog({
     setPrice(value);
   };
 
-  const approveNFTForSale = async (token_id: string) => {
-    const regex = /^\d+(\.|,)?(\d+)?$/;
-    if (regex.test(price)) {
-      let sale_conditions = {
-        sale_conditions: price,
-      };
-      if (walletConnection) {
-        await walletConnection.account().functionCall({
-          contractId: config.nftContract,
-          methodName: "nft_approve",
-          args: {
-            token_id: token_id,
-            account_id: config.marketContract,
-            msg: JSON.stringify(sale_conditions),
-          },
-          gas: new BN("300000000000000"),
-          attachedDeposit: new BN("10000000000000000000001"),
-        });
-      }
-    } else {
-      setError("Invalid amount");
-    }
-  };
   return (
     <PopupContainer>
       <div className="max-w-xl bg-nh-bglight rounded-2xl px-3 pb-5 pt-3 relative flex flex-col w-96">
@@ -77,7 +53,11 @@ export default function SellNftDialog({
           <button
             className="mt-6 mb-2 text-black hover:bg-nh-purple-highlight px-4 py-2 bg-nh-purple w-32 rounded-md"
             onClick={async () => {
-              approveNFTForSale(token_id);
+              try {
+                setNftForSale(walletConnection, token_id, price);
+              } catch (error) {
+                setError("Invalid amount");
+              }
             }}
           >
             {translations.sellNftDialog.button}

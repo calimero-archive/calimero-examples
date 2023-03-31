@@ -1,11 +1,10 @@
 import { WalletConnection } from "calimero-sdk";
 import { useState } from "react";
-import { config } from "../../utils/calimeroSdk";
 import { useRouter } from "next/router";
 import SellNftDialog from "../sellNftDialog/SellNftDialog";
 import CantBuyYourOwnNftDialog from "../cantBuyYourOwnNftDialog/CantBuyYourOwnNftDialog";
 import NftCard from "../nftCard/NftCard";
-import { BN } from "bn.js";
+import { buyNft } from "@/utils/callMethods";
 
 export interface Metadata {
   description: string;
@@ -48,22 +47,6 @@ export default function NFT({
     setYourOwnNft(false);
   };
 
-  const offerPrice = async (token_id: string, price: string) => {
-    if (walletConnection) {
-      await walletConnection.account().functionCall({
-        contractId: config.marketContract,
-        methodName: "offer",
-        args: {
-          nft_contract_id: config.nftContract,
-          token_id,
-        },
-        attachedDeposit: new BN(price),
-        gas: new BN("200000000000000"),
-      });
-    }
-    router.push("/mynfts");
-  };
-
   return (
     <>
       <NftCard
@@ -75,7 +58,11 @@ export default function NFT({
         }}
         buy={async () => {
           if (!checkSellerIsOwner()) {
-            offerPrice(token_id, sale_conditions ? sale_conditions : "");
+            buyNft(
+              walletConnection,
+              token_id,
+              sale_conditions ? sale_conditions : ""
+            );
           } else {
             setYourOwnNft(true);
           }

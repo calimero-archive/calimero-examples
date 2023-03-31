@@ -1,6 +1,6 @@
 import NFT from "../components/nft/Nft";
 import { NFTProps } from "../components/nft/Nft";
-import { displayAllNFT } from "@/utils/mint";
+import { displayAllNFT } from "@/utils/callMethods";
 import { useState, useEffect } from "react";
 import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import * as nearAPI from "near-api-js";

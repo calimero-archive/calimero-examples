@@ -1,4 +1,4 @@
-import { mintAssetToNft } from "@/utils/mint";
+import { mintAssetToNft } from "@/utils/callMethods";
 import { WalletConnection } from "calimero-sdk";
 import { useState } from "react";
 import translations from "../../constants/en.global.json";
