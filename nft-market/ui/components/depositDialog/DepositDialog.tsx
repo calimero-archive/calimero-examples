@@ -30,10 +30,12 @@ export default function CantBuyYourOwnNftDialog({
         }
       ) as MyContract;
       try {
+        const amount = nearAPI.utils.format.parseNearAmount("1");
+        const deposit = amount ? amount : "1";
         const res = await contract["storage_deposit"](
           {},
           30000000000000, // attached gas
-          nearAPI.utils.format.parseNearAmount("1") ?? "1"
+          deposit
         );
       } catch (e) {
         console.log(e);
