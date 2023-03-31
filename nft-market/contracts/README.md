@@ -41,7 +41,7 @@ Then deploy the contracts.
 
 ## Init
 
-Inside the folder of the contract for both contracts open the deploy.sh files and replace MAIN_ACCOUNT_ID, CONTRACT_SUBACCOUNT_ID and SHARD_ID with your info.
+Inside the folder of the contract for both contracts open the init.sh files and replace MAIN_ACCOUNT_ID, CONTRACT_SUBACCOUNT_ID and SHARD_ID with your info.
 
 Examples:
 
