@@ -81,7 +81,7 @@ export default function MyNFT({ walletConnection }: MyNFTProps) {
     >
       <div className="flex items-center justify-end mb-4">
         <button
-          className="bg-white hover:bg-nh-purple  p-2 text-black rounded"
+          className="bg-white hover:bg-nh-purple p-2 text-black rounded"
           onClick={async () => {
             setDeposit(true);
           }}
