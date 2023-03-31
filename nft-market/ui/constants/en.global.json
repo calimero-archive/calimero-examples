@@ -1,0 +1,44 @@
+{
+  "navigation": {
+    "nftMarketplace": "NFT Marketplace",
+    "nearAccountText": "NEAR Account:",
+    "mint": "Mint",
+    "myNFTs": "My NFTs",
+    "buyNFTs": "Buy NFTs",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "NFT Marketplace"
+  },
+  "mint": {
+    "title": "Mint NFT token",
+    "button": "Mint"
+  },
+  "nft": {
+    "sell": "Sell",
+    "buy": "Buy",
+    "cancel": "Cancel"
+  },
+  "mynft": {
+    "depositText1": "Before first sell, user needs to deposit Ⓣ onto the marketplace to cover the storage costs.",
+    "depositText2": "Whenever someone puts an NFT for sale, the marketplace needs to store that information which costs Ⓣ.",
+    "deposit": "Deposit",
+    "read": "Read"
+  },
+  "login": {
+    "title": "Login with NEAR",
+    "subtitle": "Connecting NEAR wallet will connect to Calimero Private Shard and sync Account",
+    "buttonText": "Login With NEAR"
+  },
+  "sellNftDialog": {
+    "title": "Sell NFT",
+    "button": "Sell"
+  },
+  "cantBuyYourOwnNftDialog": {
+    "text": "Can't buy your own NFT!"
+  },
+  "unsuccesfulMint": {
+    "text": "Minting was unsuccessful! Try again."
+  }
+}

@@ -1,0 +1,1 @@
+near call <MARKET_CONTARCT_SUBACOUNT_ID>.<MAIN_ACCOUNT_ID> new_default_meta '{"owner_id": "<NFT_CONTARCT_SUBACOUNT_ID>.<MAIN_ACCOUNT_ID>"}' --accountId <SHARD_ID> --networkId demos-calimero-testnet --nodeUrl https://api.calimero.network/api/v1/shards/<SHARD_ID>/neard-rpc/
