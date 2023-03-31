@@ -100,7 +100,10 @@ export default function MintDialog({
             )}
           </div>
           <div className="flex justify-center w-full mt-6">
-            <button className="bg-nh-purple hover:bg-nh-purple-highlight h-10 w-full rounded-xl">
+            <button
+              className="bg-nh-purple hover:bg-nh-purple-highlight h-10 w-full rounded-xl"
+              title={translations.mint.buttonDescription}
+            >
               {translations.mint.button}
             </button>
           </div>

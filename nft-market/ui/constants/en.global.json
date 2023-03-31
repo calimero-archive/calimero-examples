@@ -13,12 +13,16 @@
   },
   "mint": {
     "title": "Mint NFT token",
-    "button": "Mint"
+    "button": "Mint",
+    "buttonDescription": "Minting creates the NFT which you can later sell or keep in your collection"
   },
   "nft": {
     "sell": "Sell",
+    "sellDescription": "Set a price for NFT and set it up on the marketplace",
     "buy": "Buy",
+    "buyDescription": "Buy this NFT and store it in your collection",
     "cancel": "Cancel"
+
   },
   "mynft": {
     "depositText1": "Before first sell, user needs to deposit Ⓣ onto the marketplace to cover the storage costs.",

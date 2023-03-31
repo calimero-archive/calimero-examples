@@ -49,7 +49,8 @@ export default function NftCard({
       <div className="flex flex-col justify-center p-2">
         {sellOrBid ? (
           <button
-            className="bg-nh-purple hover:bg-nh-purple-highlight w-full p-2 text-black rounded-xl"
+            className="bg-nh-purple hover:bg-nh-purple-highlight w-full p-2 cursor-pointer text-black rounded-xl"
+            title={translations.nft.sellDescription}
             onClick={sell}
           >
             {translations.nft.sell}
@@ -58,6 +59,7 @@ export default function NftCard({
           <button
             className={`bg-nh-purple hover:bg-nh-purple-highlight w-full p-2 text-black rounded-xl
                         ${checkSellerIsOwner() ? "cursor-not-allowed" : ""}`}
+            title={translations.nft.buyDescription}
             onClick={buy}
           >
             {translations.nft.buy}
