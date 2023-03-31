@@ -4,6 +4,7 @@ import Close from "../closeButton/CloseButton";
 import { WalletConnection } from "calimero-sdk";
 import * as nearAPI from "near-api-js";
 import { config } from "../../utils/calimeroSdk";
+import { BN } from "bn.js";
 
 interface CantBuyYourOwnNftDialogProps {
   onClose: () => void | undefined;

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Close from "../closeButton/CloseButton";
 import { WalletConnection } from "calimero-sdk";
 import { config } from "../../utils/calimeroSdk";
+import { BN } from "bn.js";
 
 interface SellNftDialogProps {
   onClose: () => void | undefined;
@@ -40,8 +41,8 @@ export default function SellNftDialog({
             account_id: config.marketContract,
             msg: JSON.stringify(sale_conditions),
           },
-          gas: "300000000000000",
-          attachedDeposit: "10000000000000000000001",
+          gas: new BN("300000000000000"),
+          attachedDeposit: new BN("10000000000000000000001"),
         });
       }
     } else {

@@ -1,5 +1,6 @@
 import { WalletConnection } from "calimero-sdk";
 import { config } from "../utils/calimeroSdk";
+import { BN } from "bn.js";
 
 export async function mintAssetToNft(
   wallet: WalletConnection | undefined,
@@ -19,7 +20,7 @@ export async function mintAssetToNft(
       },
       receiver_id: localStorage.getItem("accountId"),
     },
-    attachedDeposit: "9370000000000000000000",
+    attachedDeposit: new BN("9370000000000000000000"),
   });
 }
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import SellNftDialog from "../sellNftDialog/SellNftDialog";
 import CantBuyYourOwnNftDialog from "../cantBuyYourOwnNftDialog/CantBuyYourOwnNftDialog";
 import NftCard from "../nftCard/NftCard";
+import { BN } from "bn.js";
 
 export interface Metadata {
   description: string;
@@ -47,7 +48,7 @@ export default function NFT({
     setYourOwnNft(false);
   };
 
-  const offerPrice = async (token_id: string, price: string | undefined) => {
+  const offerPrice = async (token_id: string, price: string) => {
     if (walletConnection) {
       await walletConnection.account().functionCall({
         contractId: config.marketContract,
@@ -56,8 +57,8 @@ export default function NFT({
           nft_contract_id: config.nftContract,
           token_id,
         },
-        attachedDeposit: price,
-        gas: "200000000000000",
+        attachedDeposit: new BN(price),
+        gas: new BN("200000000000000"),
       });
     }
     router.push("/mynfts");
@@ -74,7 +75,7 @@ export default function NFT({
         }}
         buy={async () => {
           if (!checkSellerIsOwner()) {
-            offerPrice(token_id, sale_conditions);
+            offerPrice(token_id, sale_conditions ? sale_conditions : "");
           } else {
             setYourOwnNft(true);
           }
