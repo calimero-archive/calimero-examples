@@ -28,13 +28,9 @@ export default function MyNFT({ walletConnection }: MyNFTProps) {
   };
 
   const login = async () => {
-    try {
-      await walletConnectionObject?.requestSignIn({
-        contractId: config.nftContract,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    await walletConnectionObject?.requestSignIn({
+      contractId: config.nftContract,
+    });
   };
 
   const logout = () => {

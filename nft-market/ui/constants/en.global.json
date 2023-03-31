@@ -40,5 +40,14 @@
   },
   "unsuccesfulMint": {
     "text": "Minting was unsuccessful! Try again."
+  },
+  "homePage": {
+    "welcomeText1": "Welcome to",
+    "welcomeText2": "the Calimero Network",
+    "welcomeText3": "NFT Marketplace",
+    "paragraph1": "Our example allows you to mint, sell, and buy tokens that are securely stored on our private shard. Private shards technology enables a more scalable and decentralized network, ensuring the safety and privacy of your transactions.",
+    "paragraph2": "With Calimero Network, you can create your own unique NFTs or browse our collection of curated NFTs. Whether you are interested in digital art, collectibles, or virtual real estate, our marketplace has something for everyone.",
+    "paragraph3": "Join our community of NFT enthusiasts and start minting, selling, and buying today!"
   }
+
 }

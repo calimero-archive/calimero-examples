@@ -18,14 +18,9 @@ export default function NFTsForSell({ walletConnection }: NFTsForSellProps) {
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   const login = async () => {
-    try {
-      await walletConnectionObject?.requestSignIn({
-        contractId: config.nftContract,
-      });
-      router.push("/buynfts");
-    } catch (error) {
-      console.log(error);
-    }
+    await walletConnectionObject?.requestSignIn({
+      contractId: config.nftContract,
+    });
   };
 
   const logout = () => {

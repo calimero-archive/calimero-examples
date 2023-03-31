@@ -8,17 +8,7 @@ import { config } from "../utils/calimeroSdk";
 
 let walletConnectionObject: WalletConnection | undefined = undefined;
 
-interface MintProps {
-  walletConnection: WalletConnection | undefined;
-}
-
-interface NftForm {
-  title: string;
-  description: string;
-  media: string;
-}
-
-export default function Mint({ walletConnection }: MintProps) {
+export default function Mint() {
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [accountId, setAccountId] = useState<string | null>("");
