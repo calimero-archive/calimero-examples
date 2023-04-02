@@ -3,7 +3,7 @@ import translations from "../../constants/en.global.json";
 import Close from "../closeButton/CloseButton";
 
 interface CantBuyYourOwnNftDialogProps {
-  onClose: () => void | undefined;
+  onClose: () => void;
 }
 
 export default function CantBuyYourOwnNftDialog({

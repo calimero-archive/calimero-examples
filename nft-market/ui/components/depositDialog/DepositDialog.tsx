@@ -4,15 +4,15 @@ import Close from "../closeButton/CloseButton";
 import { WalletConnection } from "calimero-sdk";
 import { depositStorage } from "@/utils/callMethods";
 
-interface CantBuyYourOwnNftDialogProps {
+interface DepositDialogProps {
   onClose: () => void | undefined;
   walletConnectionObject: WalletConnection | undefined;
 }
 
-export default function CantBuyYourOwnNftDialog({
+export default function DepositDialog({
   onClose,
   walletConnectionObject,
-}: CantBuyYourOwnNftDialogProps) {
+}: DepositDialogProps) {
   return (
     <PopupContainer>
       <div className="max-w-xl bg-nh-bglight rounded-2xl px-3 pb-5 pt-3 relative flex flex-col w-2/6">

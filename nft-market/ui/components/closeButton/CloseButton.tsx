@@ -1,5 +1,5 @@
 interface CloseProps {
-  onClose: () => void | undefined;
+  onClose: () => void;
 }
 
 export default function Close({ onClose }: CloseProps) {
