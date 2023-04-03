@@ -1,0 +1,57 @@
+{
+  "navigation": {
+    "nftMarketplace": "NFT Marketplace",
+    "nearAccountText": "NEAR Account:",
+    "mint": "Mint",
+    "myNFTs": "My NFTs",
+    "buyNFTs": "Buy NFTs",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "NFT Marketplace"
+  },
+  "mint": {
+    "title": "Mint NFT token",
+    "button": "Mint",
+    "buttonDescription": "Minting creates the NFT which you can later sell or keep in your collection"
+  },
+  "nft": {
+    "sell": "Sell",
+    "sellDescription": "Set a price for NFT and set it up on the marketplace",
+    "buy": "Buy",
+    "buyDescription": "Buy this NFT and store it in your collection",
+    "cancel": "Cancel"
+
+  },
+  "mynft": {
+    "depositText1": "Before first sell, user needs to deposit Ⓣ onto the marketplace to cover the storage costs.",
+    "depositText2": "Whenever someone puts an NFT for sale, the marketplace needs to store that information which costs Ⓣ.",
+    "deposit": "Deposit",
+    "read": "Read"
+  },
+  "login": {
+    "title": "Login with NEAR",
+    "subtitle": "Connecting NEAR wallet will connect to Calimero Private Shard and sync Account",
+    "buttonText": "Login With NEAR"
+  },
+  "sellNftDialog": {
+    "title": "Sell NFT",
+    "button": "Sell"
+  },
+  "cantBuyYourOwnNftDialog": {
+    "text": "Can't buy your own NFT!"
+  },
+  "unsuccesfulMint": {
+    "text": "Minting was unsuccessful! Try again."
+  },
+  "homePage": {
+    "welcomeText1": "Welcome to",
+    "welcomeText2": "the Calimero Network",
+    "welcomeText3": "NFT Marketplace",
+    "paragraph1": "Our example allows you to mint, sell, and buy tokens that are securely stored on our private shard. Private shards technology enables a more scalable and decentralized network, ensuring the safety and privacy of your transactions.",
+    "paragraph2": "With Calimero Network, you can create your own unique NFTs or browse our collection of curated NFTs. Whether you are interested in digital art, collectibles, or virtual real estate, our marketplace has something for everyone.",
+    "paragraph3": "Join our community of NFT enthusiasts and start minting, selling, and buying today!"
+  }
+
+}
