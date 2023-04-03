@@ -1,4 +1,5 @@
 import { mintAssetToNft } from "@/utils/callMethods";
+import checkCorrectUrl from "@/utils/tests/checkCorrectUrl";
 import { WalletConnection } from "calimero-sdk";
 import { useState } from "react";
 import translations from "../../constants/en.global.json";
@@ -33,14 +34,13 @@ export default function MintDialog({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const regex = /^(ftp|http|https):\/\/[^ "]+$/;
     const { title, description, media } = nftForm;
     !media
       ? setUnvalidUrl("URL cannot be blank!")
-      : !regex.test(media) && setUnvalidUrl("Provided URL is invalid!");
+      : !checkCorrectUrl(media) && setUnvalidUrl("Provided URL is invalid!");
     !title && setTitleBlank("Title cannot be blank!");
     !description && setdescriptionBlank("Description cannot be blank!");
-    if (title && description && regex.test(media)) {
+    if (title && description && checkCorrectUrl(media)) {
       try {
         await mintAssetToNft(walletConnectionObject, title, description, media);
       } catch (error) {
