@@ -17,6 +17,7 @@ export default function Dashboard() {
   
   useEffect(() => {
     const init = async () => {
+      //@ts-expect-error config cannot be this
       const calimero = await CalimeroSdk.init(config).connect();
       walletConnectionObject = new WalletConnection(calimero, contractName);
       const signedIn = await walletConnectionObject?.isSignedInAsync();
