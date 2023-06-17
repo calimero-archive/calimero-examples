@@ -7,7 +7,8 @@ const contractName = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
 
 export const createVoteContractCall = async (option: string, walletConnectionObject: WalletConnection | undefined) => {
     const account = walletConnectionObject?.account();
-    if (account){
+    try {
+      if (account){
       const contract = new Contract(account,
         contractName,
         {
@@ -22,13 +23,18 @@ export const createVoteContractCall = async (option: string, walletConnectionObj
       "300000000000000",
     );
     }
+    } catch (error: unknown) {
+      console.error(error);
+      return { error: error };
+    }
 };
 
 export async function setPollOptions(
     setPollData: (pollData: Poll) => void,
     walletConnectionObject: WalletConnection | undefined
   ) {
-    if (walletConnectionObject) {
+    try {
+       if (walletConnectionObject) {
       const account = walletConnectionObject.account();
       const contract = new nearAPI.Contract(
         account,
@@ -38,6 +44,9 @@ export async function setPollOptions(
       // @ts-expect-error: get_results does not exist on type contract
       const results = await contract['get_poll']();
       setPollData(results);
+    }
+    } catch (error: unknown) {
+      console.error(error);
     }
 };
 
@@ -54,7 +63,8 @@ export async function getVoteResults(
     setOptions: (options: Option[]) => void,
     walletConnectionObject: WalletConnection | undefined
   ) {
-    if (walletConnectionObject) {
+    try {
+       if (walletConnectionObject) {
       const account = walletConnectionObject.account();
       const contract = new nearAPI.Contract(
         account,
@@ -65,5 +75,8 @@ export async function getVoteResults(
       const results = await contract['get_results']();
       const parsedResults = parseContractResult(results);
       setOptions(parsedResults);
+    }
+    } catch (error: unknown) {
+      console.error(error);
     }
 };

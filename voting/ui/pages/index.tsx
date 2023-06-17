@@ -13,6 +13,7 @@ let walletConnectionObject: WalletConnection | undefined = undefined;
 
 export default function Dashboard() {
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
   
   useEffect(() => {
@@ -40,8 +41,21 @@ export default function Dashboard() {
   }
 
   const signOut = async() => {
-    await walletConnectionObject?.signOut() 
+    localStorage.clear();
+    walletConnectionObject?.signOut()
     setIsSignedIn(false);
+  }
+
+  const callVote = async (option: string, walletConnectionObject: WalletConnection | undefined) => {
+    const response = await createVoteContractCall(option, walletConnectionObject);
+    try {
+      if(response?.error){
+        const voteError = JSON.parse(response?.error.toString().split("Error: ")[1]).kind.ExecutionError;
+        setError(voteError);
+      }
+    } catch (error) {
+      setError("Something went wrong calling smart contract!");
+    }
   }
 
   return (
@@ -52,7 +66,8 @@ export default function Dashboard() {
       title={translations.pages.indexPageTitle}
     >
       <VotingComponent
-        contractCall={(option, walletConnectionObject) => createVoteContractCall(option, walletConnectionObject)}
+        error={error}
+        contractCall={(option, walletConnectionObject) => callVote(option, walletConnectionObject)}
         walletConnectionObject={walletConnectionObject}
       />
     </PageWrapper>
