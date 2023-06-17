@@ -21,8 +21,8 @@ export default function Navigation({ isSignedIn, signOut}: NavigationProps) {
         <div className="pl-2 pr-4">
           <CalimeroLogo size="navbar" />
         </div>
-        <div className="pt-2 pl-5">
-          <TictactoeLogo size="navbar" />
+        <div className="flex items-center pl-5">
+         <p className="text-white text-xl font-extrabold">Voting Example</p>
         </div>
       </div>
       {isSignedIn && (
