@@ -50,8 +50,8 @@ export default function Dashboard() {
     const response = await createVoteContractCall(option, walletConnectionObject);
     try {
       if(response?.error){
-        const VoteError = JSON.parse(response?.error.toString().split("Error: ")[1]).kind.ExecutionError;
-        setError(VoteError);
+        const voteError = JSON.parse(response?.error.toString().split("Error: ")[1]).kind.ExecutionError;
+        setError(voteError);
       }
     } catch (error) {
       setError("Something went wrong calling smart contract!");
