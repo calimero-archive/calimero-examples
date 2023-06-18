@@ -7,37 +7,27 @@ import StartGameDialog from "../StartGameDialog/StartGameDialog";
 import translations from "../../../constants/en.global.json";
 
 interface NavigationProps {
-  isSignedIn: boolean;
-  nearLogin: () => void;
   nearLogout: () => void;
   calimeroLogout: () => void;
   gameRegister: () => void;
   status: RegisterStatus;
   setStatus: (status: RegisterStatus) => void;
   nearSignedIn: boolean;
+  nearAccountId: string;
+  accountId: string;
 }
 
 export default function Navigation({
-  isSignedIn,
-  nearLogin,
   nearLogout,
   calimeroLogout,
   gameRegister,
   status,
   setStatus,
   nearSignedIn,
+  nearAccountId,
+  accountId,
 }: NavigationProps) {
-  const [accountId, setAccountId] = useState("");
-  const [nearAccountId, setNearAccountId] = useState("");
-
   const translation = translations.navigation;
-
-  useEffect(() => {
-    const account = localStorage.getItem("calimeroAccountId");
-    setAccountId(account || "");
-    const nearAccount = localStorage.getItem("nearAccountId");
-    setNearAccountId(nearAccount || "");
-  }, [isSignedIn, nearSignedIn]);
 
   return (
     <div className="flex justify-between">

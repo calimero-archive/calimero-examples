@@ -17,7 +17,12 @@ interface IProps {
   updateBoard: () => void;
 }
 
-export default function GameBoard({ gameData, gameId, callMethod, updateBoard }: IProps) {
+export default function GameBoard({
+  gameData,
+  gameId,
+  callMethod,
+  updateBoard,
+}: IProps) {
   const [squares, setSquares] = useState<string[]>(Array(9).fill(null));
   const [ended, setEnded] = useState<string>("");
   const [color, setColor] = useState<string>("bg-white");
@@ -32,9 +37,9 @@ export default function GameBoard({ gameData, gameId, callMethod, updateBoard }:
   const setBoard = async () => {
     setSquares(gameData.boardStatus);
     if (gameData.playerA === gameData.playerTurn) {
-      setColor("hover:bg-nh-testnet transition duration-700");
+      setColor("hover:bg-gray-500");
     } else {
-      setColor("hover:bg-green-300");
+      setColor("hover:bg-nh-testnet");
     }
     setEnded(gameData.status);
   };
@@ -42,7 +47,7 @@ export default function GameBoard({ gameData, gameId, callMethod, updateBoard }:
     const loggedUser = localStorage.getItem("nearAccountId");
     if (gameData.playerTurn !== loggedUser) {
       setShow(true);
-      setTitle("Its not your turn");
+      setTitle("Not your turn");
       setSubtitle("Wait for other player to make their move!");
     } else {
       setShow(true);
@@ -75,6 +80,8 @@ export default function GameBoard({ gameData, gameId, callMethod, updateBoard }:
                     key={i}
                     ended={ended}
                     color={color}
+                    playerTurn={gameData.playerTurn}
+                    playerA={gameData.playerA}
                     onClick={() => makeMove(i)}
                     value={squares[i]}
                   />

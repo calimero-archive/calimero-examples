@@ -20,7 +20,6 @@ export default function CurrentGamesList({
   accountId,
 }: CurrentGameListProps) {
   const router = useRouter();
-
   return (
     <>
       <div className="font-medium text-2xl leading-7 mt-12 text-white">
@@ -43,9 +42,10 @@ export default function CurrentGamesList({
         </div>
       ) : (
         <>
-          {gamesList.filter((game) => game.status === "InProgress").length == 0  && accountId ? (
+          {gamesList.filter((game) => game.status === "InProgress").length ==
+            0 && accountId ? (
             <div className="flex justify-center text-white">
-                {translation.noGamesTitle}
+              {translation.noGamesTitle}
             </div>
           ) : (
             <div className="grid grid-cols-1 space-y-6 mt-8">

@@ -18,29 +18,29 @@ export default function PastGameList({
   accountId,
   loadingGamesData,
 }: PastGameListProps) {
-  const [scores, setScores] = useState<number[]>([0,0,0]);
+  const [scores, setScores] = useState<number[]>([0, 0, 0]);
   const getScores = (gamesList: GameProps[]) => {
     const games = gamesList.filter((game) => game.status !== "InProgress");
     let score: number[] = [0, 0, 0];
     games.forEach((game) => {
       switch (getGameStatus(game.status, game.playerA, accountId || "")) {
         case "Win!":
-            score[0] += 1;
-            break;
+          score[0] += 1;
+          break;
         case "Lose!":
-            score[1] += 1;
-            break;
+          score[1] += 1;
+          break;
         case "Tie!":
           score[2] += 1;
-            break;
+          break;
       }
     });
     setScores(score);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getScores(gamesList);
-  },[gamesList]);
+  }, [gamesList]);
   return (
     <>
       <div className="font-medium text-2xl leading-7 mt-12 text-white">
@@ -57,7 +57,13 @@ export default function PastGameList({
         </div>
       ) : (
         <>
-          {gamesList.filter((game) => game.status !== "InProgress").length == 0 && accountId ? (
+          {gamesList.length === 0 && (
+            <div className="flex justify-center text-white">
+              {translation.noGamesTitle}
+            </div>
+          )}
+          {gamesList.filter((game) => game.status !== "InProgress").length ===
+            0 && accountId ? (
             <div className="flex justify-center text-white">
               {translation.noGamesTitle}
             </div>
@@ -66,9 +72,15 @@ export default function PastGameList({
               {accountId && (
                 <>
                   <div className="text-white">
-                    <p>{translation.winText} {scores[0]}</p>
-                    <p>{translation.loseText} {scores[1]}</p>
-                    <p>{translation.tieText} {scores[2]}</p>
+                    <p>
+                      {translation.winText} {scores[0]}
+                    </p>
+                    <p>
+                      {translation.loseText} {scores[1]}
+                    </p>
+                    <p>
+                      {translation.tieText} {scores[2]}
+                    </p>
                   </div>
                   {gamesList
                     .filter((game) => game.status !== "InProgress")

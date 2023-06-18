@@ -49,10 +49,9 @@ export default function useNear() {
     const nearConnection = await connect(config);
     const wallet = new WalletConnection(nearConnection, contractName);
     try {
+      wallet.signOut();
+      localStorage.clear();
       router.push("/");
-      await wallet.signOut();
-      localStorage.removeItem("nearAccountId");
-      localStorage.removeItem("accountId");
     } catch (error) {
       console.error(error);
     }
@@ -64,7 +63,7 @@ export default function useNear() {
         networkId: "testnet",
         keyStore: new keyStores.BrowserLocalStorageKeyStore(),
         nodeUrl: "https://rpc.testnet.near.org",
-        walletUrl: "https://testnet-calimero-mnw.netlify.app/",
+        walletUrl: "https://testnet.mynearwallet.com/",
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://explorer.testnet.near.org",
       };
@@ -87,22 +86,26 @@ export default function useNear() {
     isSigned();
   }, [config]);
   const register = async () => {
-    if (config) {
-      setRegisterStatus({
-        started: true,
-        loading: true,
-      });
-      const nearConnection = await connect(config);
-      const wallet = new WalletConnection(nearConnection, contractName);
-      const contract = new Contract(wallet.account(), "tictactoe.igi.testnet", {
-        viewMethods: [],
-        changeMethods: ["register_player"],
-      });
-      await contract["register_player"]({}, "300000000000000");
-      setRegisterStatus({
-        started: true,
-        loading: false,
-      });
+    try {
+      if (config) {
+        setRegisterStatus({
+          started: true,
+          loading: true,
+        });
+        const nearConnection = await connect(config);
+        const wallet = new WalletConnection(nearConnection, contractName);
+        const contract = new Contract(wallet.account(), contractName, {
+          viewMethods: [],
+          changeMethods: ["register_player"],
+        });
+        await contract["register_player"]({}, "300000000000000");
+        setRegisterStatus({
+          started: true,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
   return {

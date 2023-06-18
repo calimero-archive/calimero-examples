@@ -25,7 +25,7 @@ export const startGameMethod = async (
       );
       return res;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
   return -1;
@@ -45,7 +45,7 @@ export async function getNumberOfGames(
         const numOfGames = await contract["num_of_games"]({});
         return numOfGames;
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   }
