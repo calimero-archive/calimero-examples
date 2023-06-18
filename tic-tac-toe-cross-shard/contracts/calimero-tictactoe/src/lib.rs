@@ -121,28 +121,28 @@ impl TicTacToe {
 
         for i in 0..3 {
             if selected_game.board[i][0] == selected_game.board[i][1] &&
-              selected_game.board[i][1] == selected_game.board[i][2] &&
-              selected_game.board[i][2] != BoardField::U {
+                selected_game.board[i][1] == selected_game.board[i][2] &&
+                selected_game.board[i][2] != BoardField::U {
                 selected_game.status = TicTacToe::announce_victory(selected_game.board[i][0], selected_game);
             }
         }
 
         for i in 0..3 {
-            if selected_game.board[0][i] == selected_game.board[0][i] &&
-              selected_game.board[1][i] == selected_game.board[2][i] &&
-              selected_game.board[2][i] != BoardField::U {
+            if selected_game.board[0][i] == selected_game.board[1][i] &&
+                selected_game.board[1][i] == selected_game.board[2][i] &&
+                selected_game.board[2][i] != BoardField::U {
                 selected_game.status = TicTacToe::announce_victory(selected_game.board[0][i], selected_game);
             }
         }
-        
+
         if selected_game.board[0][0] == selected_game.board[1][1] &&
             selected_game.board[1][1] == selected_game.board[2][2] &&
             selected_game.board[0][0] != BoardField::U {
-                selected_game.status = TicTacToe::announce_victory(selected_game.board[0][0], selected_game);
+            selected_game.status = TicTacToe::announce_victory(selected_game.board[0][0], selected_game);
         } else if selected_game.board[0][2] == selected_game.board[1][1] &&
-            selected_game.board[1][1] == selected_game.board[2][0] &&
+            selected_game.board[1][1] == selected_game.board[2][2] &&
             selected_game.board[0][2] != BoardField::U {
-                selected_game.status = TicTacToe::announce_victory(selected_game.board[0][2], selected_game);
+            selected_game.status = TicTacToe::announce_victory(selected_game.board[0][2], selected_game);
         }
 
         let mut tie = true;
@@ -150,9 +150,14 @@ impl TicTacToe {
             for j in 0..3 {
                 if selected_game.board[i][j] == BoardField::U {
                     tie = false;
+                    break;
                 }
             }
+            if !tie {
+                break;
+            }
         }
+
 
         if selected_game.status == GameStatus::InProgress && tie {
             env::log_str(&format!("ITS A TIE"));

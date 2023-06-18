@@ -5,7 +5,6 @@ import LoginPopupComponent from "../loginComponent/LoginComponent";
 import Navigation from "../navigation/Navigation";
 import { SideNavigation } from "../sideNavigation/SideNavigation";
 
-
 interface PageWrapperProps {
   isSignedIn: boolean;
   title: String;
@@ -18,6 +17,8 @@ interface PageWrapperProps {
   status: RegisterStatus;
   setStatus: (status: RegisterStatus) => void;
   nearSignedIn: boolean;
+  nearAccountId: string;
+  accountId: string;
 }
 
 export default function PageWrapper({
@@ -31,7 +32,9 @@ export default function PageWrapper({
   gameRegister,
   status,
   setStatus,
-  nearSignedIn
+  nearSignedIn,
+  nearAccountId,
+  accountId,
 }: PageWrapperProps) {
   return (
     <>
@@ -41,15 +44,15 @@ export default function PageWrapper({
       </Head>
       <div className="flex flex-col w-screen bg-nh-bglight items-center min-h-screen py-8">
         <div className="w-full max-w-nh">
-          <Navigation 
-            isSignedIn={isSignedIn} 
-            nearLogin={nearLogin}
+          <Navigation
             nearLogout={nearLogout}
             calimeroLogout={calimeroLogout}
             gameRegister={gameRegister}
             status={status}
             setStatus={setStatus}
             nearSignedIn={nearSignedIn}
+            nearAccountId={nearAccountId}
+            accountId={accountId}
           />
         </div>
         {nearSignedIn ? (
@@ -63,9 +66,7 @@ export default function PageWrapper({
           </div>
         ) : (
           <div className="w-full">
-            <LoginPopupComponent
-              login={nearLogin}
-            />
+            <LoginPopupComponent login={nearLogin} />
           </div>
         )}
       </div>

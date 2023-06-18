@@ -43,7 +43,7 @@ export default function GameBoard({ gameData, gameId, callMethod }: IProps) {
     const loggedUser = localStorage.getItem("accountId");
     if (gameData.playerTurn !== loggedUser) {
       setShow(true);
-      setTitle("Its not your turn");
+      setTitle("its not your turn");
       setSubtitle("Wait for other player to make their move!");
     } else {
       setShow(true);

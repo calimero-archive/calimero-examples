@@ -20,23 +20,30 @@ export async function getNumberOfGames(calimero: Calimero | undefined) {
       const numOfGames = await contract["num_of_games"]({});
       return numOfGames;
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      return 0;
     }
+  } else {
+    return 0;
   }
 }
 
 export async function getGame(gameId: number, calimero: Calimero | undefined) {
-  if (calimero) {
-    const contract = new nearAPI.Contract(
-      new nearAPI.Account(calimero.connection.connection, contractName),
-      contractName,
-      {
-        viewMethods: ["get_game"],
-        changeMethods: [],
-      }
-    );
-    const game = await contract["get_game"]({ game_id: gameId });
-    return game;
+  try {
+    if (calimero) {
+      const contract = new nearAPI.Contract(
+        new nearAPI.Account(calimero.connection.connection, contractName),
+        contractName,
+        {
+          viewMethods: ["get_game"],
+          changeMethods: [],
+        }
+      );
+      const game = await contract["get_game"]({ game_id: gameId });
+      return game;
+    }
+  } catch (error) {
+    console.error(error);
   }
 }
 
@@ -49,6 +56,7 @@ export const setGames = async (
 ) => {
   setLoadingGamesData(true);
   setNumberOfGames(await getNumberOfGames(calimero));
+
   if (numberOfGames) {
     const gamesDataTemp: GameProps[] = [];
     for (let i = 0; i < parseInt(numberOfGames); i++) {
@@ -101,25 +109,30 @@ export async function getGameData(
   setGameStatus: (gameStatus: GameProps) => void,
   calimero: Calimero | undefined
 ) {
-  if (calimero) {
-    const contract = new nearAPI.Contract(
-      new nearAPI.Account(calimero.connection.connection, contractName),
-      contractName,
-      {
-        viewMethods: ["get_game"],
-        changeMethods: [],
-      }
-    );
-    const temp = await contract["get_game"]({ game_id: gameId });
-    const gameData = {
-      boardStatus: temp.board[0].concat(temp.board[1], temp.board[2]),
-      playerA: temp.player_a,
-      playerB: temp.player_b,
-      playerTurn: temp.player_a_turn ? temp.player_a : temp.player_b,
-      status: temp.status,
-      gameId: gameId,
-    };
-    setGameStatus(gameData);
-    return gameData;
+  try {
+    if (calimero) {
+      const contract = new nearAPI.Contract(
+        new nearAPI.Account(calimero.connection.connection, contractName),
+        contractName,
+        {
+          viewMethods: ["get_game"],
+          changeMethods: [],
+        }
+      );
+      const temp = await contract["get_game"]({ game_id: gameId });
+      const gameData = {
+        boardStatus: temp.board[0].concat(temp.board[1], temp.board[2]),
+        playerA: temp.player_a,
+        playerB: temp.player_b,
+        playerTurn: temp.player_a_turn ? temp.player_a : temp.player_b,
+        status: temp.status,
+        gameId: gameId,
+      };
+      setGameStatus(gameData);
+      return gameData;
+    }
+  } catch (error) {
+    console.error(error);
+    return undefined;
   }
 }

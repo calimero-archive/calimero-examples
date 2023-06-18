@@ -20,6 +20,8 @@ export default function Game() {
   const { id } = router.query;
   const [gameStatus, setGameStatus] = useState<GameProps>();
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [accountId, setAccountId] = useState("");
+  const [nearAccountId, setNearAccountId] = useState("");
   const [loading, setLoading] = useState(true);
   const {
     login,
@@ -31,9 +33,12 @@ export default function Game() {
   } = useNear();
 
   const signOut = () => {
-    walletConnectionObject?.signOut();
-    localStorage.removeItem("calimeroAccountId");
-    setIsSignedIn(false);
+    if (accountId) {
+      setAccountId("");
+      walletConnectionObject?.signOut();
+      localStorage.removeItem("calimeroAccountId");
+      setIsSignedIn(false);
+    }
   };
 
   const signIn = async () => {
@@ -54,6 +59,28 @@ export default function Game() {
     setGameStatus(updatedGameStatus);
     setLoading(false);
   };
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        if (id) {
+          const updatedGameStatus = await getGameData(
+            parseInt(id?.toString() || ""),
+            setGameStatus,
+            calimero
+          );
+          if (!updatedGameStatus) {
+            router.push("/");
+          } else {
+            setGameStatus(updatedGameStatus);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+        router.push("/");
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [id]);
 
   useEffect(() => {
     const updateBoard = async () => {
@@ -73,14 +100,25 @@ export default function Game() {
     const init = async () => {
       calimero = await CalimeroSdk.init(config).connect();
       if (id) {
-        getGameData(parseInt(id?.toString() || ""), setGameStatus, calimero);
+        const response = getGameData(
+          parseInt(id?.toString() || ""),
+          setGameStatus,
+          calimero
+        );
+        if (!response) {
+          router.push("/");
+        }
       }
       walletConnectionObject = new WalletConnection(calimero, contractName);
       await walletConnectionObject.isSignedInAsync();
+
       localStorage.setItem(
         "calimeroAccountId",
         walletConnectionObject.getAccountId()
       );
+      setAccountId(walletConnectionObject.getAccountId());
+      const nearAccount = localStorage.getItem("nearAccountId");
+      setNearAccountId(nearAccount ?? "");
     };
     if (nearSignedIn) {
       init();
@@ -105,6 +143,8 @@ export default function Game() {
       status={registerStatus}
       setStatus={setRegisterStatus}
       nearSignedIn={nearSignedIn}
+      accountId={accountId}
+      nearAccountId={nearAccountId}
     >
       <>
         {gameStatus && id && (

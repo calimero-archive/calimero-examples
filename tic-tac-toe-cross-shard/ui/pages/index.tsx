@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import CurrentGamesList from "../components/nh/currentGamesPage/CurrentGamesList";
 import PageWrapper from "../components/nh/pageWrapper/PageWrapper";
 import { useEffect, useState } from "react";
-import { setGames } from "../utils/callMethods";
+import { getGame, getNumberOfGames, setGames } from "../utils/callMethods";
 import translations from "../constants/en.global.json";
 import { CalimeroSdk, WalletConnection } from "calimero-sdk";
 import { config } from "../utils/calimeroSdk";
@@ -37,7 +37,7 @@ let calimero: Calimero | undefined = undefined;
 export default function CurrentGamesPage() {
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [numberOfGames, setNumberOfGames] = useState<string>("");
+  const [nearAccountId, setNearAccountId] = useState("");
   const [gamesData, setGamesData] = useState<GameProps[]>();
   const [accountId, setAccountId] = useState<string | null>("");
   const [loadingGamesData, setLoadingGamesData] = useState(false);
@@ -51,27 +51,49 @@ export default function CurrentGamesPage() {
   } = useNear();
 
   const signOut = () => {
-    walletConnectionObject?.signOut();
-    localStorage.removeItem("calimeroAccountId");
-    setIsSignedIn(false);
+    if (accountId) {
+      setAccountId("");
+      walletConnectionObject?.signOut();
+      localStorage.removeItem("calimeroAccountId");
+      setIsSignedIn(false);
+    }
   };
 
   useEffect(() => {
-    if (
-      !numberOfGames ||
-      (!gamesData && localStorage.getItem("nearAccountId"))
-    ) {
-      if (nearSignedIn) {
-        setGames(
-          setNumberOfGames,
-          numberOfGames,
-          setGamesData,
-          setLoadingGamesData,
-          calimero
-        );
+    const fetchGameData = async () => {
+      setLoadingGamesData(true);
+      const numberOfGamesResult = await getNumberOfGames(calimero);
+      if (numberOfGamesResult > 0) {
+        const gamesDataTemp: GameProps[] = [];
+        for (let i = 0; i < parseInt(numberOfGamesResult); i++) {
+          let temp = await getGame(i, calimero);
+          const gameData = {
+            boardStatus: temp.board[0].concat(temp.board[1], temp.board[2]),
+            playerA: temp.player_a,
+            playerB: temp.player_b,
+            playerTurn: temp.player_a_turn ? temp.player_a : temp.player_b,
+            status: temp.status,
+            gameId: i,
+          };
+          const loggedUser = localStorage.getItem("nearAccountId");
+          if (
+            gameData.playerA == loggedUser ||
+            gameData.playerB === loggedUser
+          ) {
+            gamesDataTemp.push(gameData);
+          }
+        }
+        setGamesData(gamesDataTemp);
+      } else {
+        setGamesData([]);
       }
+      setLoadingGamesData(false);
+    };
+
+    if (nearSignedIn && calimero && !gamesData) {
+      fetchGameData();
     }
-  }, [numberOfGames, gamesData, nearSignedIn]);
+  }, [nearSignedIn, gamesData, calimero]);
 
   useEffect(() => {
     const init = async () => {
@@ -82,6 +104,9 @@ export default function CurrentGamesPage() {
         "calimeroAccountId",
         walletConnectionObject.getAccountId()
       );
+      setAccountId(walletConnectionObject.getAccountId());
+      const nearAccount = localStorage.getItem("nearAccountId");
+      setNearAccountId(nearAccount ?? "");
     };
     if (nearSignedIn) {
       init();
@@ -110,11 +135,13 @@ export default function CurrentGamesPage() {
       status={registerStatus}
       setStatus={setRegisterStatus}
       nearSignedIn={nearSignedIn}
+      nearAccountId={nearAccountId}
+      accountId={accountId ?? ""}
     >
       <CurrentGamesList
         gamesList={gamesData || []}
         loadingGamesData={loadingGamesData}
-        accountId={accountId}
+        accountId={nearAccountId}
       />
     </PageWrapper>
   );
