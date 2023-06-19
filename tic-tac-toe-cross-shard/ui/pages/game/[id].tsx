@@ -141,7 +141,7 @@ export default function Game() {
       }
     };
     setLoginStatus();
-  }, [calimero, nearSignedIn]);
+  }, []);
 
   return (
     <PageWrapper
