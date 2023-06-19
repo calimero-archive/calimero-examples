@@ -105,6 +105,11 @@ export default function useNear() {
     }
   };
 
+  useEffect(()=>{
+    const nearAc = localStorage.getItem("nearAccountId")
+    setNearSignedIn(true);
+  },[])
+
   return {
     login,
     logout,

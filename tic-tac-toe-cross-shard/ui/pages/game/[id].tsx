@@ -32,6 +32,13 @@ export default function Game() {
     setRegisterStatus,
   } = useNear();
 
+  useEffect(()=>{
+      const nearAcc = localStorage.getItem("nearAccountId");
+      if(nearAcc){
+        setNearAccountId(nearAcc);
+      }
+  },[])
+
   const signOut = () => {
     if (accountId) {
       setAccountId("");
@@ -54,16 +61,6 @@ export default function Game() {
     }
     initCalimero();
   })
-
-  useEffect(()=>{
-    if(nearSignedIn){
-      const nearAcc = localStorage.getItem("nearAccountId");
-      if(nearAcc){
-        setNearAccountId(nearAcc);
-      }
-    }
-    
-  },[nearSignedIn])
 
   const makeMoveFunctionCall = async (id: number, squareId: number) => {
     setLoading(true);
