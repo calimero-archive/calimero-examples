@@ -25,8 +25,10 @@ export default function CurrentGamesList({
       <div className="font-medium text-2xl leading-7 mt-12 text-white">
         {translation.pageTitle}
       </div>
-      <div className="w-full flex justify-end" onClick={() => router.reload()}>
-        <div className="flex text-white cursor-pointer hover:text-nh-purple">
+      <div className="w-full flex justify-end">
+        <div
+        className="flex text-white cursor-pointer hover:text-nh-purple"
+        onClick={() => router.reload()}>
           <p className="mr-2">{translation.refreshButtonTitle}</p>
           <RefreshIcon className="w-6 h-6" />
         </div>
