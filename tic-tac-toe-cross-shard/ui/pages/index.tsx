@@ -65,8 +65,8 @@ export default function CurrentGamesPage() {
     }
     initCalimero();
   })
+
   useEffect(()=>{
-    
     if(nearSignedIn){
       const nearAcc = localStorage.getItem("nearAccountId");
       if(nearAcc){
@@ -112,30 +112,26 @@ export default function CurrentGamesPage() {
     }
   }, [nearSignedIn, calimero, gamesData]);
 
-  // useEffect(() => {
-  //   const init = async () => {
-  //     calimero = await CalimeroSdk.init(config).connect();
-  //     walletConnectionObject = new WalletConnection(calimero, contractName);
-  //     await walletConnectionObject.isSignedInAsync();
-  //     localStorage.setItem(
-  //       "calimeroAccountId",
-  //       walletConnectionObject.getAccountId()
-  //     );
-  //     setAccountId(walletConnectionObject.getAccountId());
-  //     const nearAccount = localStorage.getItem("nearAccountId");
-  //     setNearAccountId(nearAccount ?? "");
-  //   };
-  //   if (nearSignedIn) {
-  //     init();
-  //     setAccountId(localStorage.getItem("nearAccountId"));
-  //   }
-  // }, [nearSignedIn]);
-
-  // useEffect(() => {
-  //   const absolute = window.location.href.split("?");
-  //   const url = absolute[0];
-  //   router.replace(url);
-  // }, []);
+  useEffect(() => {
+    const init = async () => {
+      calimero = await CalimeroSdk.init(config).connect();
+      walletConnectionObject = new WalletConnection(calimero, contractName);
+      const signedIn = await walletConnectionObject.isSignedInAsync();
+      if (signedIn) {
+        localStorage.setItem(
+        "calimeroAccountId",
+        walletConnectionObject.getAccountId()
+      );
+      setAccountId(walletConnectionObject.getAccountId());
+      const absolute = window.location.href.split("?");
+      const url = absolute[0];
+      router.replace(url);
+      }
+    };
+    if (nearSignedIn) {
+      init();
+    }
+  }, [nearSignedIn]);
 
   return (
     <PageWrapper

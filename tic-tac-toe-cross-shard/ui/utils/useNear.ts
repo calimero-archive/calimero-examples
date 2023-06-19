@@ -73,7 +73,10 @@ export default function useNear() {
           localStorage.setItem("nearAccountId", wallet.getAccountId());
         }  
     };
-    isSigned();
+    const nearAcc = localStorage.getItem("nearAccountId");
+    if (!nearAcc) {
+      isSigned();
+    }
   }, []);
 
   const register = async () => {
