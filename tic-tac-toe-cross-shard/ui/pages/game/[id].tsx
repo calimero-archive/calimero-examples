@@ -126,13 +126,14 @@ export default function Game() {
       if (calimero) {
         walletConnectionObject = new WalletConnection(calimero, contractName);
         const calimeroSignedIn = await walletConnectionObject.isSignedInAsync();
+        console.log(calimeroSignedIn);
         if (calimeroSignedIn) {
           const caliAccountId = walletConnectionObject.getAccountId()
           localStorage.setItem("calimeroAccountId", caliAccountId);
           setAccountId(caliAccountId); 
-          const absolute = window.location.href.split("?");
-          const url = absolute[0];
-          router.replace(url);
+          // const absolute = window.location.href.split("?");
+          // const url = absolute[0];
+          // router.replace(url);
         }
       }
     };
