@@ -107,6 +107,9 @@ export default function CurrentGamesPage() {
       setAccountId(walletConnectionObject.getAccountId());
       const nearAccount = localStorage.getItem("nearAccountId");
       setNearAccountId(nearAccount ?? "");
+      const absolute = window.location.href.split("?");
+      const url = absolute[0];
+      router.replace(url);
     };
     if (nearSignedIn) {
       init();

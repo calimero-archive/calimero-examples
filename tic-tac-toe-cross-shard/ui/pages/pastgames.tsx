@@ -86,18 +86,15 @@ export default function PastGames() {
       setAccountId(walletConnectionObject.getAccountId());
       const nearAccount = localStorage.getItem("nearAccountId");
       setNearAccountId(nearAccount ?? "");
+      const absolute = window.location.href.split("?");
+      const url = absolute[0];
+      router.replace(url);
     };
     if (nearSignedIn) {
       init();
       setAccountId(localStorage.getItem("nearAccountId"));
     }
   }, [nearSignedIn]);
-
-  useEffect(() => {
-    const absolute = window.location.href.split("?");
-    const url = absolute[0];
-    router.replace(url);
-  }, [isSignedIn]);
 
   return (
     <PageWrapper

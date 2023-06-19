@@ -119,17 +119,14 @@ export default function Game() {
       setAccountId(walletConnectionObject.getAccountId());
       const nearAccount = localStorage.getItem("nearAccountId");
       setNearAccountId(nearAccount ?? "");
+      const absolute = window.location.href.split("?");
+      const url = absolute[0];
+      router.replace(url);
     };
     if (nearSignedIn) {
       init();
     }
   }, [nearSignedIn, id]);
-
-  useEffect(() => {
-    const absolute = window.location.href.split("?");
-    const url = absolute[0];
-    router.replace(url);
-  }, []);
 
   return (
     <PageWrapper
