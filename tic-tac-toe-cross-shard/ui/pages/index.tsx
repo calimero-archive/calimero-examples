@@ -63,9 +63,15 @@ export default function CurrentGamesPage() {
     const initCalimero = async() => {
       calimero = await CalimeroSdk.init(config).connect();
     }
+    initCalimero();
+  })
+  useEffect(()=>{
+    
     if(nearSignedIn){
-      initCalimero();
-      setNearAccountId(localStorage.getItem("nearAccountId") as string)
+      const nearAcc = localStorage.getItem("nearAccountId");
+      if(nearAcc){
+        setNearAccountId(nearAcc);
+      }
     }
     
   },[nearSignedIn])
@@ -88,7 +94,7 @@ export default function CurrentGamesPage() {
           };
           const loggedUser = localStorage.getItem("nearAccountId");
           if (
-            gameData.playerA == loggedUser ||
+            gameData.playerA === loggedUser ||
             gameData.playerB === loggedUser
           ) {
             gamesDataTemp.push(gameData);
@@ -104,7 +110,7 @@ export default function CurrentGamesPage() {
     if (nearSignedIn && calimero && !gamesData) {
       fetchGameData();
     }
-  }, [nearSignedIn, gamesData, calimero]);
+  }, [nearSignedIn, calimero, gamesData]);
 
   // useEffect(() => {
   //   const init = async () => {
