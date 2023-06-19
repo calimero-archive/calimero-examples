@@ -99,17 +99,18 @@ export default function CurrentGamesPage() {
     const init = async () => {
       calimero = await CalimeroSdk.init(config).connect();
       walletConnectionObject = new WalletConnection(calimero, contractName);
-      await walletConnectionObject.isSignedInAsync();
-      localStorage.setItem(
+      const calimeroSignedIn = await walletConnectionObject.isSignedInAsync();
+      if ( calimeroSignedIn ) {
+        localStorage.setItem(
         "calimeroAccountId",
         walletConnectionObject.getAccountId()
       );
       setAccountId(walletConnectionObject.getAccountId());
-      const nearAccount = localStorage.getItem("nearAccountId");
-      setNearAccountId(nearAccount ?? "");
-      const absolute = window.location.href.split("?");
+       const absolute = window.location.href.split("?");
       const url = absolute[0];
       router.replace(url);
+      }
+     
     };
     if (nearSignedIn) {
       init();
