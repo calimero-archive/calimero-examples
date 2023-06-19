@@ -59,6 +59,17 @@ export default function CurrentGamesPage() {
     }
   };
 
+  useEffect(()=>{
+    const initCalimero = async() => {
+      calimero = await CalimeroSdk.init(config).connect();
+    }
+    if(nearSignedIn){
+      initCalimero();
+      setNearAccountId(localStorage.getItem("nearAccountId") as string)
+    }
+    
+  },[nearSignedIn])
+
   useEffect(() => {
     const fetchGameData = async () => {
       setLoadingGamesData(true);
@@ -95,30 +106,30 @@ export default function CurrentGamesPage() {
     }
   }, [nearSignedIn, gamesData, calimero]);
 
-  useEffect(() => {
-    const init = async () => {
-      calimero = await CalimeroSdk.init(config).connect();
-      walletConnectionObject = new WalletConnection(calimero, contractName);
-      await walletConnectionObject.isSignedInAsync();
-      localStorage.setItem(
-        "calimeroAccountId",
-        walletConnectionObject.getAccountId()
-      );
-      setAccountId(walletConnectionObject.getAccountId());
-      const nearAccount = localStorage.getItem("nearAccountId");
-      setNearAccountId(nearAccount ?? "");
-    };
-    if (nearSignedIn) {
-      init();
-      setAccountId(localStorage.getItem("nearAccountId"));
-    }
-  }, [nearSignedIn]);
+  // useEffect(() => {
+  //   const init = async () => {
+  //     calimero = await CalimeroSdk.init(config).connect();
+  //     walletConnectionObject = new WalletConnection(calimero, contractName);
+  //     await walletConnectionObject.isSignedInAsync();
+  //     localStorage.setItem(
+  //       "calimeroAccountId",
+  //       walletConnectionObject.getAccountId()
+  //     );
+  //     setAccountId(walletConnectionObject.getAccountId());
+  //     const nearAccount = localStorage.getItem("nearAccountId");
+  //     setNearAccountId(nearAccount ?? "");
+  //   };
+  //   if (nearSignedIn) {
+  //     init();
+  //     setAccountId(localStorage.getItem("nearAccountId"));
+  //   }
+  // }, [nearSignedIn]);
 
-  useEffect(() => {
-    const absolute = window.location.href.split("?");
-    const url = absolute[0];
-    router.replace(url);
-  }, []);
+  // useEffect(() => {
+  //   const absolute = window.location.href.split("?");
+  //   const url = absolute[0];
+  //   router.replace(url);
+  // }, []);
 
   return (
     <PageWrapper
