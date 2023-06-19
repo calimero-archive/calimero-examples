@@ -126,9 +126,12 @@ export default function Game() {
       if (calimero) {
         walletConnectionObject = new WalletConnection(calimero, contractName);
         const calimeroSignedIn = await walletConnectionObject.isSignedInAsync();
+        const caliAccountId = walletConnectionObject.getAccountId()
+        console.log('🚀 ~ file: [id].tsx:130 ~ setLoginStatus ~ caliAccountId:', caliAccountId);
         console.log(calimeroSignedIn);
         if (calimeroSignedIn) {
           const caliAccountId = walletConnectionObject.getAccountId()
+          console.log(caliAccountId);
           localStorage.setItem("calimeroAccountId", caliAccountId);
           setAccountId(caliAccountId); 
           // const absolute = window.location.href.split("?");
