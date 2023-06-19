@@ -72,9 +72,9 @@ export default function useNear() {
         if (nearSignedIn) {
           localStorage.setItem("nearAccountId", wallet.getAccountId());
         }
-        // const absolute = window.location.href.split("?");
-        // const url = absolute[0];
-        // router.replace(url);
+        const absolute = window.location.href.split("?");
+        const url = absolute[0];
+        router.replace(url);
     };
     isSigned();
   }, []);
