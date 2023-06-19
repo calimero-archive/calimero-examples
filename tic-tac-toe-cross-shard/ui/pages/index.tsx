@@ -114,12 +114,6 @@ export default function CurrentGamesPage() {
     }
   }, [nearSignedIn]);
 
-  useEffect(() => {
-    const absolute = window.location.href.split("?");
-    const url = absolute[0];
-    router.replace(url);
-  }, []);
-
   return (
     <PageWrapper
       isSignedIn={isSignedIn}
